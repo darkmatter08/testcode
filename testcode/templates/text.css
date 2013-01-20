@@ -1,0 +1,293 @@
+body {
+      background-image: url(background.png);
+      background-repeat: repeat-y;
+      background-position: center;
+      padding: 0px;
+      margin: 0px;
+      font-family: 'Strait', sans-serif; 
+      }
+#heading
+       {background-image: url(head1.png);
+       background-position: center;
+       height: 90px;
+       width: 100%;
+       margin-bottom: 20px;
+       box-shadow: 5px 0px 30px black;
+      }
+      
+#headt
+    {
+        width:900px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 100%;
+        
+    }
+      
+#logo
+   {position: relative;
+    margin-top: 2px;
+    float: left;
+    width: 395px;
+   }
+#menu
+   {position: relative;
+   margin-top: 7px;
+   height: 20px;
+    
+   }
+ #topright
+ {
+    float: right;
+    color: white;
+    padding-top: 16px;
+    width:400px;
+    height:80px;
+ }
+#t
+   {position: relative;
+    width: 400px;
+    height: 20px;
+    margin-top:13px;
+    
+   }
+   
+   
+a 
+{ color:white;
+  text-decoration: none;
+    
+}
+   
+#container
+{
+   
+    width:950px;
+    height: 900px;
+    position: relative;
+    left:50%;
+    margin-left:-475px;
+
+   
+    
+}
+
+
+
+#hi
+{
+    float:left;
+    color:white; 
+    width:130px;
+    
+}
+
+#topnav
+{
+    float: right;
+    height: 25px;
+}
+
+#footer
+   {
+    background-image: url(footer1.png);
+    background-position: center;
+    height: 73px;
+    width: 100%;
+    margin-top: 15px;  
+    }
+      
+      
+#prob_tabs
+ {
+    width:820px;
+    height: 27px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2px;
+    margin-top:15px;
+ }
+ 
+ #table1 table, tr, th {
+     border: 0;
+    
+     
+}
+
+ #table1 td
+ {
+      vertical-align: middle;
+      text-align: center;
+ }
+.probs
+{
+    position: relative;
+    background-image: url(back.png);
+    color: white;
+    border:2px solid;
+    background-color: #153d00;
+    border-radius: 15px;
+    height: 32px;
+    width: 100px;
+    padding-top: 2px;
+    
+
+    
+}
+
+#sep
+{
+    margin-top: 15px;
+}
+    
+#nav
+{
+ 
+    width: 200px;
+    height: 100%;  
+    float: left;
+    
+
+}
+
+#main
+{
+   
+    border-style:outset;
+    border-top: 1px outset;
+    border-bottom: 1px outset;
+    border-left: 1px outset;
+    border-right: 1px outset;
+    border-color: #dfdfdf;
+    background-color: #fffaec;
+    width: 920px;
+    height: 780px;       
+    padding: 15px;
+    
+}
+table#table2 
+{ 
+     border-collapse: collapse;
+     border-spacing: 0px;
+     border: 0px;
+ }
+ 
+.classes
+{
+    position: relative;
+    height: 25px;
+    line-height: 25px;
+    background-image: url(bar.png);
+    width:100%;
+    text-align: center;
+    color: white;
+    
+    
+}
+
+#path
+{
+    width: 350px;
+    height: 25px;
+    text-align: left;
+    float: left;
+    font-weight: 900;
+    margin-right:15px;
+    margin-bottom:25px;
+    position: relative; 
+    
+}
+
+.smaller
+{
+    padding:0px 6px; 
+}
+
+#yourcode
+{
+     position: relative; 
+    width: 532px;
+    height: 25px;
+    text-align: left;
+    float: left;
+    font-weight: 900;
+    
+}
+
+#feed
+{
+    position: relative;
+    margin-top: 15px; 
+    width: 350px;
+    height: 25px;
+    text-align: left;
+    font-weight: 900;
+    margin-right:0px !important;  
+    margin-bottom:25px;  
+    
+}
+
+#subms
+{
+    float:right;
+    
+    
+}
+
+#description
+{
+ 
+ position:relative;
+ width: 330px;
+ font-size:15px;
+ background-color: #f0f5e8;
+ padding:10px;
+ margin-right:0px;
+ height:247px;
+ 
+}
+
+#container2
+{
+    float:left;   
+    width: 350px;
+}
+
+#containertop
+{
+    position:relative;
+    width:900px;
+    height:25px; 
+}
+
+#containermain
+{
+    position:relative;
+    margin-top: 25px; 
+    width: 900px; 
+    height: 700px; 
+  
+}
+
+#container3
+{
+    float:right; 
+    width: 532px;
+    height:700px; 
+    
+}
+#feedback
+{
+ width: 330px;
+ font-size:15px;
+ background-color: #f0f5e8;
+ padding:10px;
+ 
+ height:300px;
+ overflow:auto;   
+}
+#textcode
+{width: 532px; 
+height: 900px; 
+}
+

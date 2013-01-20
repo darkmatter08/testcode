@@ -132,6 +132,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 
     #add apps to register
+    'testcode', #not sure if needed
 )
 
 # A sample logging configuration. The only tangible logging
