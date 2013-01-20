@@ -7,14 +7,15 @@ body {
       font-family: 'Strait', sans-serif; 
       }
 #heading
-       {background-image: url(head1.png);
+       {
+       background-image: url(head1.png);
        background-position: center;
        height: 90px;
        width: 100%;
        margin-bottom: 20px;
        box-shadow: 5px 0px 30px black;
       }
-      
+
 #headt
     {
         width:900px;
@@ -26,29 +27,46 @@ body {
       
 #logo
    {position: relative;
-    margin-top: 2px;
+    margin-top: 5px;
     float: left;
     width: 395px;
    }
-#menu
+   
+#menuhome
    {position: relative;
    margin-top: 7px;
    height: 20px;
+   width:200px;  
+   }
+#menu
+   {position: relative;
+   margin-top: -3px;
+   height: 20px;
     
    }
+ #toprighthome
+ {
+    float: right;
+    color: white;
+    padding-top: 22px;
+    width:290px;
+    height:80px;
+ }
+ 
  #topright
  {
     float: right;
     color: white;
-    padding-top: 16px;
-    width:400px;
+    padding-top: 11px;
+    width:290px;
     height:80px;
  }
+ 
 #t
    {position: relative;
     width: 400px;
     height: 20px;
-    margin-top:13px;
+    margin-top: 9px;
     
    }
    
@@ -58,12 +76,17 @@ a
   text-decoration: none;
     
 }
+
+#cont1
+{
+    height:32px; 
+}
    
 #container
 {
    
     width:950px;
-    height: 900px;
+    height: 750px;
     position: relative;
     left:50%;
     margin-left:-475px;
@@ -161,7 +184,7 @@ a
     border-color: #dfdfdf;
     background-color: #fffaec;
     width: 920px;
-    height: 780px;       
+    height: 703px;       
     padding: 15px;
     
 }
@@ -241,7 +264,8 @@ table#table2
  width: 330px;
  font-size:15px;
  background-color: #f0f5e8;
- padding:10px;
+ padding-left:10px;
+ padding-right:10px;
  margin-right:0px;
  height:247px;
  
@@ -265,15 +289,29 @@ table#table2
     position:relative;
     margin-top: 25px; 
     width: 900px; 
-    height: 700px; 
+    height: 625px; 
   
+}
+
+#save
+{
+   
+    float:right;
+    left:50%; 
+    margin-right:-520px;
+}
+#containerbottom
+{
+    position:relative;
+    width:900px; 
+    height:30px; 
 }
 
 #container3
 {
     float:right; 
     width: 532px;
-    height:700px; 
+    height: 630px; 
     
 }
 #feedback
@@ -281,13 +319,13 @@ table#table2
  width: 330px;
  font-size:15px;
  background-color: #f0f5e8;
- padding:10px;
- 
+ padding-left:10px;
+ padding-right:10px;
  height:300px;
- overflow:auto;   
+   
 }
 #textcode
 {width: 532px; 
-height: 900px; 
+height: 610px; 
 }
 

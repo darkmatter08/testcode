@@ -5,7 +5,7 @@
 
 # Data Models within the store app
 
-#imports
+# imports
 from django.db import models
 from django.forms import ModelForm
 
