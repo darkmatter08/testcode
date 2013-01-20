@@ -1,3 +1,10 @@
+# Shawn Jain
+# 1/19/2013
+# Testcode project
+# urls.py
+
+# Define URL schema, map URLs to functions in views.py
+
 from django.conf.urls import patterns, include, url
 
 # Uncomment the next two lines to enable the admin:
