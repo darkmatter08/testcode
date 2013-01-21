@@ -1,0 +1,32 @@
+<!-- Shawn Jain -->
+<!-- 1/20/13-->
+<!-- Testcode Project -->
+<!-- Simple Submit test form -->
+<!DOCTYPE HTML>
+<html>
+<body>
+
+	<!-- User Login area -->
+	<h3>Welcome, {{user.name}}!</h3>
+	<h4>Nice to see you again!</h4>
+
+	<br/>
+
+	<!-- Easy textarea -->
+
+	<form action="api/submit/" method="POST">{% csrf_token %}
+		<textarea cols="40" rows="5" name="solution">
+			Your submission here!
+		</textarea>
+		<br/>
+		<input type="submit" value="Save and Run!">
+	</form>
+
+	<br/>
+
+	<!-- Updates -->
+	<h4>Here are your results!</h4>
+	<p>{{ results }}</p>
+
+</body>
+</html>

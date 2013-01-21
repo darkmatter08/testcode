@@ -23,5 +23,16 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', views.home),
+    
+    #Login page
+    url(r'^/$', views.home)
+
+    # Student Homepage 
+    url(r'^student/$', views.student),
+    # Teacher Homepage
+    url(r'^teacher/$', views.teacher),
+
+    # API urls to interact with backend
+    url(r'^api/login$', views.login),
+    url(r'^api/submit/$', views.submit),
 )
