@@ -3,21 +3,21 @@
   <head>
       <title> Prob</title>
       <link href='http://fonts.googleapis.com/css?family=Strait' rel='stylesheet' type='text/css'>
-      <link rel="stylesheet" type="text/css" href="text.css" />
-      <link href="bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+      <link rel="stylesheet" type="text/css" href="static/text.css" />
+      <link href="static/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
       <script src="http://code.jquery.com/jquery-latest.js"></script>
       <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
       <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.js"></script>
       <script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
       <script src="http://jqueryui.com/resources/demos/external/jquery.bgiframe-2.1.2.js"></script>
-      <script src="bootstrap/js/bootstrap.js"></script>
-      <script type="text/javascript" src="scroll/jquery.slimscroll.min.js"></script>
+      <script src="static/bootstrap/js/bootstrap.js"></script>
+      <script type="text/javascript" src="static/scroll/jquery.slimscroll.min.js"></script>
       <style type="text/css">.CodeMirror {border: 1px solid #dfdfdf; border-bottom: 1px solid #dfdfdf;}</style>
 
-       <script type="text/javascript" src="java.js"></script>
+       <script type="text/javascript" src="static/java.js"></script>
     <!-- SIGNUP FORM -->
  
-    <link rel="stylesheet" href="j-query.css" />
+    <link rel="stylesheet" href="static/j-query.css" />
     <style>
     input.text { margin-bottom:5px; width:95%; padding: .4em; }
     fieldset { padding:0; border:0; margin-top:5px; }
@@ -43,11 +43,15 @@
     <input type="text" name="email" id="email" value="" class="text ui-widget-content ui-corner-all" />
     <label for="password">Password</label>
     <input type="password" name="password" id="password" value="" class="text ui-widget-content ui-corner-all" />
+   <label for="password">User type</label>
+   <INPUT TYPE="radio" NAME="q1" VALUE="t" >Teacher &nbsp  &nbsp &nbsp
+   <INPUT TYPE="radio" NAME="q1" VALUE="s">Student
   </fieldset>
   </form>
 </div>
 
 <div id="dialog-form1" title="Login">
+ <p class="validateTips" id="login_message_box"></p>
  
   <form>
   <fieldset>
@@ -69,7 +73,7 @@
             <div id="headt">
               
                <div id="logo">
-                  <a href="#home"> <img src="logo1.png"> </a>
+                  <a href="#home"> <img src="static/logo1.png"> </a>
                </div>
                 
                <div id="toprighthome">

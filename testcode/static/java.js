@@ -15,7 +15,15 @@
   $(function() {
     var name = $( "#name" ),
         email = $( "#email" ),
-        password = $( "#password" ),
+        password = $( "#password" ),          
+        ifAdmin=false;
+        
+        $('input[name=q1]').click(function(){
+            if($(this).val()=="t"){
+              ifAdmin=true;
+              };             
+           } );
+        
         allFields = $( [] ).add( name ).add( email ).add( password ),
         tips = $( ".validateTips" );
  
@@ -52,7 +60,7 @@
  
     $( "#dialog-form" ).dialog({
       autoOpen: false,
-      height: 350,
+      height: 395,
       width: 450,
       modal: true,
       buttons: {
@@ -60,16 +68,28 @@
           allFields.removeClass( "ui-state-error" );
 
           $.post(
-           "lib/signup.php",
+           "api/signup",
            {
                       name:name.val(),
-                      mail:email.val(),
-                      pass:password.val()
+                      email:email.val(),
+                      password:password.val(),
+                      ifAdmin:ifAdmin,
            },
            function(data){
                      var result = jQuery.parseJSON(data)
-                     alert(result.message)
-                      //alert(data);
+                     var status = result.isOkay
+                     var message = result.message
+                     if (status)
+                        {
+                        color = "red";
+                                 
+                        }
+                    else
+                       { color = "green"
+                        setTimeout(function(){$("#dialog-form").dialog( "close" )},300);
+                        //$(".alert").alert(message);
+                        }
+                   $("#signup_message_box").html("<span style='color:"+color+"'>"+message+"</span>")
            }
            
           )
@@ -102,7 +122,14 @@
     /* /////////////////// */
     /* /////////////////// */
     /* /////////////////// */
-  
+   $(function ()
+     {
+      $( "#logout" )
+      .button()
+      .click(function() {
+        $.post ("api/logout")
+      });
+     });
   
    $(function() { 
 
@@ -114,18 +141,35 @@
  
     $( "#dialog-form1" ).dialog({
       autoOpen: false,
-      height: 255,
+      height: 275,
       width: 450,
       modal: true,
       buttons: {
         "Login": function() {
          
-          var bValid = true;        
-           if ( bValid ) {      
-                      
+          $.post(
+           "api/login",
+           {
+                      email:email.val(),
+                      password:password.val(),                  
+           },
+           function(data){
+                     var result = jQuery.parseJSON(data)
+                     var status = result.isOkay
+                     var message = result.message
+                     if (status == false)
+                        {
+                        color = "red";
+                                 
+                        }
+                   
+                   $("#login_message_box").html("<span style='color:"+color+"'>"+message+"</span>")
+           }
+           
+          )
           
             $( this ).dialog( "close" );
-          }
+          
         },
         Cancel: function() {
           $( this ).dialog( "close" );
@@ -142,7 +186,7 @@
         $( "#dialog-form1" ).dialog( "open" );
       });
 
-  
+ }); 
   
   
   
@@ -158,7 +202,7 @@
     /* /////////////////// */
   
   
-
+   $(function() { 
   var name = $( "#nameclass" ),
       password = $( "#passwordclass" ),
       allFields = $( [] ).add( name ).add( password ),
@@ -197,7 +241,7 @@
         $( "#dialog-formclass" ).dialog( "open" );
       });
 
-  
+   }); 
   
   
     /* /////////////////// */
@@ -211,7 +255,7 @@
     /* /////////////////// */
   
   
-
+   $(function() { 
   var name = $( "#idlass" ),
       password = $( "#passwordclass1" ),
       allFields = $( [] ).add( name ).add( password ),

@@ -27,7 +27,7 @@ body {
       
 #logo
    {position: relative;
-    margin-top: 5px;
+    margin-top: 19px;
     float: left;
     width: 395px;
    }
@@ -89,12 +89,18 @@ a
     height: 750px;
     position: relative;
     left:50%;
-    margin-left:-475px;
-
-   
-    
+    margin-left:-475px;    
 }
 
+#container1
+{
+   
+    width:950px;
+    height: 700px;
+    position: relative;
+    left:50%;
+    margin-left:-475px;    
+}
 
 
 #hi
@@ -188,6 +194,25 @@ a
     padding: 15px;
     
 }
+
+
+#main1
+{
+   
+    border-style:outset;
+    border-top: 1px outset;
+    border-bottom: 1px outset;
+    border-left: 1px outset;
+    border-right: 1px outset;
+    border-color: #dfdfdf;
+    background: rgba(255, 255, 255,0.6);
+    width: 920px;
+    height: 703px;       
+    padding: 15px;
+    
+}
+
+
 table#table2 
 { 
      border-collapse: collapse;
@@ -250,11 +275,115 @@ table#table2
     
 }
 
+
+#problemstable  td
+{
+height:36px;
+width:230px;
+border-bottom: 1px solid #ddd;
+border-top: 1px solid #ddd;
+padding: 0px;
+padding-left: 20px;
+padding-right: 20px;
+}
+
+
+#latesttable  th, td
+{
+
+width:270px;
+
+}
+
+.inlatest
+{
+      list-style: none;
+     margin:0px;
+}
+
+#latesttable tr:first-child td
+{
+      height:16px;    
+      border-top:1px solid #ddd;
+      padding: 0px;      
+      font-weight: 800;
+}
+
+#latesttable td
+{
+      height:36px;     
+      border-bottom: 1px solid #ddd;
+      border-top: 1px solid #ddd;    
+      padding-left:  20px;
+      line-height: 25px;
+      vertical-align: top;
+     
+
+}
+
+.tall
+{
+       margin-top: 8px;
+      margin-bottom: 8px;
+}
+
+
+#listclass
+{
+    width:400px; 
+    float:left;
+}
+
+#rightclass
+{
+    float:right;
+    width:400px; 
+}
+
+#linei
+{
+    line-height:25px; 
+}
+#classes
+{
+    position: relative;
+    width: 265x;
+    height: 25px;
+    text-align: left;
+    font-weight: 900;
+    margin-right:0px !important;  
+    margin-bottom:25px;  
+    
+}
+
+
 #subms
 {
     float:right;
     
     
+}
+
+
+#rightm
+{
+  
+}
+
+.add-classstudent
+{
+  margin-left:600px; 
+  margin-top: -5px;
+}
+
+.add-classteacher
+{
+  margin-left:470px; 
+  margin-top: -5px;
+}
+.create-classteacher
+{
+  margin-top: -5px;
 }
 
 #description
@@ -329,3 +458,44 @@ table#table2
 height: 610px; 
 }
 
+
+#leftclasses
+{
+     
+    position:relative; 
+    border-style:outset;
+    border-top: 1px outset;
+    border-bottom: 1px outset;
+    border-left: 1px outset;
+    border-right: 1px outset;
+    border-color: #dfdfdf;
+    background: rgba(255, 255, 255,0.6);
+    width: 830px;
+    height:auto;       
+    padding-left: 45px;
+    padding-right: 45px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    float: left;
+}
+
+
+#latest
+{
+    margin-top: 8px;
+    position:relative; 
+    border-style:outset;
+    border-top: 1px outset;
+    border-bottom: 1px outset;
+    border-left: 1px outset;
+    border-right: 1px outset;
+    border-color: #dfdfdf;
+    background: rgba(255, 255, 255,0.6);
+    width: 830px;
+    height:auto;       
+    padding-left: 45px;
+    padding-right: 45px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    float: left;
+}

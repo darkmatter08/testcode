@@ -20,6 +20,7 @@
       <script type="text/javascript" src="static/scroll/jquery.slimscroll.min.js"></script>
       
       <style type="text/css">.CodeMirror {border: 1px solid #dfdfdf; border-bottom: 1px solid #dfdfdf;}</style>              
+               
      
       
      
@@ -84,7 +85,12 @@
               
                <div id="logo">
                   <a href="#home"> <img src="static/logo1.png"> </a>
+                           
+                       
+                    
                   
+                    
+                 
                 </div>
                <div id="topright">
                   
@@ -115,13 +121,7 @@
       
             <div id="prob_tabs">
               
-               <ul class="nav nav-tabs">
-                     <li class="active">
-                           <a href="#">Problem 1</a>
-                     </li>
-                     <li><a href="#">Problem 2</a></li>
-                     <li><a href="#">Problem 3</a></li>
-               </ul>      
+                  
                 
             </div>
             
@@ -132,114 +132,35 @@
         
        <!-- <div id="sep"> </div> -->
         
-        <div id="container">
+        <div id="container1">
                
-                <div id="main" >
-                    
-                    <div id="containertop">
-                        
-                        
-                        <div id="path">
-                            
-                            <ul class="breadcrumb">
-                                <li><a href="#">6.01</a> <span class="divider">/</span></li>
-                                <li><a href="#">Lecture 8</a> <span class="divider">/</span></li>
-                                <li class="active">Centered average</li>
-                            </ul>
-                            
-                        </div>
-                    
-                    
-                        <div id="yourcode">
-                           
-                            <ul class="breadcrumb">
-                                <li>Your code</li>
-                                <div id="subms">
-                                     <button class="btn1" type="button"> <i class="icon-ok icon-chevron-left"></i> Previous</button>
-                                     Submissions
-                                     <button class="btn1" type="button">Next <i class="icon-ok icon-chevron-right"></i></button>
+                <div id="main1" >
+                     <div id="menu1">
+                        <div id="t"> <div class="btn-group in">
+                                        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                                             <i class="icon-list"></i> Your classes
+                                        <span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                               <li><a href="#">6.01</a></li>
+                                               <li><a href="#">6.006</a></li>
+                                        </ul>
+                                         
                                 </div>
-                            </ul>
-                            
-                        </div>
+                                 <div class="btn-group in"> <button class="btn" type="button" id="add-class"><i class="icon-book" ></i> Add class</button> </div>
+                                 <div class="btn-group in"> <button class="btn" type="button" id="create-class"> <i class="icon-pencil"></i> Create class</button> </div>
+                              
+                      </div>    
+                 
+                      </div>     
                         
-                        
-                    </div>
-                    
-                    
-                    <div id="containermain">
-                        
-                        
-                        <div id="container2"> 
-                           <div id="description">   <br/> <p> Return the "centered" average of an array of ints, which we'll say is the mean average of the values, except ignoring the largest and smallest values in the array. If there are multiple copies of the smallest value, ignore just one copy, and likewise for the largest value. Use int division to produce the final average. You may assume that the array is length 3 or more.
-                                           </p>   <br/></div>
-                            
-                            <div id="feed">
-                                <ul class="breadcrumb">
-                                <li>Feedback</li>                               
-                            </ul>                                
-                            </div>
-                            
-                            <div id="feedback">
-                                <br/>
-                                <code>
-                                    
-                                Correct: 2/3 <br/>
-
-                                Test 1: Correct <br/>
-                                Input: <br/>
-                                1 5 6 7 9 <br/>
-                                Output <br/>
-                                6<br/>
-                                
-                                Test 2: Correct<br/>
-                                Input:<br/>
-                                1 2 3<br/>
-                                Output:<br/>
-                                2<br/>
-                                Test 3: Wrong<br/>
-                                Input<br/>
-                                5 5 5<br/>
-                                Your output:<br/>
-                                0<br/>
-                                Correct output:<br/>
-                                5</code>
-                                <br/>   
-                            </div>
-                        </div>
-                    
-                        <div id="container3">
-                        
-                         <div id="textcode"><form><textarea id="code" name="code" cols="120" rows="400" style="background-color: #FFF"></textarea> </form> </div>
-                                  <script>
-                                      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-                                      mode: {name: "python",
-                                      version: 2,
-                                      singleLineStringErrors: false},
-                                      lineNumbers: true,
-                                      indentUnit: 4,
-                                      tabMode: "shift",
-                                      matchBrackets: true
-                                     });
-                                  </script>                                              
-                        </div>
-                        
-                        
-                    </div>
-                    <div id="containerbottom">                         
-                              <div id="save"> 
-                                 <div class="btn-group in"> <button class="btn btn-success" type="button"> <i class="icon-ok icon-white"></i> Save & Run</button> </div>                                
-                                 <div class="btn-group in"> <button class="btn btn-danger" type="button"><i class="icon-refresh icon-white"></i> Reset</button> </div>
-                              </div>
-                        
-                    </div>
                     
                     
                     
                 </div>
               
-        </div>
-        
+                
+         </div>
         
         
         <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
@@ -251,7 +172,7 @@
         <div id="footer">
             
             
-      
+         </div>
             
             
          

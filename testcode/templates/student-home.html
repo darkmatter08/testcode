@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <title> Prob</title>
+      <link href='http://fonts.googleapis.com/css?family=Strait' rel='stylesheet' type='text/css'>
+      <link rel="stylesheet" type="text/css" href="static/text.css" />
+      <link href="static/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+      <script src="http://code.jquery.com/jquery-latest.js"></script>
+      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.js"></script>
+      <script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
+      <script src="http://jqueryui.com/resources/demos/external/jquery.bgiframe-2.1.2.js"></script>
+       <script src="static/bootstrap/js/bootstrap.js"></script>
+      <link rel="stylesheet" href="static/code/lib/codemirror.css">
+      <script src="static/code/lib/codemirror.js"></script>
+      <script src="static/code/lib/matchbrackets.js"></script>
+      <script src="static/code/python.js"></script>
+      <script type="text/javascript" src="static/java.js"></script>
+    <link rel="stylesheet" href="static/j-query.css" />
+      <script type="text/javascript" src="static/scroll/jquery.slimscroll.min.js"></script>
+      
+      <style type="text/css">.CodeMirror {border: 1px solid #dfdfdf; border-bottom: 1px solid #dfdfdf;}</style>              
+               
+     
+      
+     
+      <style>
+         input.text { margin-bottom:5px; width:95%; padding: .4em; }
+         fieldset { padding:0; border:0; margin-top:5px; }
+         h1 { font-size: 1.2em; margin: .6em 0; }
+         .ui-dialog .ui-state-error { padding: .3em; }
+         .validateTips { border: 1px solid transparent; padding: 0.3em; }   
+    </style>
+      
+
+      <script>  $(document).ready(function(){
+            $("#description").slimScroll({
+                height: '247px'
+                })
+            $("#feedback").slimScroll({
+                height: '300px'
+                })
+      });
+            </script>
+  
+  </head>
+  <body>
+                
+        <div id="dialog-formaddclass" title="Add class">
+ 
+             <form>
+                <fieldset>
+                    <label for="name">Class ID</label>
+                    <input type="text" name="email" id="idclass" class="text ui-widget-content ui-corner-all" />
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="passwordclass1" value="" class="text ui-widget-content ui-corner-all" />
+                </fieldset>
+            </form>
+        </div>
+    
+    
+    
+         <div id="heading">
+           
+            <div id="headt">
+              
+               <div id="logo">
+                  <a href="#home"> <img src="static/logo1.png"> </a>
+                           
+                       
+                    
+                  
+                    
+                 
+                </div>
+               <div id="topright">
+                  
+                    <div class="navbar smalle">
+                        <div class="navbar-inner">
+                               <a class="brand" href="#">Hi, Andrei Ivanov</a>
+                         </div>
+                        </div>
+                               <ul class="nav">
+                                     <div class="btn-group in"><button class="btn" type="button"><i class="icon-home"></i> Home</button></div>
+                                     <div class="btn-group in"><button class="btn" type="button"><i class="icon-user"></i>  Account</button></div>
+                                     <div class="btn-group in"> <button class="btn" type="button" id="logout"><i class="icon-off"></i> Logout</button></div>
+                                   
+                               </ul>
+                 
+                   
+             
+               </div>
+              
+         </div>   
+        </div>
+        
+        <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
+        <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
+         <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
+        <div id="cont1">
+             
+      
+            <div id="prob_tabs">
+              
+                  
+                
+            </div>
+            
+            
+        </div>
+        
+        
+        
+       <!-- <div id="sep"> </div> -->
+        
+        <div id="container1">
+               
+                <div id="leftclasses" >
+                      
+                      
+                    <div id="classes">
+                        
+                        <ul class="breadcrumb" id="rightm">
+                            <li>Your classes                            
+                           <div class="btn-group in" id="rightm"> <button class="btn add-classstudent" type="button" id="add-class" ><i class="icon-book" ></i> Add class</button> </div></li>                               
+                           
+                        </ul>
+                        
+                    </div>
+                    
+                    <div id="listclass">
+                        
+                        <ul class="nav nav-tabs nav-stacked">
+                            <li><a href="#">6.01 Introduction to EECS I</a></li>
+                            <li><a href="#">6.006 Introduction to Algorithms</a></li>
+                        </ul>
+                            
+                    </div>
+                    
+                     <div id="rightclass">
+                         <table border="0" id="problemstable">
+                             <tr>                                 
+                                 <td>4 problems</td>
+                                 <td style="color:red; font-weight: 800">2 unsolved problems</td>
+                            </tr>
+                            <tr>                                 
+                                 <td>0 problems</td>
+                                 <td>0 unsolved problems</td>
+                            </tr>
+                         </table>
+                            
+                     </div>
+                   
+                 </div>     
+                                
+                 <div id="latest" >
+                
+                      <table border="0" id="latesttable">
+                             <tr>
+                                 <td>
+                                        <ul class="breadcrumb" >
+                                        <li>Latest problems</li></ul>
+                                 </td>
+                                 <td>
+                                        <ul class="breadcrumb" >
+                                        <li>Latest activity</li></ul>
+                                 </td>
+                                 <td>
+                                        <ul class="breadcrumb" >
+                                        <li>Unsolved problems</li></ul>
+                                 </td>
+                            </tr>
+                            <tr>                                 
+                                 <td >
+                                       <ul class="inlatest">
+                                        <li class="tall"> <a href="#">6.01/Centered average </a></li>
+                                         <li class="tall"> <a href="#">6.01/Total sum </a></li>
+                                         <li class="tall"> <a href="#">6.01/Integer sequence </a></li>
+                                         <li class="tall"> <a href="#">6.01/Smart robot </a></li>
+                                      </ul>
+                                 </td>
+                                 <td>
+                                        <ul class="inlatest">
+                                        <li class="tall"> <a href="#">6.01/Centered average </a></li>
+                                        <li class="tall"> <a href="#">6.01/Total sum </a></li>
+                                        <li class="tall"> <a href="#">6.01/Integer sequence </a></li>
+                                      </ul>
+                                 </td>
+                                 <td>
+                                        <ul class="inlatest">
+                                        
+                                         <li class="tall"> <a href="#">6.01/Integer sequence </a></li>
+                                         <li class="tall"> <a href="#">6.01/Smart robot </a></li>
+                                        
+                                      </ul>
+                                 </td>
+                            </tr>
+                            
+                         </table>
+                
+                 </div>   
+                    
+                    
+              
+              
+                
+         </div>
+        
+        
+        <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
+        <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
+         <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
+        
+        
+        
+        <div id="footer">
+            
+            
+         </div>
+            
+            
+         
+         
+        
+    
+  </body>
+  
+</html>
+    

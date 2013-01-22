@@ -20,6 +20,7 @@
       <script type="text/javascript" src="static/scroll/jquery.slimscroll.min.js"></script>
       
       <style type="text/css">.CodeMirror {border: 1px solid #dfdfdf; border-bottom: 1px solid #dfdfdf;}</style>              
+               
      
       
      
@@ -84,7 +85,12 @@
               
                <div id="logo">
                   <a href="#home"> <img src="static/logo1.png"> </a>
+                           
+                       
+                    
                   
+                    
+                 
                 </div>
                <div id="topright">
                   
@@ -115,13 +121,7 @@
       
             <div id="prob_tabs">
               
-               <ul class="nav nav-tabs">
-                     <li class="active">
-                           <a href="#">Problem 1</a>
-                     </li>
-                     <li><a href="#">Problem 2</a></li>
-                     <li><a href="#">Problem 3</a></li>
-               </ul>      
+                  
                 
             </div>
             
@@ -130,116 +130,103 @@
         
         
         
-       <!-- <div id="sep"> </div> -->
-        
-        <div id="container">
+       <!-- <div id="sep"> </div> -->        
+                                 
+             
+        <div id="container1">
                
-                <div id="main" >
-                    
-                    <div id="containertop">
+                <div id="leftclasses" >
+                      
+                      
+                    <div id="classes">
                         
-                        
-                        <div id="path">
-                            
-                            <ul class="breadcrumb">
-                                <li><a href="#">6.01</a> <span class="divider">/</span></li>
-                                <li><a href="#">Lecture 8</a> <span class="divider">/</span></li>
-                                <li class="active">Centered average</li>
-                            </ul>
-                            
-                        </div>
-                    
-                    
-                        <div id="yourcode">
-                           
-                            <ul class="breadcrumb">
-                                <li>Your code</li>
-                                <div id="subms">
-                                     <button class="btn1" type="button"> <i class="icon-ok icon-chevron-left"></i> Previous</button>
-                                     Submissions
-                                     <button class="btn1" type="button">Next <i class="icon-ok icon-chevron-right"></i></button>
-                                </div>
-                            </ul>
-                            
-                        </div>
-                        
+                        <ul class="breadcrumb" id="rightm">
+                            <li>Your classes                            
+                           <div class="btn-group in" id="rightm"> <button class="btn add-classteacher" type="button" id="add-class" ><i class="icon-book" ></i> Add class</button> </div></li>                               
+                           <div class="btn-group in"> <button class="btn create-classteacher" type="button" id="create-class"> <i class="icon-pencil"></i> Create class</button> </div>
+                        </ul>
                         
                     </div>
                     
+                    <div id="listclass">
+                        
+                        <ul class="nav nav-tabs nav-stacked">
+                            <li><a href="#">6.01 Introduction to EECS I</a></li>
+                            <li><a href="#">6.006 Introduction to Algorithms</a></li>
+                        </ul>
+                            
+                    </div>
                     
-                    <div id="containermain">
-                        
-                        
-                        <div id="container2"> 
-                           <div id="description">   <br/> <p> Return the "centered" average of an array of ints, which we'll say is the mean average of the values, except ignoring the largest and smallest values in the array. If there are multiple copies of the smallest value, ignore just one copy, and likewise for the largest value. Use int division to produce the final average. You may assume that the array is length 3 or more.
-                                           </p>   <br/></div>
+                     <div id="rightclass">
+                         <table border="0" id="problemstable">
+                             <tr>                                 
+                                 <td>1 lecture</td>
+                                 <td >4 problems</td>
+                                 <td >45 users</td>
+                            </tr>
+                            <tr>                                 
+                                 <td>0 lectures</td>
+                                 <td>0 problems</td>
+                                 <td >10 users</td>
+                            </tr>
+                         </table>
                             
-                            <div id="feed">
-                                <ul class="breadcrumb">
-                                <li>Feedback</li>                               
-                            </ul>                                
-                            </div>
-                            
-                            <div id="feedback">
-                                <br/>
-                                <code>
-                                    
-                                Correct: 2/3 <br/>
-
-                                Test 1: Correct <br/>
-                                Input: <br/>
-                                1 5 6 7 9 <br/>
-                                Output <br/>
-                                6<br/>
+                     </div>
+                   
+                 </div>     
                                 
-                                Test 2: Correct<br/>
-                                Input:<br/>
-                                1 2 3<br/>
-                                Output:<br/>
-                                2<br/>
-                                Test 3: Wrong<br/>
-                                Input<br/>
-                                5 5 5<br/>
-                                Your output:<br/>
-                                0<br/>
-                                Correct output:<br/>
-                                5</code>
-                                <br/>   
-                            </div>
-                        </div>
+                 <div id="latest" >
+                
+                      <table border="0" id="latesttable">
+                             <tr>
+                                 <td>
+                                        <ul class="breadcrumb" >
+                                        <li>Latest problems</li></ul>
+                                 </td>
+                                 <td>
+                                        <ul class="breadcrumb" >
+                                        <li>Latest activity</li></ul>
+                                 </td>
+                                 <td>
+                                        <ul class="breadcrumb" >
+                                        <li>Unsolved problems</li></ul>
+                                 </td>
+                            </tr>
+                            <tr>                                 
+                                 <td >
+                                       <ul class="inlatest">
+                                        <li class="tall"> <a href="#">6.01/Centered average </a></li>
+                                         <li class="tall"> <a href="#">6.01/Total sum </a></li>
+                                         <li class="tall"> <a href="#">6.01/Integer sequence </a></li>
+                                         <li class="tall"> <a href="#">6.01/Smart robot </a></li>
+                                      </ul>
+                                 </td>
+                                 <td>
+                                        <ul class="inlatest">
+                                        <li class="tall"> <a href="#">6.01/Centered average </a></li>
+                                        <li class="tall"> <a href="#">6.01/Total sum </a></li>
+                                        <li class="tall"> <a href="#">6.01/Integer sequence </a></li>
+                                      </ul>
+                                 </td>
+                                 <td>
+                                        <ul class="inlatest">
+                                        
+                                         <li class="tall"> <a href="#">6.01/Integer sequence </a></li>
+                                         <li class="tall"> <a href="#">6.01/Smart robot </a></li>
+                                        
+                                      </ul>
+                                 </td>
+                            </tr>
+                            
+                         </table>
+                
+                 </div>   
                     
-                        <div id="container3">
-                        
-                         <div id="textcode"><form><textarea id="code" name="code" cols="120" rows="400" style="background-color: #FFF"></textarea> </form> </div>
-                                  <script>
-                                      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-                                      mode: {name: "python",
-                                      version: 2,
-                                      singleLineStringErrors: false},
-                                      lineNumbers: true,
-                                      indentUnit: 4,
-                                      tabMode: "shift",
-                                      matchBrackets: true
-                                     });
-                                  </script>                                              
-                        </div>
-                        
-                        
-                    </div>
-                    <div id="containerbottom">                         
-                              <div id="save"> 
-                                 <div class="btn-group in"> <button class="btn btn-success" type="button"> <i class="icon-ok icon-white"></i> Save & Run</button> </div>                                
-                                 <div class="btn-group in"> <button class="btn btn-danger" type="button"><i class="icon-refresh icon-white"></i> Reset</button> </div>
-                              </div>
-                        
-                    </div>
                     
-                    
-                    
-                </div>
               
-        </div>
-        
+              
+                
+         </div>
         
         
         <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
@@ -251,7 +238,7 @@
         <div id="footer">
             
             
-      
+         </div>
             
             
          

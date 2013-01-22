@@ -71,28 +71,29 @@ def submit(request):
 # This is an API function that verifies the user and sends them to the student page. 
 # It forwards to the student or teacher homepage depending on the type of user.
 def login(request):
-	error = ""
+	error = "POST not sent"
 	#return HttpResponse(User.objects.filter(email=request.POST["email"])[0])
 	# Load POST data and read in email and password
 	if ("email" in request.POST) and ("password" in request.POST):
-		# Match to entry in database
-		match = User.objects.filter(email=request.POST["email"])[0]
-		if match.password == request.POST["password"]: #password and email match
-			# Set session user_id var
-			request.session["user_id"] = match.user_id
-			# check if user.isAdmin, if so, forward to teacher page
-			if match.isAdmin:
-				# Forward to teacher page, load with session
-				return HttpResponseRedirect('teacher/')
-			# else the user is student, forward to student page
+		# Attempt to match to entry in database
+		if len(User.objects.filter(email=request.POST["email"])) > 0:
+			match = User.objects.filter(email=request.POST["email"])[0]
+			if match.password == request.POST["password"]: #password and email match
+				# Set session user_id var
+				request.session["user_id"] = match.user_id
+				# check if user.isAdmin, if so, forward to teacher page
+				if match.isAdmin:
+					# Forward to teacher page, load with session
+					return HttpResponseRedirect('teacher/')
+				# else the user is student, forward to student page
+				else:
+					# Forward to student page, load with session
+					return HttpResponseRedirect('student/')
+			# otherwise create json function with the error string
 			else:
-				# Forward to student page, load with session
-				return HttpResponseRedirect('student/')
-		# otherwise create json function with the error string
+				error = "Wrong password."
 		else:
-			error = "Wrong password."
-	else:
-		error = "No email match found."
+			error = "No email match found."
 
 	# Serialize to JSON and return error 
 	errorJsonDict = {}
@@ -105,7 +106,7 @@ def login(request):
 # will prompt user for further action
 def signup(request):
 	isOkay = True
-	error = ""
+	error = "Sign up successful!"
 	# Load POST data and read in name, email, password, and isAdmin
 	if ("name" in request.POST) and ("email" in request.POST) and ("password" in request.POST) and ("isAdmin" in request.POST):
 		# Check for matching email addresses in the database. If the returned array is 0 length,
@@ -114,7 +115,7 @@ def signup(request):
 		email = request.POST["email"]
 		password = request.POST["password"]
 		isAdmin = request.POST["isAdmin"]
-		if User.objects.filter(email=request.POST["email"]).len == 0: # no matching email found
+		if len(User.objects.filter(email=request.POST["email"])) == 0: # no matching email found
 			# IMPLEMENT: Validate other fields
 			newMember = User(name=name, email=email, password=password, isAdmin=isAdmin)
 			newMember.save()
