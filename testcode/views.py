@@ -35,12 +35,13 @@ def student(request):
 	# If no match, redirect to homepage.
 	except User.DoesNotExist:
 		return HttpResponseRedirect('')
+	print "USER=" + str(currentUser)
 	t = get_template("student-home.html")
 	# Set context based on user
 	# Use Request Context for pages that load with a CSRF token
-	rc = RequestContext(request, {"user": currentUser, "results": "Nothing Submitted!"})
+	#rc = RequestContext(request, {"user": currentUser, "results": "Nothing Submitted!"}) #doesn't work with template
+	rc = Context({"user": currentUser, "results": "Nothing Submitted!"})
 	html = t.render(rc)
-	print html
 	return HttpResponse(html)
 
 # This is the teeacher navigation page
@@ -155,7 +156,7 @@ def signup(request):
 	errorJsonDict["error"] = error
 	errorJsonDict["isOkay"] = isOkay
 	errorJson = simplejson.dumps(errorJsonDict)
-	print errorJson
+	#print errorJson
 	return HttpResponse(errorJson, content_type="application/json")
 
 # This is an API function that logs out a current user by deleting their session.
