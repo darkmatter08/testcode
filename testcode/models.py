@@ -19,25 +19,28 @@ class Course(models.Model):
 	course_id = models.AutoField(primary_key=True)
 	# corresponds to MIT course number, dropping '.'
 	course_number = models.IntegerField()
-	# implement course password later
-	
+	# Course password for admin
+	admin_password = models.CharField(max_length=30)
+	# Course password for student
+	student_password = models.CharField(max_length=30)
 	# Describes the object when it is called from the DB
 	def __unicode__(self):
 		return str(self.course_number)
 
-class Student(models.Model):
+class User(models.Model):
 	# custom primary key, via auto incrementing field
-	student_id = models.AutoField(primary_key=True)
+	user_id = models.AutoField(primary_key=True)
 	name = models.CharField(max_length=30)
 	password = models.CharField(max_length=30)
-	email = models.EmailField()
+	email = models.EmailField(unique=True) #should be unique on the column
+	isAdmin = models.BooleanField()
 
 	# Many to many relationship with course via enrollment
 	course = models.ManyToManyField(Course, through='Enrollment')
 
 	# Describes the object when it is called from the DB
 	def __unicode__(self):
-		return self.name
+		return "name="+self.name+" user_id="+str(user_id)
 
 class Lecture(models.Model):
 	# custom primary key, via auto incrementing field
@@ -65,7 +68,7 @@ class Enrollment(models.Model):
 	# custom primary key, via auto incrementing field
 	enrollment_id = models.AutoField(primary_key=True)
 	enrollmentDate = models.CharField(max_length=100)
-	student = models.ForeignKey(Student)
+	user = models.ForeignKey(User)
 	course = models.ForeignKey(Course)
 	# Many to Many Relationship with problems via submission
 	problem = models.ManyToManyField(Problem, through='Submission')
