@@ -196,20 +196,12 @@ $.ajaxSetup({
                       email:email.val(),
                       password:password.val(),                  
            },
-           function(data){                     
+           function(data){
+                     alert=(JSON.stringify(data))
                      var result = jQuery.parseJSON(JSON.stringify(data))
-                     var isOkay=result.isOkay;
-                     var message = result.error;
-                     var url= result.url;
-                     if (isOkay == true)
-                     {
-                      $(location).attr('href',url);
-                     }
-                     else
-                     {
+                     var message = result.error
                      color = "red";
                      $("#login_message_box").html("<span style='color:"+color+"'>"+message+"</span>")
-                     }
            }
            
           )

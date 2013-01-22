@@ -33,8 +33,8 @@ urlpatterns = patterns('',
     url(r'^teacher/$', views.teacher),
 
     # API urls to interact with backend
-    url(r'^api/login/$', views.login),
-    url(r'^api/logout/$', views.logout),
-    url(r'^api/signup/$', views.signup),
-    url(r'^api/submit/$', views.submit),
+    url(r'^api/login$', views.login),
+    url(r'^api/logout$', views.logout),
+    url(r'^api/signup$', views.signup),
+    url(r'^api/submit$', views.submit),
 )

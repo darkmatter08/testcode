@@ -40,7 +40,7 @@ class User(models.Model):
 
 	# Describes the object when it is called from the DB
 	def __unicode__(self):
-		return "name="+self.name+" user_id="+str(user_id)
+		return "name="+self.name+" user_id="+str(self.user_id)
 
 class Lecture(models.Model):
 	# custom primary key, via auto incrementing field

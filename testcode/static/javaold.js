@@ -109,34 +109,33 @@ $.ajaxSetup({
         "Create an account": function() {         
           allFields.removeClass( "ui-state-error" );
 
-                 
-          $.post('api/signup',
+                     
+           $.getJSON('api/signup',
                       {
                       name:name.val(),
                       email:email.val(),
                       password:password.val(),
                       isAdmin:ifAdmin
                       },
-           function(data){                    
-                     var result = jQuery.parseJSON(JSON.stringify(data))
+           function(data){
+                     var result = jQuery.parseJSON(data)
                      var status = result.isOkay
-                     var message = result.error                     
-                     if (status==false)
+                     var message = result.message
+                     if (status)
                         {
                         color = "red";
                                  
                         }
                     else
                        { color = "green"
-                        setTimeout(function(){$("#dialog-form").dialog( "close" )},400);
+                        setTimeout(function(){$("#dialog-form").dialog( "close" )},300);
                         //$(".alert").alert(message);
                         }
                    $("#signup_message_box").html("<span style='color:"+color+"'>"+message+"</span>")
-           },
-           "json"
+           }
            
-          )
-                 
+          ),           
+          $( this ).dialog( "close" );          
         },
         Cancel: function() {
           $( this ).dialog( "close" );
@@ -196,25 +195,16 @@ $.ajaxSetup({
                       email:email.val(),
                       password:password.val(),                  
            },
-           function(data){                     
-                     var result = jQuery.parseJSON(JSON.stringify(data))
-                     var isOkay=result.isOkay;
-                     var message = result.error;
-                     var url= result.url;
-                     if (isOkay == true)
-                     {
-                      $(location).attr('href',url);
-                     }
-                     else
-                     {
+           function(data){
+                     var result = jQuery.parseJSON(data)
+                     var message = result.message
                      color = "red";
                      $("#login_message_box").html("<span style='color:"+color+"'>"+message+"</span>")
-                     }
            }
            
           )
           
-            
+            $( this ).dialog( "close" );
           
         },
         Cancel: function() {
