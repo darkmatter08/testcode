@@ -44,5 +44,4 @@ urlpatterns = patterns('',
     url(r'^api/createcourse$', views.createcourse),
     url(r'^api/addcourse$', views.addcourse),
     url(r'^api/getlectures$', views.getlectures),
-    url(r'^api/createlecture$', views.createlecture),
 )

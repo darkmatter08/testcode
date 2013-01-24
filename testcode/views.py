@@ -313,14 +313,6 @@ def addcourse(request):
 	Json = simplejson.dumps(JsonDict)
 	return HttpResponse(Json, content_type="application/json")
 
-# This is an API function that allows a teacher to add a Lecture to a class. Read in the POST
-# request with course_id. 
-def createlecture(request):
-	user_id = request.session["user_id"]
-	if ("course_id" in request.POST) and ("name" in request.POST):
-		course_id = request.POST["course_id"]
-		name = request.POST["name"]
-		newLecture = Lecture()
 def edit(request, offset):
 	return HttpResponse("")
 ###
