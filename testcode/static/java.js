@@ -247,49 +247,7 @@ $.ajaxSetup({
     /* /////////////////// */
     /* /////////////////// */
   
-  
-   $(function() { 
-  var name = $( "#nameclass" ),
-      password = $( "#passwordclass" ),
-      allFields = $( [] ).add( name ).add( password ),
-      tips = $( ".validateTips" );
- 
 
-  
- 
-    $( "#dialog-formclass" ).dialog({
-      autoOpen: false,
-      height: 255,
-      width: 450,
-      modal: true,
-      buttons: {
-        "Create a class": function() {
-         
-          var bValid = true;        
-           if ( bValid ) {      
-                      
-          
-            $( this ).dialog( "close" );
-          }
-        },
-        Cancel: function() {
-          $( this ).dialog( "close" );
-        }
-      },
-      close: function() {
-        allFields.val( "" ).removeClass( "ui-state-error" );
-      }
-    });
- 
-    $( "#create-class" )
-      .button()
-      .click(function() {
-        $( "#dialog-formclass" ).dialog( "open" );
-      });
-
-   }); 
-  
-  
     /* /////////////////// */
     /* /////////////////// */
     /* /////////////////// */
@@ -300,7 +258,7 @@ $.ajaxSetup({
     /* /////////////////// */
     /* /////////////////// */
   
-  
+  /*
    $(function() { 
   var name = $( "#idlass" ),
       password = $( "#passwordclass1" ),
@@ -339,4 +297,4 @@ $.ajaxSetup({
       });
   });
   
-  
+  */

@@ -364,6 +364,10 @@ width:270px;
     
 }
 
+.empty
+{color: #B5B5B5;
+}
+
 
 #rightm
 {
@@ -378,7 +382,7 @@ width:270px;
 
 .add-classteacher
 {
-  margin-left:410px; 
+  margin-left:325px; 
   margin-top: -5px;
 }
 .create-classteacher

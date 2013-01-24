@@ -10,8 +10,8 @@ from django.conf.urls import patterns, include, url
 from testcode import views
 
 # Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
+from django.contrib import admin
+admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
@@ -22,7 +22,7 @@ urlpatterns = patterns('',
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
     
     # Login page
     url(r'^$', views.home),
@@ -35,6 +35,10 @@ urlpatterns = patterns('',
     # API urls to interact with backend
     url(r'^api/login$', views.login),
     url(r'^api/logout$', views.logout),
+    url(r'^teacher/api/logout$', views.logout), #Because jQuery isn't working!
     url(r'^api/signup$', views.signup),
     url(r'^api/submit$', views.submit),
+    url(r'^api/createcourse$', views.createcourse),
+    url(r'^api/addcourse$', views.addcourse),
+    url(r'^api/getlectures$', views.getlectures),
 )
