@@ -55,16 +55,10 @@ $.ajaxSetup({
     /* /////////////////// */
     
   $(function() {
-    var name = $( "#name" ),
-        email = $( "#email" ),
-        password = $( "#password" ),          
-        ifAdmin=false;
-        
-        $('input[name=q1]').click(function(){
-            if($(this).val()=="t"){
-              ifAdmin=true;
-              };             
-           } );
+    var name = $( "#name" )
+    var  email = $( "#email" )
+    var  password = $( "#password" )      
+   
         
         allFields = $( [] ).add( name ).add( email ).add( password ),
         tips = $( ".validateTips" );
@@ -108,8 +102,9 @@ $.ajaxSetup({
       buttons: {
         "Create an account": function() {         
           allFields.removeClass( "ui-state-error" );
-
-                 
+            
+     var ifAdmin=$("input:radio[name='q1']:checked").val()
+                
           $.post('api/signup',
                       {
                       name:name.val(),
@@ -170,8 +165,9 @@ $.ajaxSetup({
       $( "#logout" )
       .button()
       .click(function() {
-        $.post ("api/logout")
-      });
+        $.post ("/api/logout",
+          function(data) {$location.attr('href', "/")})
+      })
      });
   
    $(function() { 

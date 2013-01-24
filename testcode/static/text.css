@@ -4,7 +4,7 @@ body {
       background-position: center;
       padding: 0px;
       margin: 0px;
-      font-family: 'Strait', sans-serif; 
+      font-family: 'Arial', sans-serif; 
       }
 #heading
        {
@@ -24,6 +24,12 @@ body {
         height: 100%;
         
     }
+#createlecture
+{
+  position: fixed;
+  margin-left: 600px; 
+  margin-top: 10px;
+}
       
 #logo
    {position: relative;
@@ -49,7 +55,7 @@ body {
     float: right;
     color: white;
     padding-top: 22px;
-    width:290px;
+    width:305px;
     height:80px;
  }
  
@@ -58,7 +64,7 @@ body {
     float: right;
     color: white;
     padding-top: 11px;
-    width:290px;
+    width:305px;
     height:80px;
  }
  
@@ -376,7 +382,7 @@ width:270px;
 
 .add-classstudent
 {
-  margin-left:600px; 
+  margin-left:560px; 
   margin-top: -5px;
 }
 
@@ -387,7 +393,7 @@ width:270px;
 }
 .create-classteacher
 {
-  margin-left:495px; 
+  margin-left:480px; 
   margin-top: -5px;
 }
 

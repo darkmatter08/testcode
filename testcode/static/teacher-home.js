@@ -1,5 +1,6 @@
 
-       
+ /*$(function(){ $("#create-lecture").hide() }); */
+
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
@@ -44,11 +45,7 @@ $.ajaxSetup({
     }
    });
 
-$("#logout" )
-      .button(function() {
-        $(location).attr('href', "/api/logout");      
-      });
-      
+
       
 $("#homelink" )
       .button()
@@ -112,10 +109,10 @@ $("#homelink" )
                     else
                        { color = "green"
                         
-                        setTimeout(function(){$("#dialog-formclass").dialog( "close" )}, 400);
+                        setTimeout(function(){$("#dialog-formclass").dialog( "close" )
                         $("#shit").remove();
                         $("#classlist").prepend("<li id="+id+" class='classlinks'><a href='#''>"+name+"</a></li>");
-                        $("#problemstable").prepend("<tr><td> 0 lectures</td><td >0 problems</td><td >0 students</td></tr>");
+                        $("#problemstable").prepend("<tr><td> 0 lectures</td><td >0 problems</td><td >0 students</td></tr>")}, 400);
                             
                         }
                    $("#create_message_box").html("<span style='color:"+color+"'>"+error+"</span>")
@@ -143,6 +140,7 @@ $("#homelink" )
   
     });
 
+var courseid;
 /* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
 /* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
 /* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
@@ -150,23 +148,34 @@ $("#homelink" )
 
      {
      $(".classlinks").click
-        ( 
+    ( 
            function(){
+            courseid=$(this).attr('id');         
             $.post('/api/getlectures',
                  {
-                  course_id:$(this).attr('id')
+                  course_id:courseid
                  },
                  function(data){
                    var result = jQuery.parseJSON(JSON.stringify(data))
                    var number= result.num_lectures;
                    var lecture_name= result.lecture_name;
-                   var lecture_id=result.lecture_id;                   
+                   var lecture_id=result.lecture_id;    
                    $("#latest").hide("slide", { direction: "up" }, 500);
-                    setTimeout(function(){$("#latest").html('<span style="-webkit-column-count:3"><ul class="nav nav-tabs nav-stacked" id="lecturelist"></ul></span>')
+                    setTimeout(
+                      function(){
+                        $("#latest").html('<ul class="breadcrumb" id="rightm"><li > <span style="font-weight:900">Your lectures &nbsp &nbsp &nbsp &nbsp  </span>  <div class="btn-group in" id="forbutton"> <button class="btn create-classteacher" type="button" id="create-lecture"> <i class="icon-pencil"></i> Create a lecture</button> </div> <div id="forerror"> </div> </ul><span style="-webkit-column-count:3"><ul class="nav nav-tabs nav-stacked" id="lecturelist"></ul></span>')
+                          if (number==0) 
+                            {
+                                  $("#forerror").html("<p class='empty'> This class has no lectures. You can create one</p>");
+                            }  
+                   else
+                   {                  
+
                    for (var i = 0; i < number; i++) 
                     {
                       $("#lecturelist").append("<li id="+lecture_id[i]+" class='lectures'><a href='#''>"+lecture_name[i]+"</a></li>");
                     }
+                  }
                    $("#latest").show("slide", { direction: "up" }, 500)},500);
                  }
 
@@ -176,6 +185,73 @@ $("#homelink" )
      }
   );
 
+
+/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
+/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
+/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
+
+ $(function() {
+    var name = $( "#lecturename" ),
+         
+        allFields = $( [] ).add( lecturename )
+        tips = $( ".validateTips" );    
+    
+ 
+    $( "#dialog-formlecture" ).dialog({
+      autoOpen: false,
+      height: 220,
+      width: 450,
+      modal: true,
+      buttons: {
+          "Create a lecture": function() {         
+          allFields.removeClass( "ui-state-error" );                       
+          $.post('/api/createlecture',
+                      {
+                      name:name.val(), 
+                      course_id:courseid                   
+                      },
+           function(data){                    
+                     var result = jQuery.parseJSON(JSON.stringify(data))
+                     var isOkay = result.isOkay
+                     var error = result.error
+                     var name= result.name
+                     var id= result.lecture_id
+                     if (isOkay==false)
+                        {
+                        color = "red";
+                                 
+                        }
+                    else
+                       { color = "green"                        
+                        setTimeout(function(){
+                              $("#dialog-formlecture").dialog( "close" )
+                              $("#forerror").remove();
+                              $("#lecturelist").prepend("<li id="+id+" class='lecturelinks'><a href='#''>"+name+"</a></li>")
+                       }, 400)
+                            
+                        }
+                   $("#createlecture_message_box").html("<span style='color:"+color+"'>"+error+"</span>")
+           },
+           "json"
+           
+          )
+                 
+        },
+        Cancel: function() {
+          $( this ).dialog( "close" );
+                           }
+        },
+      close: function() {
+        allFields.val( "" ).removeClass( "ui-state-error" );
+      }
+    });
+ 
+    $(document).on("click","#create-lecture",function(){
+        $( "#dialog-formlecture" ).dialog( "open" );
+      });
+
+  
+    });
 /* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
 /* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
 /* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */

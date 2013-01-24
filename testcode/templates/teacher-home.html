@@ -2,7 +2,7 @@
 <html>
   <head>
       <title> Prob</title>
-      <link href='http://fonts.googleapis.com/css?family=Strait' rel='stylesheet' type='text/css'>
+      <!--<link href='http://fonts.googleapis.com/css?family=Strait' rel='stylesheet' type='text/css'> -->
       <link rel="stylesheet" type="text/css" href="/static/text.css" />
       <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
       <script src="http://code.jquery.com/jquery-latest.js"></script>
@@ -65,7 +65,20 @@
              
              
              
-        </div>
+  </div>
+
+  <div id="dialog-formlecture" title="Create a lecture">
+     <p class="validateTips" id="createlecture_message_box"></p>
+             <form>
+                <fieldset>
+                    <label for="name">Lecture name </label>
+                    <input type="text" name="email" id="lecturename" class="text ui-widget-content ui-corner-all" />                                   
+                </fieldset>
+            </form>
+             
+             
+             
+  </div>
         
    <!--     
         <div id="dialog-formaddclass" title="Add class">
@@ -131,15 +144,13 @@
             
         </div>
         
-        
+     
         
        <!-- <div id="sep"> </div> -->        
                                  
              
         <div id="container1">
-               
-                <div id="leftclasses" >
-                      
+               <div id="leftclasses" >
                       
                     <div id="classes">
                         
@@ -199,7 +210,7 @@
                  </div>     
                                 
                  <div id="latest" >
-                
+                    
                       <table border="0" id="latesttable">
                              <tr>
                                  <td>

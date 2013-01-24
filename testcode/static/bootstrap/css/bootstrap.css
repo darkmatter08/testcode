@@ -223,9 +223,9 @@ textarea {
 
 body {
   margin: 0;
-  font-family: 'Strait', sans-serif;
+  font-family: 'Arial', sans-serif;
   font-size: 15px;
-  line-height: 17px;
+  line-height: 16px;
   color: #333333;
   background-color: #ffffff;
 }
@@ -3141,13 +3141,13 @@ button.close {
 }
 
 .btn {
-  font-family:'Strait', sans-serif;
+  font-family:'Arial', sans-serif;
   display: inline-block;
   *display: inline;
   padding: 3px 12px;
   margin-bottom: 0;
   *margin-left: .3em;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 20px;
   color: #333333;
   text-align: center;
@@ -3174,13 +3174,13 @@ button.close {
 
 .btn1 {
    margin-top:-4px;
-  font-family:'Strait', sans-serif;
+  font-family:'Arial', sans-serif;
   display: inline;
   *display: inline;
   padding: 1px 9px;
   margin-bottom: 0;
   *margin-left: .3em;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 20px;
   color: #333333;
   text-align: center;
@@ -3644,7 +3644,7 @@ input[type="submit"].btn.btn-mini {
 .btn-group > .btn,
 .btn-group > .dropdown-menu,
 .btn-group > .popover {
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .btn-group > .btn-mini {

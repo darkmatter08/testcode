@@ -26,12 +26,15 @@ min_pwd_len = 3
 # This is the homepage with login 
 def home(request):
 	t = get_template("index.html")
-	html = t.render(RequestContext(request, {}))
+	html = t.render(Context({}))#RequestContext(request, {}))
 	return HttpResponse(html)
 
 # Student and teacher homepage could be merged, template selected using currentUser.isAdmin
 
 # This is the student navigation page
+# Context vars should be courses, lectures, # problems / course, # unsolved problems / course
+# problems is "key" in the dict, unsolved problems is the "value" in the dict. Problem is unsolved if there is
+# no associated submission.
 def student(request):
 	# Load user_id with session, match to user, set context based on user
 	user_id = request.session["user_id"]
@@ -51,7 +54,13 @@ def student(request):
 	if len(enrollments) == 0:
 		isNewUser = True
 	for enrollment in enrollments:
-		courses.append(Course.objects.get(course_id=enrollment.course)) # May throw an error if not found
+		courses.append(enrollment.course) # May throw an error if not found
+	problems = {}
+#	for thisCourse in courses:
+#		for lectures in thisCourse:
+#			for thisLecture in lectures 
+#				for problem in Problem.objects.filter(lecture=thisLecture):
+#					problems[""]
 	# Use Request Context for pages that load with a CSRF token
 	#rc = RequestContext(request, {"user": currentUser, "results": "Nothing Submitted!"}) #doesn't work with template
 	rc = Context({"user": currentUser, "isNewUser": isNewUser, "courses": courses, "problems": problems})
@@ -77,11 +86,15 @@ def teacher(request):
 		isNewUser = True
 	for enrollment in enrollments:
 		courses.append(Course.objects.get(course_id=enrollment.course.course_id)) # May throw an error if not found
-
+	# Create an array of number of lectures, each array element corresponding to the number of lectures in the maching element
+	# in the courses queryset. Get length of each queryset via {{some_queryset.count}}
+	lectures = []
+	#for course in courses
+	#	lectures.append(Lecture.objects.filter(course=course))
 	# Add stuff for problems. 
 	# Use Request Context for pages that load with a CSRF token
 	#rc = RequestContext(request, {"user": currentUser, "results": "Nothing Submitted!"})
-	rc = Context({"user": currentUser, "isNewUser": isNewUser, "courses": courses})
+	rc = Context({"user": currentUser, "isNewUser": isNewUser, "courses": courses, "lectures": lectures})
 	html = t.render(rc)
 	return HttpResponse(html)
 
@@ -150,7 +163,7 @@ def login(request):
 def signup(request):
 	isOkay = True
 	error = "Sign up successful!"
-	#print request.POST
+	print request.POST
 	# Load POST data and read in name, email, password, and isAdmin
 	if ("name" in request.POST) and ("email" in request.POST) and ("password" in request.POST) and ("isAdmin" in request.POST):
 		# Check for matching email addresses in the database. If the returned array is 0 length,
@@ -158,8 +171,15 @@ def signup(request):
 		name = request.POST["name"]
 		email = request.POST["email"]
 		password = request.POST["password"]
-		isAdmin = request.POST["isAdmin"]
+		isAdmin = request.POST["isAdmin"]#bool(int(str(request.POST["isAdmin"])[3:4])) 
+		#print bool(int(str(request.POST["isAdmin"])[3:4])) 
 		# Check that the fields are not blank.
+		print isAdmin
+		if int(isAdmin) == 0:
+			isAdmin = False
+		else:
+			isAdmin = True
+		print isAdmin
 		if (len(name)>0) and (len(email)>0) and (len(password)>min_pwd_len): #Password must be longer than min_pwd_len chars
 			# Try to verify email is valid. If not, catch ValidationError set error
 			try:
@@ -252,7 +272,7 @@ def getlectures(request):
 	JsonDict = {}
 	if ("course_id" in request.POST):
 		course_id = request.POST["course_id"]
-		lectures = Lecture.objects.filter(course=course_id)
+		lectures = Lecture.objects.filter(course=Course.objects.get(course_id=course_id))
 		lecture_name = []
 		lecture_id = []
 		for count in range(len(lectures)):
@@ -285,20 +305,25 @@ def addcourse(request):
 	if ("course_id" in request.POST) and ("password" in request.POST):
 		course_id = request.POST["course_id"]
 		student_password = request.POST["password"]
-		match = Course.objects.filter(course_id=course_id)
+		match = Course.objects.get(course_id=course_id)
 		if len(match) == 0:
 			isOkay = False
 			error = "No match found!"
 		else: # Match found
-			if match[0].student_password == student_password:
+			if match.student_password == student_password:
 				user_id = request.session["user_id"] #add user_id validation
-				newEnroll = Enrollment(user=user_id, course=course_id) #Initialize submissions?
+				currentUser = ""
+				try:
+					currentUser = User.objects.get(user_id=user_id)
+				except User.DoesNotExist:
+					return HttpResponseRedirect('')
+				newEnroll = Enrollment(user=currentUser, course=match) #Initialize submissions?
 				newEnroll.save()
-				lectures = Lecture.objects.filter(course=course_id)
+				lectures = Lecture.objects.filter(course=match)
 				for lecture in lectures:
-					problems += len(Problems.objects.filter(lecture=lecture.lecture_id))
-				JsonDict["course_id"] = course_id
-				JsonDict["short_name"] = match[0].short_name
+					problems += len(Problems.objects.filter(lecture=lecture))
+				JsonDict["course_id"] = match.course_id
+				JsonDict["short_name"] = match.short_name
 				JsonDict["num_lectures"] = len(lectures)
 				# To find number of problems, go through all lectures and find all associated problems
 				JsonDict["num_problems"] = problems
@@ -313,8 +338,60 @@ def addcourse(request):
 	Json = simplejson.dumps(JsonDict)
 	return HttpResponse(Json, content_type="application/json")
 
-def edit(request, offset):
+# This is an API function that allows a teacher to add a Lecture to a class. Read in the POST
+# request with course_id. 
+def createlecture(request):
+	isOkay = True
+	error = ""
+	name = ""
+	lecture_id = -1
+	JsonDict = {}
+	user_id = request.session["user_id"]
+	if ("course_id" in request.POST) and ("name" in request.POST):
+		name = request.POST["name"]
+		course_id = request.POST["course_id"]
+		if len(name) > 0:
+			newLecture = Lecture(description=name, course=Course.objects.get(course_id=course_id))
+			newLecture.save()
+			lecture_id = newLecture.lecture_id
+		else:
+			isOkay = False
+			error = "No name entered!"
+	else:
+		isOkay = False
+		error = "YOU IDIOT GIVE ME A POST REQUEST!"
+	JsonDict["lecture_id"] = lecture_id
+	JsonDict["name"] = name
+	JsonDict["isOkay"] = isOkay
+	JsonDict["error"] = error
+	Json = simplejson.dumps(JsonDict)
+	return HttpResponse(Json, content_type="application/json")
+
+# This function renders the editing page for students. Get the lecture_id from the URL, get user_id from session, 
+# match to an enrollment, get the most recent submission for the first problem in the lecture, pass all problems in the template. 
+def edit(request, mylecture_id):
+	user_id = request.session["user_id"]
+	currentUser = ""
+	try:
+		currentUser = User.objects.get(user_id=user_id)
+	except User.DoesNotExist:
+		return HttpResponseRedirect('')
+	lecture = Lecture.objects.get(lecture_id=mylecture_id)
+	course = lecture.course
+	enrollment = Enrollment.objects.get(user=currentUser, course=course)
+	problem = Problem.objects.get(lecture=lecture) #will randomly choose an associated problem
+	submission = Submission.objects.get(enrollment=enrollment, problem=problem)
+	context = Context({"problem": problem, "submission": submission, "lecture": lecture, "course": course, "user": currentUser})
+	t = get_template("Student.html")
+	html = t.render(cont)#RequestContext(request, {}))
+	return HttpResponse(html)
+
+# An API function that allows a student to edit his solution from the editing page. Read in the POST
+# request, match the lecture via lecture_id from the URL, find the user, find his enrollment. Create and save a submission. 
+# Return JSON with feedback.  
+def submitsolution(request):
 	return HttpResponse("")
+
 ###
 # END OF FILE 
 ###
