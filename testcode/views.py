@@ -16,7 +16,7 @@ from django.template import RequestContext
 from django import forms
 # import for json 
 from django.utils import simplejson
-
+import json
 # Import models 
 from testcode.models import *
 
@@ -76,7 +76,7 @@ def teacher(request):
 	if len(enrollments) == 0:
 		isNewUser = True
 	for enrollment in enrollments:
-		courses.append(Course.objects.get(course_id=enrollment.course)) # May throw an error if not found
+		courses.append(Course.objects.get(course_id=enrollment.course.course_id)) # May throw an error if not found
 
 	# Add stuff for problems. 
 	# Use Request Context for pages that load with a CSRF token
@@ -203,6 +203,7 @@ def logout(request):
 # TO IMPLEMENT: The creator is automatically enrolled as the administrator
 # Verify the data, save it to the database, and return a JSON
 def createcourse(request):
+	user_id = request.session["user_id"]
 	isOkay = True
 	error = ""
 	name = ""
@@ -221,6 +222,11 @@ def createcourse(request):
 #			print "done saving!"
 			course_id = newCourse.course_id
 #			print course_id
+			error = "Class created successfully!"
+
+			# Add Enrollment with current user.
+			enroll = Enrollment(user=User.objects.get(user_id=user_id), course=Course.objects.get(course_id=course_id))
+			enroll.save()
 		else:
 			isOkay = False
 			error = "Not all fields are filled in."
@@ -247,11 +253,16 @@ def getlectures(request):
 	if ("course_id" in request.POST):
 		course_id = request.POST["course_id"]
 		lectures = Lecture.objects.filter(course=course_id)
+		lecture_name = []
+		lecture_id = []
 		for count in range(len(lectures)):
 			thisLecture = lectures[count]
 			problems = Problem.objects.filter(lecture=thisLecture.lecture_id) # problems associated with thisLecture
-			JsonDict["lecture"+str(count)] = thisLecture.description
-			JsonDict["problem"+str(count)] = len(problems)
+			lecture_name.append(thisLecture.description)
+			lecture_id.append(thisLecture.lecture_id)
+			#JsonDict["problem"][str(count)] = len(problems)  
+		JsonDict["lecture_name"] = lecture_name
+		JsonDict["lecture_id"] = lecture_id
 	else:
 		isOkay = False
 		error = "YOU IDIOT GIVE ME A POST REQUEST!"
@@ -270,6 +281,7 @@ def addcourse(request):
 	isOkay = True
 	error = ""
 	JsonDict = {}
+	problems = 0
 	if ("course_id" in request.POST) and ("password" in request.POST):
 		course_id = request.POST["course_id"]
 		student_password = request.POST["password"]
@@ -283,11 +295,13 @@ def addcourse(request):
 				newEnroll = Enrollment(user=user_id, course=course_id) #Initialize submissions?
 				newEnroll.save()
 				lectures = Lecture.objects.filter(course=course_id)
+				for lecture in lectures:
+					problems += len(Problems.objects.filter(lecture=lecture.lecture_id))
 				JsonDict["course_id"] = course_id
 				JsonDict["short_name"] = match[0].short_name
 				JsonDict["num_lectures"] = len(lectures)
 				# To find number of problems, go through all lectures and find all associated problems
-				#JsonDict["num_problems"] = Problem.objects.filter(lecture=)
+				JsonDict["num_problems"] = problems
 			else:
 				isOkay = False
 				error = "Wrong password!"
@@ -298,6 +312,9 @@ def addcourse(request):
 	JsonDict["error"] = error
 	Json = simplejson.dumps(JsonDict)
 	return HttpResponse(Json, content_type="application/json")
+
+def edit(request, offset):
+	return HttpResponse("")
 ###
 # END OF FILE 
 ###

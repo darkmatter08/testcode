@@ -46,8 +46,7 @@ $.ajaxSetup({
 
 $("#logout" )
       .button(function() {
-        $.post('/api/logout', {}, function(data){}
-               );        
+        $(location).attr('href', "/api/logout");      
       });
       
       
@@ -103,6 +102,7 @@ $("#homelink" )
                      var isOkay = result.isOkay
                      var error = result.error
                      var name= result.name
+
                      var id= result.course_id
                      if (isOkay==false)
                         {
@@ -111,17 +111,12 @@ $("#homelink" )
                         }
                     else
                        { color = "green"
-                        setTimeout(function(){$("#dialog-formclass").dialog( "close" )},400);
-                        if ($(".newuser")[0]) 
-                             {
-                                  $("#listclass").html("<ul class='nav nav-tabs nav-stacked' id='classlist'><li id="+course_id+">"+name+"</li></ul>")
-                                  $("#rightclass").html('<table border="0" id="problemstable"><tr><td> 0 lectures</td><td >0 problems</td><td >0 students</td></tr></table>')
-                             }
-                        else
-                            {
-                                 $("#classlist").prepend("<li id="+course_id+">"+name+"</li>");
-                                 $("#problemstable").prepend("<tr><td> 0 lectures</td><td >0 problems</td><td >0 students</td></tr>");
-                            }
+                        
+                        setTimeout(function(){$("#dialog-formclass").dialog( "close" )}, 400);
+                        $("#shit").remove();
+                        $("#classlist").prepend("<li id="+id+" class='classlinks'><a href='#''>"+name+"</a></li>");
+                        $("#problemstable").prepend("<tr><td> 0 lectures</td><td >0 problems</td><td >0 students</td></tr>");
+                            
                         }
                    $("#create_message_box").html("<span style='color:"+color+"'>"+error+"</span>")
            },
@@ -147,6 +142,39 @@ $("#homelink" )
 
   
     });
+
+/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
+/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
+/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
+ $(function() 
+
+     {
+     $(".classlinks").click
+        ( 
+           function(){
+            $.post('/api/getlectures',
+                 {
+                  course_id:$(this).attr('id')
+                 },
+                 function(data){
+                   var result = jQuery.parseJSON(JSON.stringify(data))
+                   var number= result.num_lectures;
+                   var lecture_name= result.lecture_name;
+                   var lecture_id=result.lecture_id;                   
+                   $("#latest").hide("slide", { direction: "up" }, 500);
+                    setTimeout(function(){$("#latest").html('<span style="-webkit-column-count:3"><ul class="nav nav-tabs nav-stacked" id="lecturelist"></ul></span>')
+                   for (var i = 0; i < number; i++) 
+                    {
+                      $("#lecturelist").append("<li id="+lecture_id[i]+" class='lectures'><a href='#''>"+lecture_name[i]+"</a></li>");
+                    }
+                   $("#latest").show("slide", { direction: "up" }, 500)},500);
+                 }
+
+              )
+             }
+        )          
+     }
+  );
 
 /* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
 /* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
@@ -233,4 +261,3 @@ $("#homelink" )
     });
 
     */
-    

@@ -67,7 +67,7 @@
              
         </div>
         
-        
+   <!--     
         <div id="dialog-formaddclass" title="Add class">
  
              <form>
@@ -79,7 +79,7 @@
                 </fieldset>
             </form>
         </div>
-    
+    -->
     
     
          <div id="heading">
@@ -154,18 +154,17 @@
                     <div id="listclass">
                         
                         {% if isNewUser %}
-                            <p class="empty"> You have no classes added. Use "Create a class" or "Add an existing class" button </p>
-                            <ul class="newuser">                     
-                           
+                             <div id="shit"> <p class="empty"> You have no classes added. Use "Create a class" or "Add an existing class" button </p> </div> 
+                             <ul class="nav nav-tabs nav-stacked" id="classlist">                           
                             
-                           </ul>
+                            </ul>
                         {% else %}
                         
                         <ul class="nav nav-tabs nav-stacked" id="classlist">
                             
                             {% for course in courses %}                                 
 
-                                <li id="{{course.course_id}}"><a href="#">{{ course.name }}</a></li>
+                                <li id="{{course.course_id}}" class="classlinks"><a href="#">{{ course.name }}</a></li>
                                                        
                             {% endfor %}
                             
@@ -179,7 +178,9 @@
                      <div id="rightclass">
                         
                         {% if isNewUser %}
-                        
+                             <table border="0" id="problemstable">
+                                                        
+                            </table>
                         {% else %}
                          <table border="0" id="problemstable">
                             {% for course in courses %}  

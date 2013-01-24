@@ -32,6 +32,9 @@ urlpatterns = patterns('',
     # Teacher Homepage
     url(r'^teacher/$', views.teacher),
 
+    # Editing interface. Grab url
+    #url(r'^edit/(\d{1,5})/$', views.edit)
+
     # API urls to interact with backend
     url(r'^api/login$', views.login),
     url(r'^api/logout$', views.logout),
