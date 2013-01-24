@@ -126,3 +126,59 @@ $(function() {
 
   
     });
+
+
+
+
+
+
+
+
+
+
+
+
+var courseid;
+/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
+/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
+/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
+ $(function() 
+
+     {
+     $(".classlinks").click
+    ( 
+           function(){
+            courseid=$(this).attr('id');         
+            $.post('/api/getlectures',
+                 {
+                  course_id:courseid
+                 },
+                 function(data){
+                   var result = jQuery.parseJSON(JSON.stringify(data))
+                   var number= result.num_lectures;
+                   var lecture_name= result.lecture_name;
+                   var lecture_id=result.lecture_id;    
+                   $("#latest").hide("slide", { direction: "up" }, 500);
+                    setTimeout(
+                      function(){
+                        $("#latest").html('<ul class="breadcrumb" id="rightm"><li > <span style="font-weight:900">Lectures &nbsp &nbsp &nbsp &nbsp  </span>  <div class="btn-group in" id="forbutton"> <button class="btn create-classteacher" type="button" id="create-lecture"> <i class="icon-pencil"></i> Create a lecture</button> </div> <div id="forerror"> </div> </ul><span style="-webkit-column-count:3"><ul class="nav nav-tabs nav-stacked" id="lecturelist"></ul></span>')
+                          if (number==0) 
+                            {
+                                  $("#forerror").html("<p class='empty'> This class has no lectures. You can create one</p>");
+                            }  
+                   else
+                   {                  
+
+                   for (var i = 0; i < number; i++) 
+                    {
+                      $("#lecturelist").append("<li id="+lecture_id[i]+" class='lectures'><a href='#''>"+lecture_name[i]+"</a></li>");
+                    }
+                  }
+                   $("#latest").show("slide", { direction: "up" }, 500)},500);
+                 }
+
+              )
+             }
+        )          
+     }
+  );

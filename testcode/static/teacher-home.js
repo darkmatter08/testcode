@@ -112,7 +112,7 @@ $("#homelink" )
                         setTimeout(function(){$("#dialog-formclass").dialog( "close" )
                         $("#shit").remove();
                         $("#classlist").prepend("<li id="+id+" class='classlinks'><a href='#''>"+name+"</a></li>");
-                        $("#problemstable").prepend("<tr><td> 0 lectures</td><td >0 problems</td><td >0 students</td></tr>")}, 400);
+                        $("#problemstable").prepend("<tr><td> 0 lectures</td><td >0 problems</td><td >0 students</td></tr>")}, 600);
                             
                         }
                    $("#create_message_box").html("<span style='color:"+color+"'>"+error+"</span>")
@@ -163,7 +163,7 @@ var courseid;
                    $("#latest").hide("slide", { direction: "up" }, 500);
                     setTimeout(
                       function(){
-                        $("#latest").html('<ul class="breadcrumb" id="rightm"><li > <span style="font-weight:900">Your lectures &nbsp &nbsp &nbsp &nbsp  </span>  <div class="btn-group in" id="forbutton"> <button class="btn create-classteacher" type="button" id="create-lecture"> <i class="icon-pencil"></i> Create a lecture</button> </div> <div id="forerror"> </div> </ul><span style="-webkit-column-count:3"><ul class="nav nav-tabs nav-stacked" id="lecturelist"></ul></span>')
+                        $("#latest").html(' <div class="classe"><div class="margins"> Your classes </div> <div class="btn-group in rightm"> <button class="btn " type="button" id="create-lecture"> <i class="icon-pencil"></i> Create a lecture</button> </div> </div> <div id="forerror"> </div> </ul><span style="-webkit-column-count:3"><ul class="nav nav-tabs nav-stacked" id="lecturelist"></ul></span>')
                           if (number==0) 
                             {
                                   $("#forerror").html("<p class='empty'> This class has no lectures. You can create one</p>");
@@ -227,7 +227,7 @@ var courseid;
                               $("#dialog-formlecture").dialog( "close" )
                               $("#forerror").remove();
                               $("#lecturelist").prepend("<li id="+id+" class='lecturelinks'><a href='#''>"+name+"</a></li>")
-                       }, 400)
+                       }, 600)
                             
                         }
                    $("#createlecture_message_box").html("<span style='color:"+color+"'>"+error+"</span>")

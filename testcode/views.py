@@ -58,9 +58,12 @@ def student(request):
 	problems = {}
 #	for thisCourse in courses:
 #		for lectures in thisCourse:
-#			for thisLecture in lectures 
+#			for thisLecture in lectures: 
+#				num_problems = len(Problem.objects.filter(lecture=thisLecture))
+#				num_unsolved = len(Enrollment.objects.filter())
 #				for problem in Problem.objects.filter(lecture=thisLecture):
-#					problems[""]
+#					num_problems = 
+#					problems[""] = #Get number of submissions and subtract from number of problems
 	# Use Request Context for pages that load with a CSRF token
 	#rc = RequestContext(request, {"user": currentUser, "results": "Nothing Submitted!"}) #doesn't work with template
 	rc = Context({"user": currentUser, "isNewUser": isNewUser, "courses": courses, "problems": problems})
