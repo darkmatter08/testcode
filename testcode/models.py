@@ -45,7 +45,7 @@ class User(models.Model):
 class Lecture(models.Model):
 	# custom primary key, via auto incrementing field
 	lecture_id = models.AutoField(primary_key=True)
-	description = models.CharField(max_length=100)
+	name = models.CharField(max_length=100)
 	# Many to one relationships with Course - one Course has many Lectures
 	course = models.ForeignKey(Course)
 
