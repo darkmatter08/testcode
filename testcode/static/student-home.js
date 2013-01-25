@@ -85,8 +85,9 @@ $(function() {
                      var isOkay = result.isOkay
                      var error = result.error
                      var name= result.name
-                     var id= result.course_id
-                     var num_lectures = result.num_lectures
+                     alert(name);
+                     alert(error);
+                     var id= result.course_id                   
                      var num_problems = result.num_problems
                      if (isOkay==false)
                         {
@@ -99,10 +100,10 @@ $(function() {
                         setTimeout(function(){$("#dialog-formclass").dialog( "close" )
                         $("#shit").remove();
                         $("#classlist").prepend("<li id="+id+" class='classlinks'><a href='#''>"+name+"</a></li>");
-                        $("#problemstable").prepend("<tr><td>"+ num_lectures+ " lectures</td><td >"+num_problems+" problems</td><td >"+num_problems+" unsolved problems</td></tr>")}, 600);
+                        $("#problemstable").prepend("<tr><td >"+num_problems+" problems</td><td >"+num_problems+" unsolved problems</td></tr>")}, 600);
                             
                         }
-                   $("#create_message_box").html("<span style='color:"+color+"'>"+error+"</span>")
+                   $("#addclass_message_box").html("<span style='color:"+color+"'>"+error+"</span>")
            },
            "json"
            
@@ -161,10 +162,10 @@ var courseid;
                    $("#latest").hide("slide", { direction: "up" }, 500);
                     setTimeout(
                       function(){
-                        $("#latest").html('<ul class="breadcrumb" id="rightm"><li > <span style="font-weight:900">Lectures &nbsp &nbsp &nbsp &nbsp  </span>  <div class="btn-group in" id="forbutton"> <button class="btn create-classteacher" type="button" id="create-lecture"> <i class="icon-pencil"></i> Create a lecture</button> </div> <div id="forerror"> </div> </ul><span style="-webkit-column-count:3"><ul class="nav nav-tabs nav-stacked" id="lecturelist"></ul></span>')
+                        $("#latest").html(' <div class="classe"><div class="margins"> Lectures </div></div></div> <div id="forerror"> </div> </ul><span style="-webkit-column-count:3"><ul class="nav nav-tabs nav-stacked" id="lecturelist"></ul></span>')
                           if (number==0) 
                             {
-                                  $("#forerror").html("<p class='empty'> This class has no lectures. You can create one</p>");
+                                  $("#forerror").html("<p class='empty'> This class has no lectures yet.</p>");
                             }  
                    else
                    {                  

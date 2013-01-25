@@ -55,15 +55,21 @@ def student(request):
 		isNewUser = True
 	for enrollment in enrollments:
 		courses.append(enrollment.course) # May throw an error if not found
-	problems = {}
-#	for thisCourse in courses:
-#		for lectures in thisCourse:
-#			for thisLecture in lectures: 
-#				num_problems = len(Problem.objects.filter(lecture=thisLecture))
-#				num_unsolved = len(Enrollment.objects.filter())
-#				for problem in Problem.objects.filter(lecture=thisLecture):
-#					num_problems = 
-#					problems[""] = #Get number of submissions and subtract from number of problems
+	print courses
+	problems = []
+	for thisCourse in courses:
+		num_problems = 0
+		num_unsolved = 0
+		for thisLecture in Lecture.objects.filter(course=thisCourse):
+			thisEnrollment = Enrollment.objects.filter(user=currentUser, course=thisCourse)[0] # used objects.get(), but error raised with many matches 
+			num_problems += len(Problem.objects.filter(lecture=thisLecture))
+			num_unsolved = num_problems
+			for thisProblem in Problem.objects.filter(lecture=thisLecture):
+				if len(Submission.objects.filter(enrollment=thisEnrollment, problem=thisProblem)) > 0: #has a submission 
+					num_unsolved -= 1
+		problems.append((num_problems, num_unsolved))
+		print str(thisCourse) + " " + str(problems)
+	print problems
 	# Use Request Context for pages that load with a CSRF token
 	#rc = RequestContext(request, {"user": currentUser, "results": "Nothing Submitted!"}) #doesn't work with template
 	rc = Context({"user": currentUser, "isNewUser": isNewUser, "courses": courses, "problems": problems})
@@ -297,39 +303,53 @@ def getlectures(request):
 
 # This is an API function that allows a user to add an existing course. Read
 # in the POST request's course_id and password and get the user_id from the session. 
-# Create an enrollment associating the user and the class. Return a JSON with 
-# isOkay, error, course_id, short_name, and num_lectures.
+# Create an enrollment associating the user and the class, disallowing double enrollments
+# Return a JSON with isOkay, error, course_id, short_name, and num_lectures.
 # # lectures, # problems
 def addcourse(request):
 	isOkay = True
 	error = ""
 	JsonDict = {}
 	problems = 0
+	print request.POST
 	if ("course_id" in request.POST) and ("password" in request.POST):
 		course_id = request.POST["course_id"]
+		# TO IMPLEMENT: only accept INTs for course_id
 		student_password = request.POST["password"]
-		match = Course.objects.get(course_id=course_id)
-		if len(match) == 0:
+		matches = Course.objects.filter(course_id=course_id)
+		match = ""
+		if len(matches) == 0:
 			isOkay = False
 			error = "No match found!"
+			print error
 		else: # Match found
+			print match
+			match = matches[0]
 			if match.student_password == student_password:
 				user_id = request.session["user_id"] #add user_id validation
-				currentUser = ""
+				print user_id
+				currentUser = User.objects.filter(user_id=user_id)
 				try:
 					currentUser = User.objects.get(user_id=user_id)
 				except User.DoesNotExist:
 					return HttpResponseRedirect('')
-				newEnroll = Enrollment(user=currentUser, course=match) #Initialize submissions?
-				newEnroll.save()
-				lectures = Lecture.objects.filter(course=match)
-				for lecture in lectures:
-					problems += len(Problems.objects.filter(lecture=lecture))
-				JsonDict["course_id"] = match.course_id
-				JsonDict["short_name"] = match.short_name
-				JsonDict["num_lectures"] = len(lectures)
-				# To find number of problems, go through all lectures and find all associated problems
-				JsonDict["num_problems"] = problems
+				#check for exisitng matching enrollment
+				checkEnroll = Enrollment.objects.filter(user=currentUser, course=match)
+				if len(checkEnroll) == 0: 
+					newEnroll = Enrollment(user=currentUser, course=match) #Initialize submissions?
+					print newEnroll
+					newEnroll.save()
+					lectures = Lecture.objects.filter(course=match)
+					for lecture in lectures:
+						problems += len(Problem.objects.filter(lecture=lecture))
+					JsonDict["course_id"] = match.course_id
+					JsonDict["name"] = match.name
+					JsonDict["num_lectures"] = len(lectures)
+					# To find number of problems, go through all lectures and find all associated problems
+					JsonDict["num_problems"] = problems
+				else:
+					isOkay = False
+					error = "You are already enrolled in the class!"
 			else:
 				isOkay = False
 				error = "Wrong password!"
@@ -339,6 +359,7 @@ def addcourse(request):
 	JsonDict["isOkay"] = isOkay
 	JsonDict["error"] = error
 	Json = simplejson.dumps(JsonDict)
+	print Json
 	return HttpResponse(Json, content_type="application/json")
 
 # This is an API function that allows a teacher to add a Lecture to a class. Read in the POST

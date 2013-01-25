@@ -163,7 +163,7 @@ var courseid;
                    $("#latest").hide("slide", { direction: "up" }, 500);
                     setTimeout(
                       function(){
-                        $("#latest").html(' <div class="classe"><div class="margins"> Your classes </div> <div class="btn-group in rightm"> <button class="btn " type="button" id="create-lecture"> <i class="icon-pencil"></i> Create a lecture</button> </div> </div> <div id="forerror"> </div> </ul><span style="-webkit-column-count:3"><ul class="nav nav-tabs nav-stacked" id="lecturelist"></ul></span>')
+                        $("#latest").html(' <div class="classe"><div class="margins"> Lectures </div> <div class="btn-group in rightm"> <button class="btn " type="button" id="create-lecture"> <i class="icon-pencil"></i> Create a lecture</button> </div> </div> <div id="forerror"> </div> </ul><span style="-webkit-column-count:3"><ul class="nav nav-tabs nav-stacked" id="lecturelist"></ul></span>')
                           if (number==0) 
                             {
                                   $("#forerror").html("<p class='empty'> This class has no lectures. You can create one</p>");

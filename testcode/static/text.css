@@ -484,10 +484,51 @@ width:270px;
 height: 610px; 
 }
 
+.lecturepage
+{
+     border-radius: 15px;
+    position:relative; 
+    border-style:outset;
+    border-top: 1px outset;
+    border-bottom: 1px outset;
+    border-left: 1px outset;
+    border-right: 1px outset;
+    border-color: #dfdfdf;
+    background: rgba(255, 255, 255,0.6);
+    width: 830px;
+    height:auto;       
+    padding-left: 45px;
+    padding-right: 45px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    float: left;
+}
+
+.lecturepage1
+{
+    border-radius: 15px;
+    position:relative; 
+    border-style:outset;
+    border-top: 1px outset;
+    border-bottom: 1px outset;
+    border-left: 1px outset;
+    border-right: 1px outset;
+    border-color: #dfdfdf;
+    background: rgba(255, 255, 255,0.6);
+    width: 830px;
+    height:auto;       
+    padding-left: 45px;
+    padding-right: 45px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    float: left;
+    margin-bottom: 7px;
+    color: #284e14;
+}
 
 #leftclasses
 {
-     
+     border-radius: 15px;
     position:relative; 
     border-style:outset;
     border-top: 1px outset;
@@ -524,4 +565,5 @@ height: 610px;
     padding-top: 25px;
     padding-bottom: 25px;
     float: left;
+    border-radius: 15px;
 }
