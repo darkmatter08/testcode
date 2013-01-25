@@ -40,10 +40,11 @@ urlpatterns = patterns('',
     url(r'^api/logout$', views.logout),
     #url(r'^teacher/api/logout$', views.logout), #Because jQuery isn't working!
     url(r'^api/signup$', views.signup),
-    url(r'^api/submit$', views.submit),
+    url(r'^api/submit$', views.submitsolution),
     url(r'^api/createcourse$', views.createcourse),
     url(r'^api/createlecture$', views.createlecture),
     url(r'^api/addcourse$', views.addcourse),
     url(r'^api/getlectures$', views.getlectures),
-    url(r'edit/(\d{1,5})/$', views.edit),
+    url(r'^api/createproblem$', views.createproblem),
+    url(r'^edit/(\d{1,5})/$', views.edit),
 )

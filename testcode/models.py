@@ -57,6 +57,7 @@ class Problem(models.Model):
 	# custom primary key, via auto incrementing field
 	problem_id = models.AutoField(primary_key=True)
 	description = models.TextField(max_length=100)
+	name = models.TextField(max_length=50)
 	# Many to one relationships with Lecture - one Lecture has many Problems
 	lecture = models.ForeignKey(Lecture)
 	# Many to many relationships with Enrollment via Submission

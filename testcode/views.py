@@ -107,11 +107,15 @@ def teacher(request):
 	html = t.render(rc)
 	return HttpResponse(html)
 
-
-# This is an API function that reads in the submitted data from the 
-# form and then renders the output back on the editing page in the 
-# solutions textbox.
-def submit(request):
+# An API function that allows a student to edit his solution from the editing page. Read in the POST
+# request, match the lecture via lecture_id from the URL, find the user, find his enrollment. Create and save a submission. 
+# Return JSON with feedback.  
+def submitsolution(request):
+	user_id = request.session["user_id"]
+	try:
+		currentUser = User.objects.get(user_id=user_id)
+	except User.DoesNotExist:
+		return HttpResponseRedirect('')
 	results = "Failure."
 	if request.method == 'POST':
 		if "solution" in request.POST:
@@ -410,12 +414,46 @@ def edit(request, mylecture_id):
 	html = t.render(cont)#RequestContext(request, {}))
 	return HttpResponse(html)
 
-# An API function that allows a student to edit his solution from the editing page. Read in the POST
-# request, match the lecture via lecture_id from the URL, find the user, find his enrollment. Create and save a submission. 
-# Return JSON with feedback.  
-def submitsolution(request):
-	return HttpResponse("")
-
+# An API function that allows a teacher to submit a problem for the students to edit. 
+# JSON always returns isOkay and error string.
+# If the client only sends a problem_name and lecture_id (blank description) in the POST, then create a problem and 
+# return JSON with problem_id. If client POSTs problem_id and description in the POST, then I update the problem. 
+def createproblem(request):
+	user_id = request.session["user_id"]
+	currentUser = ""
+	isOkay = True
+	error = ""
+	JsonDict = {}
+	try:
+		currentUser = User.objects.get(user_id=user_id)
+	except User.DoesNotExist:
+		return HttpResponseRedirect('')
+	# Case 1 - only problem_name and lecture_id, return problem_id
+	if ("lecture_id" in request.POST) and ("problem_name" in request.POST):
+		lecture_id = request.POST["lecture_id"]
+		problem_name = request.POST["problem_name"]
+		lecture = Lecture.objects.get(lecture_id=lecture_id)
+		newProblem = Problem(name=problem_name, lecture=lecture)
+		problem_id = newProblem.problem_id
+		JsonDict["problem_id"] = problem_id
+	# Case 2 - problem_id and description
+	elif ("problem_id" in request.POST) and ("description" in request.POST):
+		problem_id = request.POST["problem_id"]
+		description = request.POST["description"]
+		if len(description) > 0:
+			problem = Problem.objects.get(problem_id=problem_id)
+			problem.description = description
+			problem.save()
+		else:
+			isOkay = False
+			error = "Nothing in the description!"
+	else:
+		isOkay = False
+		error = "YOU IDIOT GIVE ME A POST REQUEST!"
+	JsonDict["isOkay"] = isOkay
+	JsonDict["error"] = error
+	Json = simplejson.dumps(JsonDict)
+	return HttpResponse(Json, content_type="application/json")
 ###
 # END OF FILE 
 ###
