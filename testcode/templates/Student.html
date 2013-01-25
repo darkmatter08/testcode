@@ -90,7 +90,7 @@
                   
                     <div class="navbar smalle">
                         <div class="navbar-inner">
-                               <a class="brand" href="#">Hi, Andrei Ivanov</a>
+                               <a class="brand" href="#">Hi, {{ user.name }}</a>
                          </div>
                         </div>
                                <ul class="nav">
@@ -184,33 +184,14 @@
                                 <br/>
                                 <code>
                                     
-                                Correct: 2/3 <br/>
-
-                                Test 1: Correct <br/>
-                                Input: <br/>
-                                1 5 6 7 9 <br/>
-                                Output <br/>
-                                6<br/>
-                                
-                                Test 2: Correct<br/>
-                                Input:<br/>
-                                1 2 3<br/>
-                                Output:<br/>
-                                2<br/>
-                                Test 3: Wrong<br/>
-                                Input<br/>
-                                5 5 5<br/>
-                                Your output:<br/>
-                                0<br/>
-                                Correct output:<br/>
-                                5</code>
+                                When you "Save & Run" your code, test results will appear here. </code>
                                 <br/>   
                             </div>
                         </div>
                     
                         <div id="container3">
                         
-                         <div id="textcode"><form><textarea id="code" name="code" cols="120" rows="400" style="background-color: #FFF"></textarea> </form> </div>
+                         <div id="textcode"><form><textarea id="code" name="code" cols="120" rows="400" style="background-color: #FFF">{{submission.solution}}</textarea> </form> </div>
                                   <script>
                                       var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
                                       mode: {name: "python",

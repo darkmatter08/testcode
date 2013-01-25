@@ -67,6 +67,15 @@ class Problem(models.Model):
 	def __unicode__(self):
 		return "problem_id="+str(self.problem_id)+" description="+self.description
 
+class Testcase(models.Model):
+	# custom primary key, via auto incrementing field
+	testcase_id = models.AutoField(primary_key=True)
+	input_value = models.TextField(max_length=30)
+	expected_output = models.TextField(max_length=30)
+	# Many to one relationships with Problem - one Problem has many Testcases
+	problem = models.ForeignKey(Problem)
+
+
 # TRANSACTION TABLES
 
 class Enrollment(models.Model):

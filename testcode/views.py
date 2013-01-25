@@ -41,13 +41,11 @@ def student(request):
 	currentUser = ""
 	isNewUser = False
 	courses = []
-	#print "Session= " + str(user_id)
 	# Match to user in DB. If no match, redirect to login
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
 		return HttpResponseRedirect('')
-	#print "USER=" + str(currentUser)
 	t = get_template("student-home.html")
 	# Find all courses the student is enrolled in via Enrollment query. This is a queryset
 	enrollments = Enrollment.objects.filter(user=currentUser.user_id)
@@ -55,21 +53,19 @@ def student(request):
 		isNewUser = True
 	for enrollment in enrollments:
 		courses.append(enrollment.course) # May throw an error if not found
-	print courses
 	problems = []
 	for thisCourse in courses:
 		num_problems = 0
 		num_unsolved = 0
 		for thisLecture in Lecture.objects.filter(course=thisCourse):
-			thisEnrollment = Enrollment.objects.filter(user=currentUser, course=thisCourse)[0] # used objects.get(), but error raised with many matches 
+			# used objects.get(), but error raised with many matches
+			thisEnrollment = Enrollment.objects.filter(user=currentUser, course=thisCourse)[0] 
 			num_problems += len(Problem.objects.filter(lecture=thisLecture))
 			num_unsolved = num_problems
 			for thisProblem in Problem.objects.filter(lecture=thisLecture):
 				if len(Submission.objects.filter(enrollment=thisEnrollment, problem=thisProblem)) > 0: #has a submission 
 					num_unsolved -= 1
 		problems.append((num_problems, num_unsolved))
-		print str(thisCourse) + " " + str(problems)
-	print problems
 	# Use Request Context for pages that load with a CSRF token
 	#rc = RequestContext(request, {"user": currentUser, "results": "Nothing Submitted!"}) #doesn't work with template
 	rc = Context({"user": currentUser, "isNewUser": isNewUser, "courses": courses, "problems": problems})
@@ -88,7 +84,6 @@ def teacher(request):
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
 		return HttpResponseRedirect('')
-	t = get_template("teacher-home.html")
 	# Set context based on user - find all associated classes through enrollments 
 	enrollments = Enrollment.objects.filter(user=currentUser.user_id)
 	if len(enrollments) == 0:
@@ -98,12 +93,13 @@ def teacher(request):
 	# Create an array of number of lectures, each array element corresponding to the number of lectures in the maching element
 	# in the courses queryset. Get length of each queryset via {{some_queryset.count}}
 	lectures = []
-	#for course in courses
-	#	lectures.append(Lecture.objects.filter(course=course))
+	for course in courses:
+		lectures.append(Lecture.objects.get(course=course))
 	# Add stuff for problems. 
 	# Use Request Context for pages that load with a CSRF token
 	#rc = RequestContext(request, {"user": currentUser, "results": "Nothing Submitted!"})
 	rc = Context({"user": currentUser, "isNewUser": isNewUser, "courses": courses, "lectures": lectures})
+	t = get_template("teacher-home.html")
 	html = t.render(rc)
 	return HttpResponse(html)
 
@@ -139,7 +135,6 @@ def login(request):
 	isOkay = True
 	error = "POST not sent"
 	url = ""
-	#print request.POST#["email"]
 	# Load POST data and read in email and password
 	if ("email" in request.POST) and ("password" in request.POST):
 		# Attempt to match to entry in database
@@ -151,7 +146,6 @@ def login(request):
 				# check if user.isAdmin, if so, set url to teacher page
 				if match.isAdmin:
 					url = "/teacher/"
-				# else the user is student, set url to student page
 				else:
 					url = "/student/"
 			# otherwise passwords don't match
@@ -184,8 +178,7 @@ def signup(request):
 		name = request.POST["name"]
 		email = request.POST["email"]
 		password = request.POST["password"]
-		isAdmin = request.POST["isAdmin"]#bool(int(str(request.POST["isAdmin"])[3:4])) 
-		#print bool(int(str(request.POST["isAdmin"])[3:4])) 
+		isAdmin = request.POST["isAdmin"]
 		# Check that the fields are not blank.
 		print isAdmin
 		if int(isAdmin) == 0:
@@ -220,7 +213,6 @@ def signup(request):
 	errorJsonDict["error"] = error
 	errorJsonDict["isOkay"] = isOkay
 	errorJson = simplejson.dumps(errorJsonDict)
-	#print errorJson
 	return HttpResponse(errorJson, content_type="application/json")
 
 # This is an API function that logs out a current user by deleting their session.
@@ -233,7 +225,7 @@ def logout(request):
 	return HttpResponseRedirect('')
 
 # This is an API function that takes POST data from the teacher to create a class
-# TO IMPLEMENT: The creator is automatically enrolled as the administrator
+# The creator is automatically enrolled as the administrator
 # Verify the data, save it to the database, and return a JSON
 def createcourse(request):
 	user_id = request.session["user_id"]
@@ -241,22 +233,16 @@ def createcourse(request):
 	error = ""
 	name = ""
 	course_id = -1
-#	print request.POST
 	if ("name" in request.POST) and ("short_name" in request.POST) and ("admin_password" in request.POST) and ("student_password" in request.POST):
-#		print request.POST
 		name = request.POST["name"]
 		short_name = request.POST["short_name"]
 		admin_password = request.POST["admin_password"]
 		student_password = request.POST["student_password"]
 		if (len(name)>0) and (len(short_name)>0) and (len(admin_password)>min_pwd_len) and (len(student_password)>min_pwd_len):
 			newCourse = Course(name=name, short_name=short_name, admin_password=admin_password, student_password=student_password)
-#			print "saving new course!"
 			newCourse.save()
-#			print "done saving!"
 			course_id = newCourse.course_id
-#			print course_id
 			error = "Class created successfully!"
-
 			# Add Enrollment with current user.
 			enroll = Enrollment(user=User.objects.get(user_id=user_id), course=Course.objects.get(course_id=course_id))
 			enroll.save()
@@ -266,17 +252,15 @@ def createcourse(request):
 	else:
 		isOkay = False
 		error = "YOU IDIOT GIVE ME A POST REQUEST!"
-#	print "pre jsondict"
 	JsonDict = {}
 	JsonDict["isOkay"] = isOkay
 	JsonDict["error"] = error
 	JsonDict["name"] = name
 	JsonDict["course_id"] = course_id
 	Json = simplejson.dumps(JsonDict)
-#	print Json
 	return HttpResponse(Json, content_type="application/json")
 
-# This is an API function that reads in the POST request which provides a class
+# This is an API function that reads in the POST request which provides a course_id
 # and returns lectures for that course. -Number of lectures -Number of problems for each lecture
 # -Lecture description for each
 def getlectures(request):
@@ -325,13 +309,13 @@ def addcourse(request):
 		if len(matches) == 0:
 			isOkay = False
 			error = "No match found!"
-			print error
+#			print error
 		else: # Match found
-			print match
+#			print match
 			match = matches[0]
 			if match.student_password == student_password:
 				user_id = request.session["user_id"] #add user_id validation
-				print user_id
+#				print user_id
 				currentUser = User.objects.filter(user_id=user_id)
 				try:
 					currentUser = User.objects.get(user_id=user_id)
@@ -341,7 +325,7 @@ def addcourse(request):
 				checkEnroll = Enrollment.objects.filter(user=currentUser, course=match)
 				if len(checkEnroll) == 0: 
 					newEnroll = Enrollment(user=currentUser, course=match) #Initialize submissions?
-					print newEnroll
+#					print newEnroll
 					newEnroll.save()
 					lectures = Lecture.objects.filter(course=match)
 					for lecture in lectures:
@@ -363,7 +347,7 @@ def addcourse(request):
 	JsonDict["isOkay"] = isOkay
 	JsonDict["error"] = error
 	Json = simplejson.dumps(JsonDict)
-	print Json
+#	print Json
 	return HttpResponse(Json, content_type="application/json")
 
 # This is an API function that allows a teacher to add a Lecture to a class. Read in the POST
@@ -454,6 +438,124 @@ def createproblem(request):
 	JsonDict["error"] = error
 	Json = simplejson.dumps(JsonDict)
 	return HttpResponse(Json, content_type="application/json")
+
+# An API function that returns the previous or next submission from the submission history. 
+# Reads in nextSubmission and submission_id from the POST request and returns a JSON with
+# isOkay, error, and solution.
+def submissionHistory(request):
+	user_id = request.session["user_id"]
+	currentUser = ""
+	isOkay = True
+	error = ""
+	JsonDict = {}
+	try:
+		currentUser = User.objects.get(user_id=user_id)
+	except User.DoesNotExist:
+		return HttpResponseRedirect('')
+	if ("isNextSubmission" in request.POST) and ("submission_id" in request.POST):
+		isNextSubmission = request.POST["nextSubmission"]
+		submission_id = request.POST["submission_id"]
+		currentSubmission = Submission.objects.get(submission_id=submission_id)
+		allSubmissions = Submission.objects.filter(problem=currentSubmission.problem)
+		if int(isNextSubmission) == 1: #nextSubmission == True
+			allSubmissions = Submission.objects.filter(problem=problem).order_by('-date')
+			nextSubmission = allSubmissions[0]
+#			nextSubmission = ""
+#			delta = datetime.timedelta()
+#			# look for smallest negative 
+#			for submission in allSubmissions:	
+#				timeDelta = currentSubmission.date - submission.date
+#				if abs(timeDelta) < delta and timeDelta < 0:
+#					nextSubmission = submission
+#					delta = abs(timeDelta)
+#			if nextSubmission == "":
+#				isOkay = False
+#				error = "You're already at the newest submission!"
+			JsonDict["solution"] = nextSubmission.solution
+			JsonDict["submission_id"] = nextSubmission.submission_id
+		else:
+			allSubmissions = Submission.objects.filter(problem=problem).order_by('date')
+			prevSubmission = allSubmissions[0]
+			# prevSubmission = ""
+			# delta = datetime.timedelta()
+			# # look for smallest positive 
+			# for submission in allSubmissions:	
+			# 	timeDelta = currentSubmission.date - submission.date
+			# 	if abs(timeDelta) < delta and timeDelta > 0:
+			# 		prevSubmission = submission
+			# 		delta = abs(timeDelta)
+			# if prevSubmission == "":
+			# 	isOkay = False
+			# 	error = "You're already at the oldest submission!"
+			JsonDict["solution"] = prevSubmission.solution
+			JsonDict["submission_id"] = prevSubmission.submission_id
+	else:
+		isOkay = False
+		error = "YOU IDIOT GIVE ME A POST REQUEST!"
+	JsonDict["isOkay"] = isOkay
+	JsonDict["error"] = error
+	Json = simplejson.dumps(JsonDict)
+	return HttpResponse(Json, content_type="application/json")
+
+# API function that allows a teacher to submit a test case for a particular problem. 
+# Takes problem_id, input_value, and expected_output from the POST request, returns a JSON 
+# with isOkay, error, and testcase_id 
+def createtestcase(request):
+	user_id = request.session["user_id"]
+	currentUser = ""
+	isOkay = True
+	error = ""
+	JsonDict = {}
+	try:
+		currentUser = User.objects.get(user_id=user_id)
+	except User.DoesNotExist:
+		return HttpResponseRedirect('')
+	if ("problem_id" in request.POST) and ("input_value" in request.POST) and ("expected_output" in request.POST):
+		problem = Problem.objects.get(problem_id=problem_id)
+		if len(input_value) > 0 and len(expected_output) > 0:
+			newTestcase = Testcase(problem=problem, expected_output=expected_output, input_value=input_value)
+			JsonDict["testcase_id"] = newTestcase.testcase_id
+		else:
+			isOkay = False
+			error = "Not all fields filled!"
+	else:
+		isOkay = False
+		error = "YOU IDIOT GIVE ME A POST REQUEST!"
+	JsonDict["isOkay"] = isOkay
+	JsonDict["error"] = error
+	Json = simplejson.dumps(JsonDict)
+	return HttpResponse(Json, content_type="application/json")
+
+# An API function that allows the student to switch between problems on the editing page. 
+# From POST, reads in problem_id, from the session, user_id. It returns a JSON with the 
+# problem_id, problem_description, name, lecture_id, and solution - from the latest submission. 
+def getproblem(request):
+	user_id = request.session["user_id"]
+	currentUser = ""
+	isOkay = True
+	error = ""
+	JsonDict = {}
+	try:
+		currentUser = User.objects.get(user_id=user_id)
+	except User.DoesNotExist:
+		return HttpResponseRedirect('')
+	if ("problem_id" in request.POST):
+		problem = Problem.objects.get(problem_id=problem_id)
+		allSubmissions = Submission.objects.filter(problem=problem).order_by('-date')
+		latestSubmission = allSubmissions[0]
+		JsonDict["problem_id"] = problem_id
+		JsonDict["problem_description"] = problem_description
+		JsonDict["name"] = problem.name
+		JsonDict["lecture_id"] = problem.lecture.lecture_id
+		JsonDict["solution"] = latestSubmission.solution
+	else:
+		isOkay = False
+		error = "YOU IDIOT GIVE ME A POST REQUEST!"
+	JsonDict["isOkay"] = isOkay
+	JsonDict["error"] = error
+	Json = simplejson.dumps(JsonDict)
+	return HttpResponse(Json, content_type="application/json")
+
 ###
 # END OF FILE 
 ###
