@@ -1,4 +1,4 @@
-
+$(document).ready(function(){
  /*$(function(){ $("#create-lecture").hide() }); */
 
 function getCookie(name) {
@@ -147,9 +147,7 @@ var courseid;
  $(function() 
 
      {
-     $(".classlinks").click
-    ( 
-           function(){
+     $(document).on("click",".classlinks",function(){
             courseid=$(this).attr('id');         
             $.post('/api/getlectures',
                  {
@@ -251,7 +249,7 @@ var courseid;
       });
 
   
-    });
+    })});
 /* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
 /* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
 /* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */

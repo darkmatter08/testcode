@@ -2,7 +2,7 @@
 <html>
   <head>
       <title> Prob</title>
-      <!--<link href='http://fonts.googleapis.com/css?family=Strait' rel='stylesheet' type='text/css'> -->
+     <link href='http://fonts.googleapis.com/css?family=Strait' rel='stylesheet' type='text/css'> 
       <link rel="stylesheet" type="text/css" href="/static/text.css" />
       <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
       <script src="http://code.jquery.com/jquery-latest.js"></script>
@@ -16,7 +16,7 @@
       <script src="/static/code/lib/matchbrackets.js"></script>
       <script src="/static/code/python.js"></script>
       <script type="text/javascript" src="/static/java.js"></script>
-      <script type="text/javascript" src="/static/teacher-home.js"></script>
+      <script type="text/javascript" src="/static/teacher-lecture.js"></script>
     <link rel="stylesheet" href="/static/j-query.css" />
       <script type="text/javascript" src="/static/scroll/jquery.slimscroll.min.js"></script>
       
@@ -47,18 +47,12 @@
   </head>
   <body>
     
-<div id="dialog-formclass" title="Create a class">
-     <p class="validateTips" id="create_message_box"></p>
+<div id="dialog-formproblem" title="Create a problem">
+     <p class="validateTips" id="problem_message_box"></p>
              <form>
                 <fieldset>
-                    <label for="name">Class name <span style="font-size: 14px">(e.g. "6.01 Introduction to EECS"  )</span></label>
-                    <input type="text" name="email" id="classname" class="text ui-widget-content ui-corner-all" />
-                    <label for="name">Short name <span style="font-size: 14px">(e.g. "6.01")</span></label>
-                    <input type="text" name="email" id="shortclassname" class="text ui-widget-content ui-corner-all" />
-                    <label for="password">Student password</label>
-                    <input type="password" name="password" id="studentpassword" value="" class="text ui-widget-content ui-corner-all" />
-                     <label for="password">Teacher password</label>
-                    <input type="password" name="password" id="teacherpassword" value="" class="text ui-widget-content ui-corner-all" />
+                    <label for="name">Problem name </label>
+                    <input type="text" name="name" id="problemname" class="text ui-widget-content ui-corner-all" />                  
                                
                 </fieldset>
             </form>
@@ -67,18 +61,7 @@
              
   </div>
 
-  <div id="dialog-formlecture" title="Create a lecture">
-     <p class="validateTips" id="createlecture_message_box"></p>
-             <form>
-                <fieldset>
-                    <label for="name">Lecture name </label>
-                    <input type="text" name="email" id="lecturename" class="text ui-widget-content ui-corner-all" />                                   
-                </fieldset>
-            </form>
-             
-             
-             
-  </div>
+  
         
    <!--     
         <div id="dialog-formaddclass" title="Add class">
@@ -150,111 +133,106 @@
                                  
              
         <div id="container1">
-              
-       <div id="leftclasses" >
+       
+       <div class="lecturepage1" >
+                  
+                  <span style="font-size:16px; font-weight:900"> <ul class="breadcrumb">
+                                <li><a href="#">{{course.name}}</a> <span class="divider">/</span></li>
+                                <li class="active lectureelement" id="{{lecture.lecture_id}}">{{lecture.description}} </li>                              
+                            </ul></span>
+                   
+                 </div>     
+
+       <div class="lecturepage" >
               <div class="classe">
                       
-                      <div class="margins"> Your classes </div>    
+                      <div class="margins"> Problems </div>    
 
                        <div class="btn-group in rightm">              
-                            <button class="btn " type="button" id="create-class"> <i class="icon-pencil"></i> Create a class</button> 
+                            <button class="btn " type="button" id="create-problem"> <i class="icon-pencil"></i> Create a problem</button> 
                        </div>
                         
                     </div>
                     
                     <div id="listclass">
                         
-                        {% if isNewUser %}
+                        {% ifequal problems.count 0 %}
                              <div id="shit"> <p class="empty"> You have no classes added. Use "Create a class" or "Add an existing class" button </p> </div> 
-                             <ul class="nav nav-tabs nav-stacked" id="classlist">                           
+                             <ul class="nav nav-tabs nav-stacked" id="problemlist">                           
                             
                             </ul>
                         {% else %}
                         
                         <ul class="nav nav-tabs nav-stacked" id="classlist">
                             
-                            {% for course in courses %}                                 
+                            {% for problem in problems %}                                 
 
-                                <li id="{{course.course_id}}" class="classlinks"><a href="#">{{ course.name }}</a></li>
+                                <li id="{{problem.problem_id}}" class="problemlinks"><a href="#">{{ problem.name }}</a></li>
                                                        
                             {% endfor %}
                             
                         </ul>
                             
-                         {% endif %}
+                         {% endifequal %}
                          
                     </div>
                     
                     
                      <div id="rightclass">
                         
-                        {% if isNewUser %}
+                        {% ifequal problems.count 0 %}
                              <table border="0" id="problemstable">
                                                         
                             </table>
                         {% else %}
                          <table border="0" id="problemstable">
-                            {% for course in courses %}  
+                            {% for problem in problems %}  
                              <tr>                                 
-                                 <td> {{course.nlectures}} lectures</td>
-                                 <td >4 problems</td>
-                                 <td >45 students</td>
+                                 <td> <div class="btn-group in rightm">              
+                            <button class="btn " type="button" id="create-class"> <i class="icon-signal"></i> View students' performance</button> 
+                       </div></td>
+                                
                             </tr>
                              {% endfor %}
                             
                          </table>
                          
-                         {% endif %}    
+                         {% endifequal %}    
                      </div>
                    
                  </div>     
                                 
-                 <div id="latest" >
+                 <div id="latest" >   
+
+                 <p class="empty"> Click on the problem to start editing. </p>                 
+                     <!--  <div class="classe">                      
+                          <div class="margins"> Problem 4 </div> 
+                       </div>
+                       <div class="fields"> Description </div>                     
+                       <div id="problemdescription"> <form><textarea id="description1" name="description" cols="98" rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> </div>
+                      <div class=" marginbottom"> <div class="btn-group in forsave"><button class="btn" type="button" id="savedescription"><i class="icon-ok-circle"></i> Save</button></div> </div>
+                        <div class="fields "> Test cases </div>
+                        <div class="casebigbox">
+                            <div class="inputtest">                           
+                              <p class="indents"> Input </p>
+                              <form><textarea id="inputtext" name="inputtext" cols="45" rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> 
+                            </div> 
+                            <div class="outputtest"> 
+                            <p class="indents">  Output</p>
+                            <form><textarea id="outputtext" name="outputtext" cols="45" rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> </div>
+                            </div>
+                            <div class="btn-group in"><button class="btn" type="button" id="testcase1"><i class="icon-tasks"></i> Add a new test case</button></div>
+                          -->
+                  </div>
+
+
+
                     
-                      <table border="0" id="latesttable">
-                             <tr>
-                                 <td>
-                                        <ul class="breadcrumb" >
-                                        <li>Latest problems</li></ul>
-                                 </td>
-                                 <td>
-                                        <ul class="breadcrumb" >
-                                        <li>Your latest activity</li></ul>
-                                 </td>
-                                 <td>
-                                        <ul class="breadcrumb" >
-                                        <li>Latest student submissions</li></ul>
-                                 </td>
-                            </tr>
-                            <tr>                                 
-                                 <td >
-                                       <ul class="inlatest">
-                                        <li class="tall"> <a href="#">6.01/Centered average </a></li>
-                                         <li class="tall"> <a href="#">6.01/Total sum </a></li>
-                                         <li class="tall"> <a href="#">6.01/Integer sequence </a></li>
-                                         <li class="tall"> <a href="#">6.01/Smart robot </a></li>
-                                      </ul>
-                                 </td>
-                                 <td>
-                                        <ul class="inlatest">
-                                        <li class="tall"> <a href="#">6.01/Centered average </a></li>
-                                        <li class="tall"> <a href="#">6.01/Total sum </a></li>
-                                        <li class="tall"> <a href="#">6.01/Integer sequence </a></li>
-                                      </ul>
-                                 </td>
-                                 <td>
-                                        <ul class="inlatest">
-                                        
-                                         <li class="tall"> <a href="#">6.01/Integer sequence </a></li>
-                                         <li class="tall"> <a href="#">6.01/Smart robot </a></li>
-                                        
-                                      </ul>
-                                 </td>
-                            </tr>
-                            
-                         </table>
+                      
+  
+                    
                 
-                 </div>   
+             
                     
                     
               
@@ -265,14 +243,14 @@
         
         <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
         <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
-         <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
+         <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  
         
         
         
         <div id="footer">
             
             
-         </div>
+         </div> -->
             
             
          

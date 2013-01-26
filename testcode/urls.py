@@ -47,5 +47,6 @@ urlpatterns = patterns('',
     url(r'^api/getlectures$', views.getlectures),
     url(r'^api/createproblem$', views.createproblem),
     url(r'^api/createtestcase$', views.createtestcase),
+    url(r'^teacher/edit/(\d{1,5})/$', views.teacherlecture),
     url(r'^edit/(\d{1,5})/$', views.edit),
 )

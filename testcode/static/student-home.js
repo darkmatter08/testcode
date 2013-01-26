@@ -1,4 +1,4 @@
-
+$(document).ready(function(){
  /*$(function(){ $("#create-lecture").hide() }); */
 
 function getCookie(name) {
@@ -84,9 +84,7 @@ $(function() {
                      var result = jQuery.parseJSON(JSON.stringify(data))
                      var isOkay = result.isOkay
                      var error = result.error
-                     var name= result.name
-                     alert(name);
-                     alert(error);
+                     var name= result.name                     
                      var id= result.course_id                   
                      var num_problems = result.num_problems
                      if (isOkay==false)
@@ -97,7 +95,7 @@ $(function() {
                     else
                        { color = "green"
                          
-                        setTimeout(function(){$("#dialog-formclass").dialog( "close" )
+                        setTimeout(function(){$("#dialog-formaddclass").dialog( "close" )
                         $("#shit").remove();
                         $("#classlist").prepend("<li id="+id+" class='classlinks'><a href='#''>"+name+"</a></li>");
                         $("#problemstable").prepend("<tr><td >"+num_problems+" problems</td><td >"+num_problems+" unsolved problems</td></tr>")}, 600);
@@ -146,9 +144,7 @@ var courseid;
  $(function() 
 
      {
-     $(".classlinks").click
-    ( 
-           function(){
+     $(document).on("click",".classlinks",function(){
             courseid=$(this).attr('id');         
             $.post('/api/getlectures',
                  {
@@ -182,4 +178,6 @@ var courseid;
              }
         )          
      }
-  );
+  )
+
+});

@@ -72,6 +72,7 @@ class Testcase(models.Model):
 	testcase_id = models.AutoField(primary_key=True)
 	input_value = models.TextField(max_length=30)
 	expected_output = models.TextField(max_length=30)
+	testcase_number = models.IntegerField()
 	# Many to one relationships with Problem - one Problem has many Testcases
 	problem = models.ForeignKey(Problem)
 

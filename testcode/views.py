@@ -45,7 +45,9 @@ def student(request):
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('')
+		return HttpResponseRedirect('/')
+	if currentUser.isAdmin:
+		return HttpResponseRedirect('/')
 	t = get_template("student-home.html")
 	# Find all courses the student is enrolled in via Enrollment query. This is a queryset
 	enrollments = Enrollment.objects.filter(user=currentUser.user_id)
@@ -83,7 +85,9 @@ def teacher(request):
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('')
+		return HttpResponseRedirect('/')
+	if not currentUser.isAdmin:
+		return HttpResponseRedirect('/')
 	# Set context based on user - find all associated classes through enrollments 
 	enrollments = Enrollment.objects.filter(user=currentUser.user_id)
 	if len(enrollments) == 0:
@@ -111,7 +115,7 @@ def submitsolution(request):
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('')
+		return HttpResponseRedirect('/')
 	results = "Failure."
 	if request.method == 'POST':
 		if "solution" in request.POST:
@@ -127,7 +131,7 @@ def submitsolution(request):
 			html = t.render(rc)
 			return HttpResponse(html)
 	else:
-		return HttpResponseRedirect('')
+		return HttpResponseRedirect('/')
 
 # This is an API function that verifies the user and sends them to the student page. 
 # It forwards to the student or teacher homepage depending on the type of user.
@@ -222,7 +226,7 @@ def logout(request):
 		del request.session["user_id"]
 	except KeyError:
 		pass
-	return HttpResponseRedirect('')
+	return HttpResponseRedirect('/')
 
 # This is an API function that takes POST data from the teacher to create a class
 # The creator is automatically enrolled as the administrator
@@ -301,53 +305,53 @@ def addcourse(request):
 	problems = 0
 	print request.POST
 	if ("course_id" in request.POST) and ("password" in request.POST):
-		course_id = request.POST["course_id"]
-		# TO IMPLEMENT: only accept INTs for course_id
-		student_password = request.POST["password"]
-		matches = Course.objects.filter(course_id=course_id)
-		match = ""
-		if len(matches) == 0:
-			isOkay = False
-			error = "No match found!"
-#			print error
-		else: # Match found
-#			print match
-			match = matches[0]
-			if match.student_password == student_password:
-				user_id = request.session["user_id"] #add user_id validation
-#				print user_id
-				currentUser = User.objects.filter(user_id=user_id)
-				try:
-					currentUser = User.objects.get(user_id=user_id)
-				except User.DoesNotExist:
-					return HttpResponseRedirect('')
-				#check for exisitng matching enrollment
-				checkEnroll = Enrollment.objects.filter(user=currentUser, course=match)
-				if len(checkEnroll) == 0: 
-					newEnroll = Enrollment(user=currentUser, course=match) #Initialize submissions?
-#					print newEnroll
-					newEnroll.save()
-					lectures = Lecture.objects.filter(course=match)
-					for lecture in lectures:
-						problems += len(Problem.objects.filter(lecture=lecture))
-					JsonDict["course_id"] = match.course_id
-					JsonDict["name"] = match.name
-					JsonDict["num_lectures"] = len(lectures)
-					# To find number of problems, go through all lectures and find all associated problems
-					JsonDict["num_problems"] = problems
+		course_id_temp = request.POST["course_id"]
+		course_id = -1
+		try:
+			course_id = int(course_id_temp)
+			student_password = request.POST["password"]
+			matches = Course.objects.filter(course_id=course_id)
+			match = ""
+			if len(matches) == 0:
+				isOkay = False
+				error = "No match found!"
+			else: # Match found
+				match = matches[0]
+				if match.student_password == student_password:
+					user_id = request.session["user_id"] #add user_id validation
+					currentUser = User.objects.filter(user_id=user_id)
+					try:
+						currentUser = User.objects.get(user_id=user_id)
+					except User.DoesNotExist:
+						return HttpResponseRedirect('/')
+					#check for exisitng matching enrollment
+					checkEnroll = Enrollment.objects.filter(user=currentUser, course=match)
+					if len(checkEnroll) == 0: 
+						newEnroll = Enrollment(user=currentUser, course=match) #Initialize submissions?
+						newEnroll.save()
+						lectures = Lecture.objects.filter(course=match)
+						for lecture in lectures:
+							problems += len(Problem.objects.filter(lecture=lecture))
+						JsonDict["course_id"] = match.course_id
+						JsonDict["name"] = match.name
+						JsonDict["num_lectures"] = len(lectures)
+						# To find number of problems, go through all lectures and find all associated problems
+						JsonDict["num_problems"] = problems
+					else:
+						isOkay = False
+						error = "You are already enrolled in the class!"
 				else:
 					isOkay = False
-					error = "You are already enrolled in the class!"
-			else:
-				isOkay = False
-				error = "Wrong password!"
+					error = "Wrong password!"
+		except ValueError: # rasied from casting int 
+			isOkay = False
+			error = "Course ID was not valid! Integers only."
 	else:
 		isOkay = False
 		error = "YOU IDIOT GIVE ME A POST REQUEST!"
 	JsonDict["isOkay"] = isOkay
 	JsonDict["error"] = error
 	Json = simplejson.dumps(JsonDict)
-#	print Json
 	return HttpResponse(Json, content_type="application/json")
 
 # This is an API function that allows a teacher to add a Lecture to a class. Read in the POST
@@ -387,7 +391,7 @@ def edit(request, mylecture_id):
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('')
+		return HttpResponseRedirect('/')
 	lecture = Lecture.objects.get(lecture_id=mylecture_id)
 	course = lecture.course
 	enrollment = Enrollment.objects.get(user=currentUser, course=course)
@@ -411,13 +415,14 @@ def createproblem(request):
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('')
+		return HttpResponseRedirect('/')
 	# Case 1 - only problem_name and lecture_id, return problem_id
 	if ("lecture_id" in request.POST) and ("problem_name" in request.POST):
 		lecture_id = request.POST["lecture_id"]
 		problem_name = request.POST["problem_name"]
 		lecture = Lecture.objects.get(lecture_id=lecture_id)
 		newProblem = Problem(name=problem_name, lecture=lecture)
+		newProblem.save()
 		problem_id = newProblem.problem_id
 		JsonDict["problem_id"] = problem_id
 	# Case 2 - problem_id and description
@@ -451,7 +456,7 @@ def submissionHistory(request):
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('')
+		return HttpResponseRedirect('/')
 	if ("isNextSubmission" in request.POST) and ("submission_id" in request.POST):
 		isNextSubmission = request.POST["nextSubmission"]
 		submission_id = request.POST["submission_id"]
@@ -498,8 +503,8 @@ def submissionHistory(request):
 	return HttpResponse(Json, content_type="application/json")
 
 # API function that allows a teacher to submit a test case for a particular problem. 
-# Takes problem_id, input_value, and expected_output from the POST request, returns a JSON 
-# with isOkay, error, and testcase_id 
+# Takes problem_id, input_value, expected_output, and testcase_number from the POST request, returns a JSON 
+# with isOkay, error
 def createtestcase(request):
 	user_id = request.session["user_id"]
 	currentUser = ""
@@ -509,12 +514,25 @@ def createtestcase(request):
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('')
-	if ("problem_id" in request.POST) and ("input_value" in request.POST) and ("expected_output" in request.POST):
+		return HttpResponseRedirect('/')
+	if ("problem_id" in request.POST) and ("input_value" in request.POST) and ("expected_output" in request.POST) and ("testcase_number" in request.POST):
+		problem_id = request.POST["problem_id"]
+		input_value = request.POST["input_value"]
+		expected_output = request.POST["expected_output"]
+		testcase_number = request.POST["testcase_number"]
 		problem = Problem.objects.get(problem_id=problem_id)
-		if len(input_value) > 0 and len(expected_output) > 0:
-			newTestcase = Testcase(problem=problem, expected_output=expected_output, input_value=input_value)
-			JsonDict["testcase_id"] = newTestcase.testcase_id
+		if len(input_value) > 0 and len(expected_output) > 0 and testcase_number > 0:
+			# Split into new vs. exisiting testcase based on testcase_number
+			testcaseQuerySet = Testcase.objects.filter(testcase_number=testcase_number)
+			if len(testcaseQuerySet) == 0:
+				newTestcase = Testcase(problem=problem, expected_output=expected_output, input_value=input_value, testcase_number=testcase_number)
+				newTestcase.save()
+				JsonDict["testcase_id"] = newTestcase.testcase_id
+			else:
+				matchingTestcase = testcaseQuerySet[0]
+				matchingTestcase.expected_output = expected_output
+				matchingTestcase.input_value = input_value
+				matchingTestcase.save()
 		else:
 			isOkay = False
 			error = "Not all fields filled!"
@@ -538,7 +556,7 @@ def getproblem(request):
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('')
+		return HttpResponseRedirect('/')
 	if ("problem_id" in request.POST):
 		problem = Problem.objects.get(problem_id=problem_id)
 		allSubmissions = Submission.objects.filter(problem=problem).order_by('-date')
@@ -555,6 +573,23 @@ def getproblem(request):
 	JsonDict["error"] = error
 	Json = simplejson.dumps(JsonDict)
 	return HttpResponse(Json, content_type="application/json")
+
+# Renders the teacher-lecture page with the context vars. 
+def teacherlecture(request, lecture_id):
+	user_id = request.session["user_id"]
+	currentUser = ""
+	try:
+		currentUser = User.objects.get(user_id=user_id)
+	except User.DoesNotExist:
+		return HttpResponseRedirect('/')
+	lecture = Lecture.objects.get(lecture_id=lecture_id)
+	course = lecture.course
+	problems = Problem.objects.filter(lecture=lecture_id)
+	t = get_template("teacher-lecture.html")
+	rc = Context({"user": currentUser, "courses": courses, "lecture": lecture, "problems": problems})
+	html = t.render(rc)#RequestContext(request, {}))
+	return HttpResponse(html)
+
 
 ###
 # END OF FILE 
