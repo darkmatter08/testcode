@@ -76,9 +76,8 @@
  $(function() 
 {
 var i;
-var problem_id;
 $(document).on("click",".problemlinks",function(){
-              
+              var problem_id;
               $(".active").eq(1).removeClass("active");
               $(this).addClass("active");
               problem_id=$(this).attr('id'); 

@@ -517,6 +517,7 @@ def createtestcase(request):
 	isOkay = True
 	error = ""
 	JsonDict = {}
+	print request.POST
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
@@ -527,12 +528,16 @@ def createtestcase(request):
 		expected_output = request.POST["expected_output"]
 		testcase_number = request.POST["testcase_number"]
 		problem = Problem.objects.get(problem_id=problem_id)
+		print "expected out:" + str(expected_output)
+		print "testcase number=" + str(testcase_number)
 		if len(input_value) > 0 and len(expected_output) > 0 and testcase_number > 0:
 			# Split into new vs. exisiting testcase based on testcase_number
 			testcaseQuerySet = Testcase.objects.filter(testcase_number=testcase_number)
 			if len(testcaseQuerySet) == 0:
 				newTestcase = Testcase(problem=problem, expected_output=expected_output, input_value=input_value, testcase_number=testcase_number)
 				newTestcase.save()
+				print newTestcase.expected_output
+				print newTestcase.testcase_number
 				JsonDict["testcase_id"] = newTestcase.testcase_id
 			else:
 				matchingTestcase = testcaseQuerySet[0]

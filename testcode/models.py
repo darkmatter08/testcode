@@ -79,7 +79,7 @@ class Testcase(models.Model):
 
 	# Describes the object when it is called from the DB
 	def __unicode__(self):
-		return "testcase_number="+str(self.testcase_id)+" input_value="+self.input_value
+		return "testcase_number="+str(self.testcase_number)+" input_value="+self.input_value
 
 # TRANSACTION TABLES
 
