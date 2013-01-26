@@ -171,7 +171,8 @@ var courseid;
 
                    for (var i = 0; i < number; i++) 
                     {
-                      $("#lecturelist").append("<li id="+lecture_id[i]+" class='lectures'><a href='#''>"+lecture_name[i]+"</a></li>");
+
+                      $("#lecturelist").append("<li ><a href='edit/"+lecture_id[i]+"'>"+lecture_name[i]+"</a></li>");
                     }
                   }
                    $("#latest").show("slide", { direction: "up" }, 500)},500);
@@ -224,7 +225,7 @@ var courseid;
                         setTimeout(function(){
                               $("#dialog-formlecture").dialog( "close" )
                               $("#forerror").remove();
-                              $("#lecturelist").prepend("<li id="+id+" class='lecturelinks'><a href='#''>"+name+"</a></li>")
+                              $("#lecturelist").prepend("<li><a href='edit/"+id+"'>"+name+"</a></li>")
                        }, 600)
                             
                         }
@@ -249,7 +250,12 @@ var courseid;
       });
 
   
-    })});
+    })
+
+
+
+
+});
 /* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
 /* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
 /* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */

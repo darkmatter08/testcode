@@ -1004,10 +1004,6 @@ pre code {
   overflow-y: scroll;
 }
 
-form {
-  margin: 0 0 20px;
-}
-
 fieldset {
   padding: 0;
   margin: 0;
@@ -1085,7 +1081,7 @@ input[type="color"],
 input,
 textarea,
 .uneditable-input {
-  width: 206px;
+ 
 }
 
 textarea {

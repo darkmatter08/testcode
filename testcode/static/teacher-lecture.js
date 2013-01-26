@@ -71,7 +71,7 @@
   
     });
 
-
+var problemid;
  $(function() 
 {
 
@@ -79,14 +79,14 @@ $(document).on("click",".problemlinks",function(){
               problem_id=$(this).attr('id'); 
               $("#latest").hide("slide", { direction: "up" }, 500);
                setTimeout(function(){            
-                     
+                    
                      $("#latest").html('<div class="classe">'+                    
                            '<div class="margins"> Problem 4 </div> '+ 
                           ' </div> '+ 
-                            ' <div class="fields"> Description </div>     '+                
+                            ' <div class="fields"> Description  <p class="errormesage" id="desc"> </p></div>     '+                
                           ' <div id="problemdescription"> <form><textarea id="description1" name="description" cols="98" rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> </div>'+ 
                         ' <div class=" marginbottom"> <div class="btn-group in forsave"><button class="btn" type="button" id="savedescription"><i class="icon-ok-circle"></i> Save</button></div> </div>'+ 
-                         '   <div class="fields "> Test cases </div>'+ 
+                         '   <div class="fields "> Test case 1 </div>'+ 
                          '   <div class="casebigbox"> '+ 
                         '       <div class="inputtest"> '+                           
                          '        <p class="indents"> Input </p>'+ 
@@ -94,15 +94,45 @@ $(document).on("click",".problemlinks",function(){
                            '     </div> '+ 
                            '     <div class="outputtest"> '+ 
                            '    <p class="indents">  Output</p>'+ 
-                            '    <form><textarea id="outputtext" name="outputtext" cols="45" rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> </div>'+ 
+                            '    <form><textarea id="outputtext" name="outputtext" cols="45" rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> <div class="btn-group in forsave"><button class="btn savetestcase" type="button" id="1"><i class="icon-ok-circle"></i> Save</button></div></div>'+ 
                            '    </div>'+ 
-                           '    <div class="btn-group in"><button class="btn" type="button" id="testcase1"><i class="icon-tasks"></i> Add a new test case</button></div>')
+                           '   <div class=" marginbottom"> <div class="btn-group in"><button class="btn" type="button" id="testcase"><i class="icon-tasks"></i> Add a new test case</button></div> </div>')
           
-                   $("#latest").show("slide", { direction: "up" }, 500)},500);
+                   $("#latest").show("slide", { direction: "up" }, 600)},600);
           }
 
-              
-             
-                 
-     )}
-  )});
+ )} );
+
+    var i=1;
+
+
+$(document).on("click","#testcase",function(){
+
+  i=i+1;
+  $("#testcase").remove();
+  $("#latest").append('   <div class="fields "> Test case '+i+' <p class="errormesage"> </p></div>'+ 
+                         '   <div class="casebigbox"> '+ 
+                        '       <div class="inputtest"> '+                           
+                         '        <p class="indents"> Input </p>'+ 
+                           '       <form><textarea id="inputtext" name="inputtext" cols="45" rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> '+ 
+                           '     </div> '+ 
+                           '     <div class="outputtest"> '+ 
+                           '    <p class="indents">  Output</p>'+ 
+                            '    <form><textarea id="outputtext" name="outputtext" cols="45" rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> <div class="btn-group in forsave"><button class="btn savetestcase" type="button"><i class="icon-ok-circle"></i> Save</button></div></div>'+ 
+                           '    </div>'+ 
+                           '   <div class=" marginbottom"> <div class="btn-group in"><button class="btn" type="button" id="testcase"><i class="icon-tasks"></i> Add a new test case</button></div> </div>')
+     })
+
+$(document).on("click",".savedescription",function(){}
+
+
+  )
+
+
+
+
+
+
+});
+
+

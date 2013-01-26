@@ -98,11 +98,11 @@ def teacher(request):
 	# in the courses queryset. Get length of each queryset via {{some_queryset.count}}
 	lectures = []
 	for course in courses:
-		lectures.append(Lecture.objects.get(course=course))
+	 	lectures.append(Lecture.objects.filter(course=course)[0])
 	# Add stuff for problems. 
 	# Use Request Context for pages that load with a CSRF token
 	#rc = RequestContext(request, {"user": currentUser, "results": "Nothing Submitted!"})
-	rc = Context({"user": currentUser, "isNewUser": isNewUser, "courses": courses, "lectures": lectures})
+	rc = Context({"user": currentUser, "isNewUser": isNewUser, "courses": courses})
 	t = get_template("teacher-home.html")
 	html = t.render(rc)
 	return HttpResponse(html)
@@ -406,6 +406,7 @@ def edit(request, mylecture_id):
 # JSON always returns isOkay and error string.
 # If the client only sends a problem_name and lecture_id (blank description) in the POST, then create a problem and 
 # return JSON with problem_id. If client POSTs problem_id and description in the POST, then I update the problem. 
+# TO IMPLEMENT: when a problem is created, create a blank testcase
 def createproblem(request):
 	user_id = request.session["user_id"]
 	currentUser = ""
@@ -421,7 +422,13 @@ def createproblem(request):
 		lecture_id = request.POST["lecture_id"]
 		problem_name = request.POST["problem_name"]
 		lecture = Lecture.objects.get(lecture_id=lecture_id)
-		newProblem = Problem(name=problem_name, lecture=lecture)
+		newProblemNumber = 0
+		allProblems = Problem.objects.filter(lecture=lecture).order_by('-problem_number')
+		if len(allProblems) == 0:
+			newProblemNumber  = 1
+		else:
+			newProblemNumber = allProblems[0].problem_number + 1
+		newProblem = Problem(name=problem_name, lecture=lecture, problem_number=newProblemNumber)
 		newProblem.save()
 		problem_id = newProblem.problem_id
 		JsonDict["problem_id"] = problem_id
@@ -481,17 +488,6 @@ def submissionHistory(request):
 		else:
 			allSubmissions = Submission.objects.filter(problem=problem).order_by('date')
 			prevSubmission = allSubmissions[0]
-			# prevSubmission = ""
-			# delta = datetime.timedelta()
-			# # look for smallest positive 
-			# for submission in allSubmissions:	
-			# 	timeDelta = currentSubmission.date - submission.date
-			# 	if abs(timeDelta) < delta and timeDelta > 0:
-			# 		prevSubmission = submission
-			# 		delta = abs(timeDelta)
-			# if prevSubmission == "":
-			# 	isOkay = False
-			# 	error = "You're already at the oldest submission!"
 			JsonDict["solution"] = prevSubmission.solution
 			JsonDict["submission_id"] = prevSubmission.submission_id
 	else:
@@ -586,9 +582,35 @@ def teacherlecture(request, lecture_id):
 	course = lecture.course
 	problems = Problem.objects.filter(lecture=lecture_id)
 	t = get_template("teacher-lecture.html")
-	rc = Context({"user": currentUser, "courses": courses, "lecture": lecture, "problems": problems})
+	rc = Context({"user": currentUser, "course": course, "lecture": lecture, "problems": problems})
 	html = t.render(rc)#RequestContext(request, {}))
 	return HttpResponse(html)
+
+# API function that gets problem_id in POST, returns JSON with problem_description, problem_name
+def editproblem(request):
+	user_id = request.session["user_id"]
+	currentUser = ""
+	isOkay = True
+	error = ""
+	JsonDict = {}
+	try:
+		currentUser = User.objects.get(user_id=user_id)
+	except User.DoesNotExist:
+		return HttpResponseRedirect('/')
+	if ("problem_id" in request.POST):
+		
+	else:
+		isOkay = False
+		error = "YOU IDIOT GIVE ME A POST REQUEST!"
+	JsonDict["isOkay"] = isOkay
+	JsonDict["error"] = error
+	Json = simplejson.dumps(JsonDict)
+	return HttpResponse(Json, content_type="application/json")
+	
+
+# API function that gets problem_id and testcase_number from POST returns JSON with input_value and expected_output
+def edittestcase(request):
+	return HttpResponse("")	
 
 
 ###

@@ -102,12 +102,51 @@ a
 {
    
     width:950px;
-    height: 700px;
+    height: auto;
     position: relative;
     left:50%;
     margin-left:-475px;    
 }
 
+#testcase
+{
+  margin-bottom: 15px;
+}
+.casebigbox
+  {
+    position: relative;
+    height: 280px;
+  }
+
+.inputtest
+{
+  float:left;
+}
+
+.outputtest
+{
+  float: right;
+  margin-right: 15px;
+}
+#problemdescription
+{
+ 
+
+}
+
+.marginbottom
+{
+ 
+ margin-bottom: 10px;
+position: relative;
+height: 25px;
+
+}
+
+.forsave
+{
+   float:right;
+}
 
 #hi
 {
@@ -360,8 +399,8 @@ width:270px;
 
 .classe
 {
-     padding: 5px;
-      position: relative;
+    padding: 5px;
+    position: relative;
     width: 265x;
     height: 30px;
     text-align: left;
@@ -369,7 +408,9 @@ width:270px;
     margin-right:0px !important;  
     margin-bottom:15px;  
     background-color: #f5f5f5;
-    
+    font-family: "Strait", sans-serif;
+    font-size: 19px;
+    color: #256400;
 }
 
 
@@ -422,7 +463,6 @@ width:270px;
  padding-left:10px;
  padding-right:10px;
  margin-right:0px;
- height:247px;
  
 }
 
@@ -446,6 +486,23 @@ width:270px;
     width: 900px; 
     height: 625px; 
   
+}
+
+.fields
+{
+ font-size: 17px;
+ margin-top: 10px;
+ margin-bottom: 10px;
+ margin-left: 10px;
+ 
+ font-weight: 900;
+}
+
+.indents
+{
+  font-weight: 600;
+  margin: 7px;
+  margin-left: 12px;
 }
 
 #save
