@@ -77,6 +77,9 @@ class Testcase(models.Model):
 	# Many to one relationships with Problem - one Problem has many Testcases
 	problem = models.ForeignKey(Problem)
 
+	# Describes the object when it is called from the DB
+	def __unicode__(self):
+		return "testcase_number="+str(self.testcase_id)+" input_value="+self.input_value
 
 # TRANSACTION TABLES
 

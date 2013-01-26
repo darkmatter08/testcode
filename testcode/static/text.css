@@ -121,19 +121,34 @@ a
 .inputtest
 {
   float:left;
+  width:395px;
 }
 
 .outputtest
 {
   float: right;
   margin-right: 15px;
+   width:395px;
+}
+.inputtext
+{
+ 
+  width:100%;
+}
+
+.outputtext
+{
+  width:100%;
 }
 #problemdescription
 {
  
 
 }
-
+.errormessage
+{
+  float:right;
+}
 .marginbottom
 {
  
@@ -397,6 +412,10 @@ width:270px;
   float:left;
 }
 
+.higher
+{
+  margin-top: -5px;
+}
 .classe
 {
     padding: 5px;
@@ -412,6 +431,7 @@ width:270px;
     font-size: 19px;
     color: #256400;
 }
+
 
 
 #subms
@@ -466,6 +486,14 @@ width:270px;
  
 }
 
+#description1
+{
+ 
+ width:100%;
+ padding: 3px;
+ 
+}
+
 #container2
 {
     float:left;   
@@ -496,6 +524,10 @@ width:270px;
  margin-left: 10px;
  
  font-weight: 900;
+}
+.changecode
+{
+  margin-top: -5px;
 }
 
 .indents

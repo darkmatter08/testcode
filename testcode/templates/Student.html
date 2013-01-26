@@ -16,6 +16,7 @@
       <script src="/static/code/lib/matchbrackets.js"></script>
       <script src="/static/code/python.js"></script>
       <script type="text/javascript" src="/static/java.js"></script>
+          
     <link rel="stylesheet" href="/static/j-query.css" />
       <script type="text/javascript" src="/static/scroll/jquery.slimscroll.min.js"></script>
       
@@ -41,40 +42,11 @@
                 })
       });
             </script>
-  
+    <script type="text/javascript" src="/static/student.js"></script>
   </head>
   <body>
     
-        <div id="dialog-formclass" title="Create a class">
- 
-             <form>
-                <fieldset>
-                    <label for="name">Class name</label>
-                    <input type="text" name="email" id="nameclass" class="text ui-widget-content ui-corner-all" />
-                    <label for="password">Student password</label>
-                    <input type="password" name="password" id="passwordstudent" value="" class="text ui-widget-content ui-corner-all" />
-                     <label for="password">Teacher password</label>
-                    <input type="password" name="password" id="passwordteacher" value="" class="text ui-widget-content ui-corner-all" />
-                               
-                </fieldset>
-            </form>
-             
-             
-             
-        </div>
-        
-        
-        <div id="dialog-formaddclass" title="Add class">
- 
-             <form>
-                <fieldset>
-                    <label for="name">Class ID</label>
-                    <input type="text" name="email" id="idclass" class="text ui-widget-content ui-corner-all" />
-                    <label for="password">Password</label>
-                    <input type="password" name="password" id="passwordclass1" value="" class="text ui-widget-content ui-corner-all" />
-                </fieldset>
-            </form>
-        </div>
+       
     
     
     
@@ -116,11 +88,11 @@
             <div id="prob_tabs">
               
                <ul class="nav nav-tabs">
-                     <li class="active">
-                           <a href="#">Problem 1</a>
+                     <li class="problemlinks">
+                      <a href="#">Problem 1</a>
                      </li>
-                     <li><a href="#">Problem 2</a></li>
-                     <li><a href="#">Problem 3</a></li>
+                    <li class="problemlinks"><a href="#">Problem 2</a></li>
+                    <li class="problemlinks"><a href="#">Problem 3</a></li>
                </ul>      
                 
             </div>
@@ -155,9 +127,9 @@
                             <ul class="breadcrumb">
                                 <li>Your code</li>
                                 <div id="subms">
-                                     <button class="btn1" type="button"> <i class="icon-ok icon-chevron-left"></i> Previous</button>
+                                    <div class="btn-group in"> <button class="btn changecode" type="button" id="previous"> <i class="icon-ok icon-chevron-left"></i> Previous</button> </div>
                                      Submissions
-                                     <button class="btn1" type="button">Next <i class="icon-ok icon-chevron-right"></i></button>
+                                     <div class="btn-group in"><button class="btn changecode" type="button" id="next" disabled>Next <i class="icon-ok icon-chevron-right"></i></button> </div>
                                 </div>
                             </ul>
                             
@@ -182,16 +154,14 @@
                             
                             <div id="feedback">
                                 <br/>
-                                <code>
-                                    
-                                When you "Save & Run" your code, test results will appear here. </code>
+                                <pre><code>When you "Save & Run" your code, test results will appear here.</code></pre>
                                 <br/>   
                             </div>
                         </div>
                     
                         <div id="container3">
                         
-                         <div id="textcode"><form><textarea id="code" name="code" cols="120" rows="400" style="background-color: #FFF">{{submission.solution}}</textarea> </form> </div>
+                         <div id="textcode" class="submissionid"><form><textarea id="code" name="code" cols="120" rows="400" style="background-color: #FFF">{{submission.solution}} var 5=len(5)</textarea> </form> </div>
                                   <script>
                                       var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
                                       mode: {name: "python",
@@ -202,6 +172,10 @@
                                       tabMode: "shift",
                                       matchBrackets: true
                                      });
+                                     
+
+  
+                                      
                                   </script>                                              
                         </div>
                         
@@ -210,7 +184,7 @@
                     <div id="containerbottom">                         
                               <div id="save"> 
                                  <div class="btn-group in"> <button class="btn btn-success" type="button"> <i class="icon-ok icon-white"></i> Save & Run</button> </div>                                
-                                 <div class="btn-group in"> <button class="btn btn-danger" type="button"><i class="icon-refresh icon-white"></i> Reset</button> </div>
+                                 <div class="btn-group in"> <button class="btn btn-danger" type="button" id="reset1"><i class="icon-refresh icon-white"></i> Reset</button> </div>
                               </div>
                         
                     </div>

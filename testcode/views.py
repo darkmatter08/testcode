@@ -22,6 +22,8 @@ from testcode.models import *
 
 # GLOBAL MINIMUM PASSWORD LENGTH
 min_pwd_len = 3
+# GLOBAL POST REQUEST ERROR STRING
+post_request_err = "YOU IDIOT GIVE ME A POST REQUEST!"
 
 # This is the homepage with login 
 def home(request):
@@ -255,7 +257,7 @@ def createcourse(request):
 			error = "Not all fields are filled in."
 	else:
 		isOkay = False
-		error = "YOU IDIOT GIVE ME A POST REQUEST!"
+		error = post_request_err
 	JsonDict = {}
 	JsonDict["isOkay"] = isOkay
 	JsonDict["error"] = error
@@ -286,7 +288,7 @@ def getlectures(request):
 		JsonDict["lecture_id"] = lecture_id
 	else:
 		isOkay = False
-		error = "YOU IDIOT GIVE ME A POST REQUEST!"
+		error = post_request_err
 	JsonDict["isOkay"] = isOkay
 	JsonDict["error"] = error
 	JsonDict["num_lectures"] = len(lectures)
@@ -348,7 +350,7 @@ def addcourse(request):
 			error = "Course ID was not valid! Integers only."
 	else:
 		isOkay = False
-		error = "YOU IDIOT GIVE ME A POST REQUEST!"
+		error = post_request_err
 	JsonDict["isOkay"] = isOkay
 	JsonDict["error"] = error
 	Json = simplejson.dumps(JsonDict)
@@ -375,7 +377,7 @@ def createlecture(request):
 			error = "No name entered!"
 	else:
 		isOkay = False
-		error = "YOU IDIOT GIVE ME A POST REQUEST!"
+		error = post_request_err
 	JsonDict["lecture_id"] = lecture_id
 	JsonDict["name"] = name
 	JsonDict["isOkay"] = isOkay
@@ -421,17 +423,25 @@ def createproblem(request):
 	if ("lecture_id" in request.POST) and ("problem_name" in request.POST):
 		lecture_id = request.POST["lecture_id"]
 		problem_name = request.POST["problem_name"]
-		lecture = Lecture.objects.get(lecture_id=lecture_id)
-		newProblemNumber = 0
-		allProblems = Problem.objects.filter(lecture=lecture).order_by('-problem_number')
-		if len(allProblems) == 0:
-			newProblemNumber  = 1
+		if len(problem_name) > 0:
+			lecture = Lecture.objects.get(lecture_id=lecture_id)
+			newProblemNumber = 0
+			allProblems = Problem.objects.filter(lecture=lecture).order_by('-problem_number')
+			if len(allProblems) == 0:
+				newProblemNumber  = 1
+			else:
+				newProblemNumber = allProblems[0].problem_number + 1
+			newProblem = Problem(name=problem_name, lecture=lecture, problem_number=newProblemNumber)
+			newProblem.save()
+			# Create blank testcase, testcause_number = 1
+			firstTestcase = Testcase(testcase_number=1, problem=newProblem, input_value="", expected_output="")
+			firstTestcase.save()
+			problem_id = newProblem.problem_id
+			JsonDict["problem_id"] = problem_id
+			#JsonDict["problem_name"] = problem_name
 		else:
-			newProblemNumber = allProblems[0].problem_number + 1
-		newProblem = Problem(name=problem_name, lecture=lecture, problem_number=newProblemNumber)
-		newProblem.save()
-		problem_id = newProblem.problem_id
-		JsonDict["problem_id"] = problem_id
+			isOkay = False
+			error = "Fill in all fields!"
 	# Case 2 - problem_id and description
 	elif ("problem_id" in request.POST) and ("description" in request.POST):
 		problem_id = request.POST["problem_id"]
@@ -445,7 +455,7 @@ def createproblem(request):
 			error = "Nothing in the description!"
 	else:
 		isOkay = False
-		error = "YOU IDIOT GIVE ME A POST REQUEST!"
+		error = post_request_err
 	JsonDict["isOkay"] = isOkay
 	JsonDict["error"] = error
 	Json = simplejson.dumps(JsonDict)
@@ -492,7 +502,7 @@ def submissionHistory(request):
 			JsonDict["submission_id"] = prevSubmission.submission_id
 	else:
 		isOkay = False
-		error = "YOU IDIOT GIVE ME A POST REQUEST!"
+		error = post_request_err
 	JsonDict["isOkay"] = isOkay
 	JsonDict["error"] = error
 	Json = simplejson.dumps(JsonDict)
@@ -534,7 +544,7 @@ def createtestcase(request):
 			error = "Not all fields filled!"
 	else:
 		isOkay = False
-		error = "YOU IDIOT GIVE ME A POST REQUEST!"
+		error = post_request_err
 	JsonDict["isOkay"] = isOkay
 	JsonDict["error"] = error
 	Json = simplejson.dumps(JsonDict)
@@ -564,7 +574,7 @@ def getproblem(request):
 		JsonDict["solution"] = latestSubmission.solution
 	else:
 		isOkay = False
-		error = "YOU IDIOT GIVE ME A POST REQUEST!"
+		error = post_request_err
 	JsonDict["isOkay"] = isOkay
 	JsonDict["error"] = error
 	Json = simplejson.dumps(JsonDict)
@@ -587,7 +597,7 @@ def teacherlecture(request, lecture_id):
 	return HttpResponse(html)
 
 # API function that gets problem_id in POST, returns JSON with problem_description, problem_name
-def editproblem(request):
+def getproblemteacher(request):
 	user_id = request.session["user_id"]
 	currentUser = ""
 	isOkay = True
@@ -598,20 +608,32 @@ def editproblem(request):
 	except User.DoesNotExist:
 		return HttpResponseRedirect('/')
 	if ("problem_id" in request.POST):
-		
+		problem_id = request.POST["problem_id"]
+		problem = Problem.objects.get(problem_id=problem_id)
+		allSubmissions = Submission.objects.filter(problem=problem).order_by('-date')
+		problem_description = problem.description
+		# list of all testcase inputs and outputs. 
+		allTestcases = Testcase.objects.filter(problem=problem).order_by('testcase_number')
+		testcase_input = []
+		testcase_output = []
+		for testcase in allTestcases:
+			testcase_input.append(testcase.input_value)
+			print testcase.input_value
+			testcase_output.append(testcase.expected_output)
+			print testcase.expected_output
+		print testcase_input
+		print testcase_output
+		JsonDict["problem_description"] = problem_description
+		JsonDict["name"] = problem.name
+		JsonDict["testcase_input"] = testcase_input
+		JsonDict["testcase_output"] = testcase_output
 	else:
 		isOkay = False
-		error = "YOU IDIOT GIVE ME A POST REQUEST!"
+		error = post_request_err
 	JsonDict["isOkay"] = isOkay
 	JsonDict["error"] = error
 	Json = simplejson.dumps(JsonDict)
 	return HttpResponse(Json, content_type="application/json")
-	
-
-# API function that gets problem_id and testcase_number from POST returns JSON with input_value and expected_output
-def edittestcase(request):
-	return HttpResponse("")	
-
 
 ###
 # END OF FILE 

@@ -145,6 +145,8 @@ var courseid;
 
      {
      $(document).on("click",".classlinks",function(){
+            $(".active").removeClass("active");
+            $(this).addClass("active");
             courseid=$(this).attr('id');         
             $.post('/api/getlectures',
                  {

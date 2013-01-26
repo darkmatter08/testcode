@@ -47,7 +47,7 @@
   </head>
   <body>
     
-<div id="dialog-formproblem" title="Create a problem">
+<div id="dialog-formproblem"  title="Create a problem">
      <p class="validateTips" id="problem_message_box"></p>
              <form>
                 <fieldset>
@@ -134,7 +134,7 @@
              
         <div id="container1">
        
-       <div class="lecturepage1" >
+       <div class="lecturepage1" style="background-color:#f5f5f5" >
                   
                   <span style="font-size:16px; font-weight:900"> <ul class="breadcrumb">
                                 <li><a href="#">{{course.name}}</a> <span class="divider">/</span></li>
@@ -157,18 +157,18 @@
                     <div id="listclass">
                         
                         {% ifequal problems.count 0 %}
-                             <div id="shit"> <p class="empty"> You have no classes added. Use "Create a class" or "Add an existing class" button </p> </div> 
+                             <div id="shit"> <p class="empty"> This class has no problems. Use "Create a problem" button </p> </div> 
                              <ul class="nav nav-tabs nav-stacked" id="problemlist">                           
                             
                             </ul>
                         {% else %}
                         
-                        <ul class="nav nav-tabs nav-stacked" id="classlist">
+                        <ul class="nav nav-tabs nav-stacked" id="problemlist">
                             
                             {% for problem in problems %}                                 
 
                                 <li id="{{problem.problem_id}}" class="problemlinks"><a href="#">{{ problem.name }}</a></li>
-                                                       
+                                 
                             {% endfor %}
                             
                         </ul>
@@ -189,7 +189,7 @@
                             {% for problem in problems %}  
                              <tr>                                 
                                  <td> <div class="btn-group in rightm">              
-                            <button class="btn " type="button" id="create-class"> <i class="icon-signal"></i> View students' performance</button> 
+                            <button class="btn viewsubmissions " type="button higher" id="{{problem.problem_id}}"> <i class="icon-signal"></i> View students' performance</button> 
                        </div></td>
                                 
                             </tr>

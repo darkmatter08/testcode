@@ -1,8 +1,9 @@
  $(document).ready(function(){
 
  $(function() {
-    var name = $( "#problemname" ),
-      
+    var name;
+    
+    lectureid=$(".lectureelement").attr('id');  
         
         allFields = $( [] ).add( problemname )
 
@@ -13,19 +14,19 @@
       modal: true,
       buttons: {
           "Create and start editing": function() {         
-          allFields.removeClass( "ui-state-error" );        
-           
-                 
+          allFields.removeClass( "ui-state-error" );      
+           name=$( "#problemname" ).val();
+          
           $.post('/api/createproblem',
                       {
-                      name:name.val(),
-                      
+                      problem_name:name,
+                      lecture_id:lectureid
                       },
            function(data){                    
                      var result = jQuery.parseJSON(JSON.stringify(data))
                      var isOkay = result.isOkay
                      var error = result.error                     
-                     var id= result.course_id
+                     var id= result.problem_id
                      if (isOkay==false)
                         {
                         color = "red";
@@ -37,12 +38,12 @@
                         setTimeout(function()
                         {
                         
-                          $("#dialog-formclass").dialog( "close" )
+                          $("#dialog-formproblem").dialog( "close" )
                           $("#shit").remove();
-                          $("#classlist").prepend("<li id="+id+" class='classlinks'><a href='#''>"+name+"</a></li>");
-                          $("#problemstable").prepend("<tr><td> 0 lectures</td><td >0 problems</td><td >0 students</td></tr>")
-
-
+                          $("#problemlist").prepend("<li id="+id+" class='problemlinks'><a href='#''>"+name+"</a></li>");
+                          $("#problemstable").prepend(' <tr>'+                                 
+                                 '<td> <div class="btn-group in rightm">'+       
+                            '<button class="btn viewsubmissions " type="button higher" id="'+id+'"> <i class="icon-signal"></i> View students\' performance</button> </div></td></tr>')
                         },600);
                             
                         }
@@ -70,40 +71,70 @@
 
   
     });
-
-var problemid;
+var i=1;
+var problem_id;
  $(function() 
 {
 
 $(document).on("click",".problemlinks",function(){
+              $(".active").removeClass("active");
+              $(this).addClass("active");
               problem_id=$(this).attr('id'); 
+              var name
+              var description                   
+              var testinput
+              var testoutput
+              var num_testcases
+            $.post( '/api/getproblemteacher',
+                      {
+                        problem_id:problem_id                        
+                      },
+                    function(data){
+                       var result = jQuery.parseJSON(JSON.stringify(data));
+                       name=result.name;
+                       description=result.problem_description;                       
+                       testinput=result.testcase_input;
+                       testoutput=result.testcase_output;                    
+
+                       num_testcases=testinput.length;
+                       
+                    },
+
+                    "json"
+                ); 
               $("#latest").hide("slide", { direction: "up" }, 500);
                setTimeout(function(){            
                     
                      $("#latest").html('<div class="classe">'+                    
-                           '<div class="margins"> Problem 4 </div> '+ 
+                           '<div class="margins">'+name+' </div> '+ 
                           ' </div> '+ 
-                            ' <div class="fields"> Description  <p class="errormesage" id="desc"> </p></div>     '+                
-                          ' <div id="problemdescription"> <form><textarea id="description1" name="description" cols="98" rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> </div>'+ 
-                        ' <div class=" marginbottom"> <div class="btn-group in forsave"><button class="btn" type="button" id="savedescription"><i class="icon-ok-circle"></i> Save</button></div> </div>'+ 
-                         '   <div class="fields "> Test case 1 </div>'+ 
+                            ' <div class="fields"> Description  <span class="errormesage" id="desc" style="font-size:13px"> </span></div>     '+                
+                          ' <div id="problemdescription"> <form><textarea id="description1" name="description" rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> </div>'+ 
+                        ' <div class=" marginbottom"> <div class="btn-group in forsave"><button class="btn" type="button" id="savedescription"><i class="icon-ok-circle"></i> Save</button></div> </div>')
+                     $("#description1").val(description);
+                     for (var j=1; j<(num_testcases+1); j++)
+                     {
+                        $("#latest").append( '   <div class="fields "> Test case'+j+' </div>'+ 
                          '   <div class="casebigbox"> '+ 
                         '       <div class="inputtest"> '+                           
-                         '        <p class="indents"> Input </p>'+ 
-                           '       <form><textarea id="inputtext" name="inputtext" cols="45" rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> '+ 
+                         '        <p class="indents"> Input </p>  '+ 
+                           '       <form><textarea class="inputtext" name="inputtext"  rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> '+ 
                            '     </div> '+ 
                            '     <div class="outputtest"> '+ 
                            '    <p class="indents">  Output</p>'+ 
-                            '    <form><textarea id="outputtext" name="outputtext" cols="45" rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> <div class="btn-group in forsave"><button class="btn savetestcase" type="button" id="1"><i class="icon-ok-circle"></i> Save</button></div></div>'+ 
-                           '    </div>'+ 
-                           '   <div class=" marginbottom"> <div class="btn-group in"><button class="btn" type="button" id="testcase"><i class="icon-tasks"></i> Add a new test case</button></div> </div>')
-          
+                            '    <form><textarea class="outputtext" name="outputtext"  rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> <div class="btn-group in forsave"><button class="btn savetestcase" type="button" id="1"><i class="icon-ok-circle"></i> Save</button></div></div>'+ 
+                           '    </div>')  
+                        $(".inputtext").eq(j-1).val(testinput[j-1]);
+                        $(".outputtext").eq(j-1).val(testoutput[j-1]);
+                      }
+                    i=j;
+                    $("#latest").append( ' <div class=" marginbottom"> <div class="btn-group in"><button class="btn" type="button" id="testcase"><i class="icon-tasks"></i> Add a new test case</button></div> </div>')
                    $("#latest").show("slide", { direction: "up" }, 600)},600);
           }
 
  )} );
 
-    var i=1;
+    
 
 
 $(document).on("click","#testcase",function(){
@@ -114,19 +145,58 @@ $(document).on("click","#testcase",function(){
                          '   <div class="casebigbox"> '+ 
                         '       <div class="inputtest"> '+                           
                          '        <p class="indents"> Input </p>'+ 
-                           '       <form><textarea id="inputtext" name="inputtext" cols="45" rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> '+ 
+                           '       <form><textarea class="inputtext" name="inputtext" cols="45" rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> '+ 
                            '     </div> '+ 
                            '     <div class="outputtest"> '+ 
                            '    <p class="indents">  Output</p>'+ 
-                            '    <form><textarea id="outputtext" name="outputtext" cols="45" rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> <div class="btn-group in forsave"><button class="btn savetestcase" type="button"><i class="icon-ok-circle"></i> Save</button></div></div>'+ 
+                            '    <form><textarea class="outputtext" name="outputtext" cols="45" rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> <div class="btn-group in forsave"><button class="btn savetestcase" type="button"><i class="icon-ok-circle"></i> Save</button></div></div>'+ 
                            '    </div>'+ 
                            '   <div class=" marginbottom"> <div class="btn-group in"><button class="btn" type="button" id="testcase"><i class="icon-tasks"></i> Add a new test case</button></div> </div>')
      })
 
-$(document).on("click",".savedescription",function(){}
+$(document).on("click","#savedescription",function(){
+  descr=$("#description1").val();
 
+  $.post('/api/createproblem',
+  {
+    problem_id:problem_id,
+    description:descr
+  },
+  function(data){
+       var result = jQuery.parseJSON(JSON.stringify(data));
+       isOkay=result.isOkay
+       error=result.error
+       if (isOkay)
+       {
+        var date= new Date();
+
+        $("#desc").html('<span style="color:green; font-weight:normal; font-size:12; float:right"> Saved '+date.toLocaleTimeString()+'  </span>')
+       }
+       else
+       {
+        $("#desc").html('<span style="color:red; font-weight:normal; font-size:12; float:right">'+error+'</span>')
+       }
+
+      }
 
   )
+})
+
+$(document).on("click",".savetestcase",function(){
+  var k = $(".savetestcase").index(this);
+  tinput=$(".inputtext")[k].val();
+  toutput=$(".outputtext")[k].val();
+  $.post('/api/createtestcase',
+  {
+    problem_id:problem_id,
+    testcase_number:k+1,
+    input_value:tinput,
+    expected_output:toutput
+  }
+  )
+
+
+})
 
 
 
