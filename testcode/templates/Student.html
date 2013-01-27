@@ -33,7 +33,7 @@
     </style>
       
 
-      <script>  $(document).ready(function(){
+    <script>  $(document).ready(function(){
             $("#description").slimScroll({
                 height: '247px'
                 })
@@ -41,8 +41,9 @@
                 height: '300px'
                 })
       });
-            </script>
+            </script> 
     <script type="text/javascript" src="/static/student.js"></script>
+
   </head>
   <body>
     
@@ -88,19 +89,18 @@
             <div id="prob_tabs">
               
                <ul class="nav nav-tabs">
+                {% for problem in problems %}
                      <li class="problemlinks">
-                      <a href="#">Problem 1</a>
-                     </li>
-                    <li class="problemlinks"><a href="#">Problem 2</a></li>
-                    <li class="problemlinks"><a href="#">Problem 3</a></li>
+                      <a href="#">{{problem.name}}</a>
+                    </li>
+                {% endfor %}
                </ul>      
                 
             </div>
             
             
-        </div>
-        
-        
+        </div>        
+      
         
        <!-- <div id="sep"> </div> -->
         
@@ -114,9 +114,9 @@
                         <div id="path">
                             
                             <ul class="breadcrumb">
-                                <li><a href="#">{{course.name}}</a> <span class="divider">/</span></li>
-                                <li><a href="#">Lecture {{lecture.lecture_id}}</a> <span class="divider">/</span></li>
-                                <li class="active">Centered average</li>
+                                <li ><a href="#">{{course.short_name}}</a> <span class="divider">/</span></li>
+                                <li ><a href="#">{{lecture.description}}</a> <span class="divider">/</span></li>
+                                <li class="active">{{activeProblem.name}}</li>
                             </ul>
                             
                         </div>
@@ -127,7 +127,12 @@
                             <ul class="breadcrumb">
                                 <li>Your code</li>
                                 <div id="subms">
+                                   {% if hasPrev %}
+
                                     <div class="btn-group in"> <button class="btn changecode" type="button" id="previous"> <i class="icon-ok icon-chevron-left"></i> Previous</button> </div>
+                                   {% else %}
+                                   <div class="btn-group in"> <button class="btn changecode  disabled " type="button" id="previous"> <i class="icon-ok icon-chevron-left"></i> Previous</button> </div>
+                                   {% endif %}
                                      Submissions
                                      <div class="btn-group in"><button class="btn changecode disabled" type="button" id="next" >Next <i class="icon-ok icon-chevron-right"></i></button> </div>
                                 </div>
@@ -143,7 +148,7 @@
                         
                         
                         <div id="container2"> 
-                           <div id="description">   <br/> <p> Return the "centered" average of an array of ints, which we'll say is the mean average of the values, except ignoring the largest and smallest values in the array. If there are multiple copies of the smallest value, ignore just one copy, and likewise for the largest value. Use int division to produce the final average. You may assume that the array is length 3 or more.
+                           <div class="well well-small" id="description">   <br/> <p id="descriptionplace"> {{activeproblem.description}}
                                            </p>   <br/></div>
                             
                             <div id="feed">
@@ -152,16 +157,16 @@
                             </ul>                                
                             </div>
                             
-                            <div id="feedback">
+                            <div class="well well-small" id="feedback">
                                 <br/>
-                                <pre><code>When you "Save & Run" your code, test results will appear here.</code></pre>
+                                <pre><code>Press "Save & Run" to see your results.</code></pre>
                                 <br/>   
                             </div>
                         </div>
                     
                         <div id="container3">
                         
-                         <div id="textcode" class="submissionid"><form><textarea id="code" name="code" cols="120" rows="400" style="background-color: #FFF">{{submission.solution}} var 5=len(5)</textarea> </form> </div>
+                         <div id="textcode" class="submissionid"><form id="{{submission.submission_id}}"><textarea id="code" name="code" cols="120" rows="400" style="background-color: #FFF">{{submission.solution}}</textarea> </form> </div>
                                   <script>
                                       var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
                                       mode: {name: "python",

@@ -84,8 +84,9 @@ a
 }
 
 #cont1
-{
-    height:32px; 
+{  
+    height:40px; 
+    overflow:hidden;
 }
    
 #container
@@ -189,12 +190,12 @@ height: 25px;
       
 #prob_tabs
  {
-    width:820px;
+    width:880px;
     height: 27px;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 2px;
-    margin-top:15px;
+    margin-top:5px;
  }
  
  #table1 table, tr, th {

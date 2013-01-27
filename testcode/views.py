@@ -176,7 +176,6 @@ def login(request):
 def signup(request):
 	isOkay = True
 	error = "Sign up successful!"
-	print request.POST
 	# Load POST data and read in name, email, password, and isAdmin
 	if ("name" in request.POST) and ("email" in request.POST) and ("password" in request.POST) and ("isAdmin" in request.POST):
 		# Check for matching email addresses in the database. If the returned array is 0 length,
@@ -186,12 +185,10 @@ def signup(request):
 		password = request.POST["password"]
 		isAdmin = request.POST["isAdmin"]
 		# Check that the fields are not blank.
-		print isAdmin
 		if int(isAdmin) == 0:
 			isAdmin = False
 		else:
 			isAdmin = True
-		print isAdmin
 		if (len(name)>0) and (len(email)>0) and (len(password)>min_pwd_len): #Password must be longer than min_pwd_len chars
 			# Try to verify email is valid. If not, catch ValidationError set error
 			try:
@@ -305,7 +302,6 @@ def addcourse(request):
 	error = ""
 	JsonDict = {}
 	problems = 0
-	print request.POST
 	if ("course_id" in request.POST) and ("password" in request.POST):
 		course_id_temp = request.POST["course_id"]
 		course_id = -1
@@ -397,11 +393,18 @@ def edit(request, mylecture_id):
 	lecture = Lecture.objects.get(lecture_id=mylecture_id)
 	course = lecture.course
 	enrollment = Enrollment.objects.get(user=currentUser, course=course)
-	problem = Problem.objects.get(lecture=lecture) #will randomly choose an associated problem
-	submission = Submission.objects.get(enrollment=enrollment, problem=problem)
-	context = Context({"problem": problem, "submission": submission, "lecture": lecture, "course": course, "user": currentUser})
+	problems = Problem.objects.filter(lecture=lecture)
+	activeProblem = problems[0] #will choose first problem 
+	# Get most recent submission
+	submissions = Submission.objects.filter(enrollment=enrollment, problem=activeProblem).order_by('-date')
+	submission = submissions[0] #requires blank submission to be created when a problem is created
+	hasPrev = False
+	print "Has prev? = " + str(hasPrev)
+	if len(submissions) > 1:
+		hasPrev = True
+	context = Context({"activeProblem": activeProblem, "problems": problems, "submission": submission, "lecture": lecture, "course": course, "user": currentUser, "hasPrev": hasPrev})
 	t = get_template("Student.html")
-	html = t.render(cont)#RequestContext(request, {}))
+	html = t.render(context)#RequestContext(request, {}))
 	return HttpResponse(html)
 
 # An API function that allows a teacher to submit a problem for the students to edit. 
@@ -469,19 +472,46 @@ def submissionHistory(request):
 	currentUser = ""
 	isOkay = True
 	error = ""
+	hasNext = True
+	hasPrev = True
 	JsonDict = {}
+	print request.POST
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
 		return HttpResponseRedirect('/')
 	if ("isNextSubmission" in request.POST) and ("submission_id" in request.POST):
-		isNextSubmission = request.POST["nextSubmission"]
+		isNextSubmission = request.POST["isNextSubmission"]
 		submission_id = request.POST["submission_id"]
+		print "finding current submission."
 		currentSubmission = Submission.objects.get(submission_id=submission_id)
+		print "finding all submissions"
 		allSubmissions = Submission.objects.filter(problem=currentSubmission.problem)
+		print allSubmissions
+		print "isNextSubmission=" + str(isNextSubmission)
 		if int(isNextSubmission) == 1: #nextSubmission == True
-			allSubmissions = Submission.objects.filter(problem=problem).order_by('-date')
-			nextSubmission = allSubmissions[0]
+			print "pre allSubmissions"
+			allSubmissions = Submission.objects.filter(problem=currentSubmission.problem).order_by('-date')
+			print "post allSubmissions"
+			nextSubmissionIndex = -1
+			print range(len(allSubmissions))
+			for i in range(len(allSubmissions)):
+				print "loop i=" + str(i)
+				#print allSubmissions[i].submission_id
+				if allSubmissions[i].submission_id == currentSubmission.submission_id:
+					print "in the if"
+					nextSubmissionIndex = i - 1
+					print "if nextSubmissionIndex=" + str(nextSubmissionIndex) 
+				#print "post if"
+			if nextSubmissionIndex < 0:
+				isOkay = False
+				error = "No more submissions!"
+			else:
+				nextSubmission = allSubmissions[nextSubmissionIndex]
+				JsonDict["solution"] = nextSubmission.solution
+				JsonDict["submission_id"] = nextSubmission.submission_id
+			if nextSubmissionIndex == 0:
+				hasNext = False
 #			nextSubmission = ""
 #			delta = datetime.timedelta()
 #			# look for smallest negative 
@@ -493,19 +523,40 @@ def submissionHistory(request):
 #			if nextSubmission == "":
 #				isOkay = False
 #				error = "You're already at the newest submission!"
-			JsonDict["solution"] = nextSubmission.solution
-			JsonDict["submission_id"] = nextSubmission.submission_id
 		else:
-			allSubmissions = Submission.objects.filter(problem=problem).order_by('date')
-			prevSubmission = allSubmissions[0]
-			JsonDict["solution"] = prevSubmission.solution
-			JsonDict["submission_id"] = prevSubmission.submission_id
+			print "pre allSubmissions"
+			allSubmissions = Submission.objects.filter(problem=currentSubmission.problem).order_by('date')
+			print "post allSubmissions"
+			prevSubmissionIndex = -1
+			for i in range(len(allSubmissions)):
+				if allSubmissions[i].submission_id == currentSubmission.submission_id:
+					prevSubmissionIndex = i-1
+			if prevSubmissionIndex < 0:
+				isOkay = False
+				error = "No more submissions!"
+			else:
+				print "prevSubmissionIndex=" + str(prevSubmissionIndex)
+				prevSubmission = allSubmissions[prevSubmissionIndex]
+				JsonDict["solution"] = prevSubmission.solution
+				JsonDict["submission_id"] = prevSubmission.submission_id
+			if prevSubmissionIndex == 0:
+				hasPrev = False
+			# allSubmissions = Submission.objects.filter(problem=problem).order_by('date')
+			# prevSubmissionIndex = -1
+			# prevSubmission = allSubmissions[0]
+			# if prevSubmission.submission_id == submission_id:
+			# 	hasPrev = False
+			# JsonDict["solution"] = prevSubmission.solution
+			# JsonDict["submission_id"] = prevSubmission.submission_id
 	else:
 		isOkay = False
 		error = post_request_err
+	JsonDict["hasNext"] = hasNext
+	JsonDict["hasPrev"] = hasPrev
 	JsonDict["isOkay"] = isOkay
 	JsonDict["error"] = error
 	Json = simplejson.dumps(JsonDict)
+	print Json
 	return HttpResponse(Json, content_type="application/json")
 
 # API function that allows a teacher to submit a test case for a particular problem. 
@@ -517,7 +568,6 @@ def createtestcase(request):
 	isOkay = True
 	error = ""
 	JsonDict = {}
-	print request.POST
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
@@ -528,16 +578,12 @@ def createtestcase(request):
 		expected_output = request.POST["expected_output"]
 		testcase_number = request.POST["testcase_number"]
 		problem = Problem.objects.get(problem_id=problem_id)
-		print "expected out:" + str(expected_output)
-		print "testcase number=" + str(testcase_number)
 		if len(input_value) > 0 and len(expected_output) > 0 and testcase_number > 0:
 			# Split into new vs. exisiting testcase based on testcase_number
 			testcaseQuerySet = Testcase.objects.filter(testcase_number=testcase_number)
 			if len(testcaseQuerySet) == 0:
 				newTestcase = Testcase(problem=problem, expected_output=expected_output, input_value=input_value, testcase_number=testcase_number)
 				newTestcase.save()
-				print newTestcase.expected_output
-				print newTestcase.testcase_number
 				JsonDict["testcase_id"] = newTestcase.testcase_id
 			else:
 				matchingTestcase = testcaseQuerySet[0]
@@ -623,11 +669,7 @@ def getproblemteacher(request):
 		testcase_output = []
 		for testcase in allTestcases:
 			testcase_input.append(testcase.input_value)
-			print testcase.input_value
 			testcase_output.append(testcase.expected_output)
-			print testcase.expected_output
-		print testcase_input
-		print testcase_output
 		JsonDict["problem_description"] = problem_description
 		JsonDict["name"] = problem.name
 		JsonDict["testcase_input"] = testcase_input
