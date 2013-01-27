@@ -426,7 +426,7 @@ width:270px;
     margin-bottom:15px;  
     background-image: -webkit-linear-gradient(top, #389a00, #266900); 
     font-family: "Strait", sans-serif;
-    font-size: 19px;
+    font-size: 17px;
     color: white;
     border: 1px outset  #338e00;
 }
@@ -442,8 +442,7 @@ width:270px;
     text-align: left;
     font-weight: 900;  
     background-image: -webkit-linear-gradient(top, #eefee5, #d5f3c4); 
-    font-family: "Strait", sans-serif;
-    font-size: 19px;
+    font-family: "Strait", sans-serif;    
     color: white;
      border: 1px outset  #c9e3c6;
 }
@@ -618,8 +617,7 @@ height: 610px;
 }
 
 .lecturepage1
-{
-    font-size:18px !important;  
+{  
     border-radius: 9px;
     position:relative; 
     border-style:outset;

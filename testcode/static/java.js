@@ -44,6 +44,16 @@ $.ajaxSetup({
     }
    });
  
+
+ $(function(){
+  $("#homelink" ).click(function() {
+        $(location).attr('href', '/api/userhome');
+      });
+  $("#logout" ).click(function() {
+        $(location).attr('href', '/api/logout');
+      });
+
+ });
     /* /////////////////// */
     /* /////////////////// */
     /* /////////////////// */

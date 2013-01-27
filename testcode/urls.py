@@ -25,7 +25,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     
     # Login page
-    url(r'^$', views.home),
+    url(r'^$', views.landing),
 
     # Student Homepage 
     url(r'^student/$', views.student),
@@ -50,6 +50,7 @@ urlpatterns = patterns('',
     url(r'^api/getproblemteacher$', views.getproblemteacher),
     url(r'^api/getsubmission$', views.submissionHistory),
     url(r'^api/getproblem$', views.getproblem),
+    url(r'^api/userhome$', views.home),
     url(r'^teacher/edit/(\d{1,5})/$', views.teacherlecture),
     url(r'^student/edit/(\d{1,5})/$', views.edit),
 )

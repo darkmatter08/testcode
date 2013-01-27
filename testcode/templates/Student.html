@@ -67,9 +67,9 @@
                          </div>
                         </div>
                                <ul class="nav">
-                                     <div class="btn-group in"><button class="btn" type="button"><i class="icon-home"></i> Home</button></div>
-                                     <div class="btn-group in"><button class="btn" type="button"><i class="icon-user"></i>  Account</button></div>
-                                    <div class="btn-group in"> <button class="btn" type="button"><i class="icon-off"></i> Logout</button></div>
+                                     <div class="btn-group in"><button class="btn" type="button" id="homelink"><i class="icon-home"></i> Home</button></div>
+                                     <div class="btn-group in"><button class="btn" type="button" id="account"><i class="icon-user"></i>  Account</button></div>
+                                    <div class="btn-group in"> <button class="btn" type="button" id="logout"><i class="icon-off"></i> Logout</button></div>
                                    
                                </ul>
                  
@@ -114,8 +114,8 @@
                         <div class="classe1" id="path" >
                             
                             <ul class="breadcrumb" >
-                              <li ><a href="#">{{course.short_name}}</a> <span class="divider">/</span></li>
-                              <li class="active"><a href="#">{{lecture.description}}</a>                             
+                              <li ><a href="#"><span style="font-size:18px; font-weight:800">{{course.short_name}}</a> </span><span class="divider">/</span></li>
+                              <li class="active"> <span style="font-size:18px; font-weight:800"> {{lecture.description}}</span> </li>                          
                             </ul>
                             
                         </div>

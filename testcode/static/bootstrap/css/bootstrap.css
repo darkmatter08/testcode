@@ -238,7 +238,7 @@ a {
 }
 
 a:hover {
-  color: #005580;
+  color: #005a02;
   text-decoration: underline;
 }
 
@@ -807,7 +807,7 @@ ol ul {
 }
 
 li {
-  line-height: 20px;
+  line-height: 16px;
 }
 
 ul.unstyled,
@@ -3999,7 +3999,8 @@ input[type="submit"].btn.btn-mini {
   padding-top: 8px;
   padding-bottom: 8px;
   line-height: 20px;
-  border: 1px solid transparent;
+  background-color:#effeef;
+  border: 1px outset #d8e5d8;
   -webkit-border-radius: 4px 4px 0 0;
      -moz-border-radius: 4px 4px 0 0;
           border-radius: 4px 4px 0 0;
@@ -4014,7 +4015,7 @@ input[type="submit"].btn.btn-mini {
   color: #555555;
   cursor: default;
   background-color: #ffffff;
-  border: 1px solid #ddd;
+  border: 1px outset #d8e5d8;
   border-bottom-color: transparent;
 }
 
@@ -4047,7 +4048,8 @@ input[type="submit"].btn.btn-mini {
 }
 
 .nav-tabs.nav-stacked > li > a {
-  border: 1px solid #ddd;
+  margin:1px; 
+  border: 1px outset #d8e5d8;
   -webkit-border-radius: 0;
      -moz-border-radius: 0;
           border-radius: 0;
