@@ -2,6 +2,30 @@ $(document).ready(function(){
 
 $(".problemlinks").eq(0).addClass("active")
 
+$(function(){
+       problem_id=$(".problemlinks").eq(0).attr("id");       
+       $.post(
+                '/api/getproblem',
+                 {
+                 	problem_id:problem_id,
+                 },
+                  function(data)
+                    {
+                        var result = jQuery.parseJSON(JSON.stringify(data))
+                        var text=result.solution                       
+                        var id=result.submission_id;                        
+                        $('form').attr('id', id);   
+                         editor.setValue(""+text); 
+                         var hasNext=result.hasNext;
+                         var hasPrev=result.hasPrev;
+						 if (hasPrev) {$("#previous").removeClass("disabled")}  else {$("#previous").addClass("disabled")}                    	 	
+                          if (hasNext) {$("#next").removeClass("disabled")}   else {$("#next").addClass("disabled")}                   
+                     }
+	           )
+
+
+ });
+
 
  $( "#reset1" ).click(function() {                                                                               
                                    editor.setValue("");

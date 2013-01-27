@@ -397,14 +397,15 @@ def edit(request, mylecture_id):
 	enrollment = Enrollment.objects.get(user=currentUser, course=course)
 	problems = Problem.objects.filter(lecture=lecture)
 	activeProblem = problems[0] #will choose first problem 
+	## This is outdated. The page now loads its resources from an initial POST request to getProblem. 
 	# Get most recent submission. Check if it has a submission, if not, create a blank submission.
-	submissions = Submission.objects.filter(enrollment=enrollment, problem=activeProblem).order_by('-date')
-	submission = submissions[0] #requires blank submission to be created when a problem is created
-	hasPrev = False
-	print "Has prev? = " + str(hasPrev)
-	if len(submissions) > 1:
-		hasPrev = True
-	context = Context({"activeProblem": activeProblem, "problems": problems, "submission": submission, "lecture": lecture, "course": course, "user": currentUser, "hasPrev": hasPrev})
+	##submissions = Submission.objects.filter(enrollment=enrollment, problem=activeProblem).order_by('-date')
+	##submission = submissions[0] #requires blank submission to be created when a problem is created
+	#hasPrev = False
+	##print "Has prev? = " + str(hasPrev)
+	##if len(submissions) > 1:
+	##	hasPrev = True
+	context = Context({"activeProblem": activeProblem, "problems": problems, "lecture": lecture, "course": course, "user": currentUser})
 	t = get_template("Student.html")
 	html = t.render(context)#RequestContext(request, {}))
 	return HttpResponse(html)
@@ -592,22 +593,20 @@ def getproblem(request):
 		print "ordered submissions"
 		# Check if there are any matching submissions. If not, create a submission.
 		print len(allSubmissions)
-		latestSubmission = ""
-		if len(allSubmissions) == 0:
+		if len(allSubmissions) == 0: #No submission yet. Send blank solution and don't send submission_id
 			currentEnrollment =  Enrollment.objects.get(user=currentUser, course=problem.lecture.course)
 			print currentEnrollment
-			latestSubmission = Submission(solution="", enrollment=currentEnrollment, problem=problem, grade=1)
-			latestSubmission.save()
+			JsonDict["solution"] = ""
 		else:
 			latestSubmission = allSubmissions[0]
+			JsonDict["solution"] = latestSubmission.solution
+			JsonDict["submission_id"] = latestSubmission.submission_id
+			print latestSubmission
 		print "got latest submission"
-		print latestSubmission
 		JsonDict["problem_id"] = problem_id
 		JsonDict["description"] = problem.description
 		JsonDict["name"] = problem.name
 		#JsonDict["lecture_id"] = problem.lecture.lecture_id
-		JsonDict["solution"] = latestSubmission.solution
-		JsonDict["submission_id"] = latestSubmission.submission_id
 		#HasPrev code#####
 		print "JSONified"
 		allSubmissionsReordered = allSubmissions.order_by('date')

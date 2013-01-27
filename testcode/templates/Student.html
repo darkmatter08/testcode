@@ -148,7 +148,7 @@
                         
                         
                         <div id="container2"> 
-                           <div class="well well-small " id="description">    <p id="descriptionplace"> {{activeproblem.description}}
+                           <div class="well well-small " id="description">    <p id="descriptionplace"> {{activeProblem.description}}
                                            </p>  </div>
                             
                             <div class="classe" id="feed">
@@ -157,15 +157,13 @@
                             </div>
                             
                             <div class="well well-small" id="feedback">
-                                <br/>
-                                Press "Save & Run" to see your results.
-                                <br/>   
+                               <br/>Press "Save & Run" to see your results.<br/>
                             </div>
                         </div>
                     
                         <div id="container3">
                         
-                         <div id="textcode" class="submissionid"><form id="{{submission.submission_id}}"><textarea id="code" name="code" cols="120" rows="400" style="background-color: #FFF">{{submission.solution}}</textarea> </form> </div>
+                         <div id="textcode" class="submissionid"><form id="{{submission.submission_id}}"><textarea id="code" name="code" cols="120" rows="400" style="background-color: #FFF"></textarea> </form> </div>
                                   <script>
                                       var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
                                       mode: {name: "python",
