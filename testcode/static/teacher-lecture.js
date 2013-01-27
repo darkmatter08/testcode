@@ -110,7 +110,7 @@ $(document).on("click",".problemlinks",function(){
                      $("#latest").html('<div class="classe">'+                    
                            '<div class="margins">'+name+' </div> '+ 
                           ' </div> '+ 
-                            ' <div class="fields"> Description  <span class="errormesage" id="desc" style="font-size:13px"> </span></div>     '+                
+                            ' <div class="fields1"> Description  <span class="errormesage" id="desc" style="font-size:13px"> </span></div>     '+                
                           ' <div id="problemdescription"> <form><textarea id="description1" name="description" rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> </div>'+ 
                         ' <div class=" marginbottom"> <div class="btn-group in forsave"><button class="btn" type="button" id="savedescription"><i class="icon-ok-circle"></i> Save</button></div> </div>')
                      $("#description1").val(description);
@@ -130,7 +130,7 @@ $(document).on("click",".problemlinks",function(){
                         $(".outputtext").eq(j-1).val(testoutput[j-1]);
                       }
                     i=j-1;
-                    $("#latest").append( ' <div class=" marginbottom"> <div class="btn-group in"><button class="btn" type="button" id="testcase"><i class="icon-tasks"></i> Add a new test case</button></div> </div>')
+                    $("#latest").append( ' <div class=" marginbottom" id="fordelete"> <div class="btn-group in"><button class="btn" type="button" id="testcase"><i class="icon-tasks"></i> Add a new test case</button></div> </div>')
                    $("#latest").show("slide", { direction: "up" }, 600)},600);
 
  }
@@ -141,7 +141,7 @@ $(document).on("click",".problemlinks",function(){
  $(document).on("click","#testcase",function(){
 
   i=i+1;
-  $("#testcase").remove();
+  $("#fordelete").remove();
   $("#latest").append('   <div class="fields "> Test case '+i+' <span class="terrormessage" style="font-size:13px"> </span> </p></div>'+ 
                          '   <div class="casebigbox"> '+ 
                         '       <div class="inputtest"> '+                           
@@ -152,7 +152,7 @@ $(document).on("click",".problemlinks",function(){
                            '    <p class="indents">  Output</p>'+ 
                             '    <form><textarea class="outputtext" name="outputtext" cols="45" rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> <div class="btn-group in forsave"><button class="btn savetestcase" type="button"><i class="icon-ok-circle"></i> Save</button></div></div>'+ 
                            '    </div>'+ 
-                           '   <div class=" marginbottom"> <div class="btn-group in"><button class="btn" type="button" id="testcase"><i class="icon-tasks"></i> Add a new test case</button></div> </div>')
+                           '   <div class=" marginbottom" id="fordelete"> <div class="btn-group in"><button class="btn" type="button" id="testcase"><i class="icon-tasks"></i> Add a new test case</button></div> </div>')
      })
 
 $(document).on("click","#savedescription",function(){

@@ -2,7 +2,7 @@
 <html>
   <head>
       <title> Prob</title>
-      <!--<link href='http://fonts.googleapis.com/css?family=Strait' rel='stylesheet' type='text/css'> -->
+     <link href='http://fonts.googleapis.com/css?family=Strait' rel='stylesheet' type='text/css'> 
       <link rel="stylesheet" type="text/css" href="/static/text.css" />
       <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
       <script src="http://code.jquery.com/jquery-latest.js"></script>
@@ -132,19 +132,7 @@
         <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
         <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
          <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
-        <div id="cont1">
              
-      
-            <div id="prob_tabs">
-              
-                  
-                
-            </div>
-            
-            
-        </div>
-        
-     
         
        <!-- <div id="sep"> </div> -->        
                                  
@@ -191,11 +179,11 @@
                             </table>
                         {% else %}
                          <table border="0" id="problemstable">
-                            {% for course in courses %}  
+                            {% for course in courseInfo %}  
                              <tr>                                 
-                                 <td> {{course.nlectures}} lectures</td>
-                                 <td >4 problems</td>
-                                 <td >45 students</td>
+                                 <td>{{course.0}} lectures</td>
+                                 <td >{{course.1}} problems</td>
+                                 <td >{{course.2}} students</td>
                             </tr>
                              {% endfor %}
                             

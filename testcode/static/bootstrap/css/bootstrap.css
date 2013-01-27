@@ -1007,7 +1007,7 @@ pre code {
 }
 
 form {
-  margin: 0 0 20px;
+  margin: 0 0 0px;
 }
 
 fieldset {
@@ -1075,7 +1075,7 @@ input[type="color"],
   display: inline-block;
   height: 20px;
   padding: 4px 6px;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
   font-size: 14px;
   line-height: 20px;
   color: #555555;
@@ -4330,7 +4330,7 @@ input[type="submit"].btn.btn-mini {
 .navbar .brand {
   display: block;
   float: left;
-  padding: 3px 20px 3px;
+  padding: 6px 20px 3px;
   margin-left: -20px;
   font-size: 16px;
   font-weight: 400;
