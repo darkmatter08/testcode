@@ -16,7 +16,6 @@ from django.template import RequestContext
 from django import forms
 # import for json 
 from django.utils import simplejson
-import json
 # Import models 
 from testcode.models import *
 
@@ -317,7 +316,7 @@ def addcourse(request):
 				match = matches[0]
 				if match.student_password == student_password:
 					user_id = request.session["user_id"] #add user_id validation
-					currentUser = User.objects.filter(user_id=user_id)
+					currentUser = "" # REMOVE
 					try:
 						currentUser = User.objects.get(user_id=user_id)
 					except User.DoesNotExist:
@@ -383,12 +382,15 @@ def createlecture(request):
 
 # This function renders the editing page for students. Get the lecture_id from the URL, get user_id from session, 
 # match to an enrollment, get the most recent submission for the first problem in the lecture, pass all problems in the template. 
+# TO IMPLEMENT: Check user.isAdmin = False
 def edit(request, mylecture_id):
 	user_id = request.session["user_id"]
 	currentUser = ""
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
+		return HttpResponseRedirect('/')
+	if currentUser.isAdmin:
 		return HttpResponseRedirect('/')
 	lecture = Lecture.objects.get(lecture_id=mylecture_id)
 	course = lecture.course
@@ -475,7 +477,6 @@ def submissionHistory(request):
 	hasNext = True
 	hasPrev = True
 	JsonDict = {}
-	print request.POST
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
@@ -483,26 +484,14 @@ def submissionHistory(request):
 	if ("isNextSubmission" in request.POST) and ("submission_id" in request.POST):
 		isNextSubmission = request.POST["isNextSubmission"]
 		submission_id = request.POST["submission_id"]
-		print "finding current submission."
 		currentSubmission = Submission.objects.get(submission_id=submission_id)
-		print "finding all submissions"
 		allSubmissions = Submission.objects.filter(problem=currentSubmission.problem)
-		print allSubmissions
-		print "isNextSubmission=" + str(isNextSubmission)
 		if int(isNextSubmission) == 1: #nextSubmission == True
-			print "pre allSubmissions"
 			allSubmissions = Submission.objects.filter(problem=currentSubmission.problem).order_by('-date')
-			print "post allSubmissions"
 			nextSubmissionIndex = -1
-			print range(len(allSubmissions))
 			for i in range(len(allSubmissions)):
-				print "loop i=" + str(i)
-				#print allSubmissions[i].submission_id
 				if allSubmissions[i].submission_id == currentSubmission.submission_id:
-					print "in the if"
 					nextSubmissionIndex = i - 1
-					print "if nextSubmissionIndex=" + str(nextSubmissionIndex) 
-				#print "post if"
 			if nextSubmissionIndex < 0:
 				isOkay = False
 				error = "No more submissions!"
@@ -512,21 +501,8 @@ def submissionHistory(request):
 				JsonDict["submission_id"] = nextSubmission.submission_id
 			if nextSubmissionIndex == 0:
 				hasNext = False
-#			nextSubmission = ""
-#			delta = datetime.timedelta()
-#			# look for smallest negative 
-#			for submission in allSubmissions:	
-#				timeDelta = currentSubmission.date - submission.date
-#				if abs(timeDelta) < delta and timeDelta < 0:
-#					nextSubmission = submission
-#					delta = abs(timeDelta)
-#			if nextSubmission == "":
-#				isOkay = False
-#				error = "You're already at the newest submission!"
 		else:
-			print "pre allSubmissions"
 			allSubmissions = Submission.objects.filter(problem=currentSubmission.problem).order_by('date')
-			print "post allSubmissions"
 			prevSubmissionIndex = -1
 			for i in range(len(allSubmissions)):
 				if allSubmissions[i].submission_id == currentSubmission.submission_id:
@@ -535,19 +511,11 @@ def submissionHistory(request):
 				isOkay = False
 				error = "No more submissions!"
 			else:
-				print "prevSubmissionIndex=" + str(prevSubmissionIndex)
 				prevSubmission = allSubmissions[prevSubmissionIndex]
 				JsonDict["solution"] = prevSubmission.solution
 				JsonDict["submission_id"] = prevSubmission.submission_id
 			if prevSubmissionIndex == 0:
 				hasPrev = False
-			# allSubmissions = Submission.objects.filter(problem=problem).order_by('date')
-			# prevSubmissionIndex = -1
-			# prevSubmission = allSubmissions[0]
-			# if prevSubmission.submission_id == submission_id:
-			# 	hasPrev = False
-			# JsonDict["solution"] = prevSubmission.solution
-			# JsonDict["submission_id"] = prevSubmission.submission_id
 	else:
 		isOkay = False
 		error = post_request_err
@@ -556,7 +524,6 @@ def submissionHistory(request):
 	JsonDict["isOkay"] = isOkay
 	JsonDict["error"] = error
 	Json = simplejson.dumps(JsonDict)
-	print Json
 	return HttpResponse(Json, content_type="application/json")
 
 # API function that allows a teacher to submit a test case for a particular problem. 
@@ -604,31 +571,64 @@ def createtestcase(request):
 # An API function that allows the student to switch between problems on the editing page. 
 # From POST, reads in problem_id, from the session, user_id. It returns a JSON with the 
 # problem_id, problem_description, name, lecture_id, and solution - from the latest submission. 
+# IMPLEMENT: hasPrev
 def getproblem(request):
 	user_id = request.session["user_id"]
 	currentUser = ""
 	isOkay = True
 	error = ""
 	JsonDict = {}
+	print request.POST
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
 		return HttpResponseRedirect('/')
 	if ("problem_id" in request.POST):
+		problem_id = request.POST["problem_id"]
+		print "getting problem"
 		problem = Problem.objects.get(problem_id=problem_id)
+		print "got problem"
 		allSubmissions = Submission.objects.filter(problem=problem).order_by('-date')
-		latestSubmission = allSubmissions[0]
+		print "ordered submissions"
+		# Check if there are any matching submissions. If not, create a submission.
+		print len(allSubmissions)
+		latestSubmission = ""
+		if len(allSubmissions) == 0:
+			currentEnrollment =  Enrollment.objects.get(user=currentUser, course=problem.lecture.course)
+			print currentEnrollment
+			latestSubmission = Submission(solution="", enrollment=currentEnrollment, problem=problem, grade=1)
+			latestSubmission.save()
+		else:
+			latestSubmission = allSubmissions[0]
+		print "got latest submission"
+		print latestSubmission
 		JsonDict["problem_id"] = problem_id
-		JsonDict["problem_description"] = problem_description
+		JsonDict["description"] = problem.description
 		JsonDict["name"] = problem.name
-		JsonDict["lecture_id"] = problem.lecture.lecture_id
+		#JsonDict["lecture_id"] = problem.lecture.lecture_id
 		JsonDict["solution"] = latestSubmission.solution
+		JsonDict["submission_id"] = latestSubmission.submission_id
+		#HasPrev code#####
+		print "JSONified"
+		allSubmissionsReordered = allSubmissions.order_by('date')
+		print "reordered"
+		prevSubmissionIndex = -1
+		hasPrev = True
+		print range(len(allSubmissionsReordered))
+		for i in range(len(allSubmissionsReordered)):
+			if allSubmissionsReordered[i].submission_id == latestSubmission.submission_id:
+				prevSubmissionIndex = i-1
+		if prevSubmissionIndex < 0:
+			hasPrev = False
+		JsonDict["hasPrev"] = hasPrev
+		#####
 	else:
 		isOkay = False
 		error = post_request_err
 	JsonDict["isOkay"] = isOkay
 	JsonDict["error"] = error
 	Json = simplejson.dumps(JsonDict)
+	print Json
 	return HttpResponse(Json, content_type="application/json")
 
 # Renders the teacher-lecture page with the context vars. 

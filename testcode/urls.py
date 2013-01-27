@@ -49,6 +49,7 @@ urlpatterns = patterns('',
     url(r'^api/createtestcase$', views.createtestcase),
     url(r'^api/getproblemteacher$', views.getproblemteacher),
     url(r'^api/getsubmission$', views.submissionHistory),
+    url(r'^api/getproblem$', views.getproblem),
     url(r'^teacher/edit/(\d{1,5})/$', views.teacherlecture),
-    url(r'^edit/(\d{1,5})/$', views.edit),
+    url(r'^student/edit/(\d{1,5})/$', views.edit),
 )

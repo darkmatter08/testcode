@@ -17,7 +17,7 @@ $(".problemlinks").eq(0).addClass("active")
  			    if (type=="previous") {isNextSubmission=0}      			                                                                    
                             $.post(
                                     '/api/getsubmission',
-                                    {    
+                                    {  
 
                                       submission_id:submission_id,
                                       isNextSubmission:isNextSubmission
@@ -25,14 +25,13 @@ $(".problemlinks").eq(0).addClass("active")
                                       function(data)
                                         {
                                             var result = jQuery.parseJSON(JSON.stringify(data))
-                                            var text=result.solution
+                                            var text=result.solution;
                                             var hasNext=result.hasNext;
                                             var hasPrev=result.hasPrev;
-                                            editor.setValue(text);                                           
+                                            editor.setValue( ""+text);                                           
                                             var id=result.submission_id;
-
                                             $('form').attr('id', id);
-                                            if  (hasPrev) {$("#previous").removeClass("disabled")}  else {$("#previous").addClass("disabled")}                    	 	
+                                            if (hasPrev) {$("#previous").removeClass("disabled")}  else {$("#previous").addClass("disabled")}                    	 	
                                             if (hasNext) {$("#next").removeClass("disabled")}   else {$("#next").addClass("disabled")}
                                         },
                                     "json"
@@ -43,6 +42,8 @@ $(".problemlinks").eq(0).addClass("active")
 
  $(".problemlinks").click(function(){
        problem_id=$(this).attr("id");
+       $(".active").eq(0).removeClass("active");
+       $(this).addClass("active");
         $.post(
                 '/api/getproblem',
                  {
@@ -53,12 +54,16 @@ $(".problemlinks").eq(0).addClass("active")
                         var result = jQuery.parseJSON(JSON.stringify(data))
                         var text=result.solution                       
                         var hasPrev=result.hasPrev;
-                        editor.setValue(text);
+                        editor.setValue(""+text);
                         var description=result.description;
-                        var id=result.sumbission_id;
-                        $('form').attr('id', id);
-                        if  (hasPrev) {$("previous").removeClass("disabled")}  else {$("previous").addClass("disabled")}                    	 	
-                        $("next").addClass("disabled")
+                        var id=result.submission_id;                        
+                        var name=result.name;
+                        $(".problemname").html(name);
+                        $("#descriptionplace").html(description);
+                        $("#feedback").html('<br/>Press "Save & Run" to see your results.<br/>') 
+                        $('form').attr('id', id);                       
+                        if (hasPrev) {$("#previous").removeClass("disabled")}  else {$("#previous").addClass("disabled")}                    	 	
+                        $("next").addClass("disabled");
                     }
 	           )
 

@@ -64,7 +64,7 @@ body {
     float: right;
     color: white;
     padding-top: 11px;
-    width:305px;
+    width: 300px;
     height:80px;
  }
  
@@ -253,6 +253,7 @@ height: 25px;
     width: 920px;
     height: 703px;       
     padding: 15px;
+    border-radius:9px; 
     
 }
 
@@ -296,13 +297,11 @@ table#table2
 
 #path
 {
-    width: 350px;
-    height: 25px;
+    width: 350px;    
     text-align: left;
     float: left;
-    font-weight: 900;
-    margin-right:15px;
-    margin-bottom:25px;
+    font-weight: 400;
+   
     position: relative; 
     
 }
@@ -318,7 +317,7 @@ table#table2
     width: 532px;
     height: 25px;
     text-align: left;
-    float: left;
+    float: right;
     font-weight: 900;
     
 }
@@ -326,9 +325,8 @@ table#table2
 #feed
 {
     position: relative;
-    margin-top: 15px; 
-    width: 350px;
-    height: 25px;
+    margin-top: 15px;    
+   
     text-align: left;
     font-weight: 900;
     margin-right:0px !important;  
@@ -419,6 +417,7 @@ width:270px;
 }
 .classe
 {
+    border-radius:6px; 
     padding: 5px;
     position: relative;
     width: 265x;
@@ -427,10 +426,30 @@ width:270px;
     font-weight: 900;
     margin-right:0px !important;  
     margin-bottom:15px;  
-    background-color: #f5f5f5;
+    background-image: -webkit-linear-gradient(top, #389a00, #266900); 
     font-family: "Strait", sans-serif;
     font-size: 19px;
-    color: #256400;
+    color: white;
+}
+
+.classe1
+{
+    border-radius:6px; 
+    padding: 5px;
+    position: relative;
+    width: 265x;
+    height: 30px;
+    text-align: left;
+    font-weight: 900;  
+    background-image: -webkit-linear-gradient(top, #eefee5, #d5f3c4); 
+    font-family: "Strait", sans-serif;
+    font-size: 19px;
+    color: white;
+    border-top: 1px outset;
+    border-bottom: 1px outset;
+    border-left: 1px outset;
+    border-right: 1px outset;
+    border-color: #dfdfdf;
 }
 
 
@@ -450,7 +469,7 @@ width:270px;
 .rightm
 {
  float:right; 
-
+  margin-right:15px; 
 }
 
 #leftm
@@ -562,7 +581,9 @@ width:270px;
 #feedback
 {
  width: 330px;
- font-size:15px;
+ font-family: "Lucida Console", Monaco, monospace;
+ font-size:12px;
+ font-weight: 400;
  background-color: #f0f5e8;
  padding-left:10px;
  padding-right:10px;
@@ -576,7 +597,7 @@ height: 610px;
 
 .lecturepage
 {
-     border-radius: 15px;
+     border-radius: 9px;
     position:relative; 
     border-style:outset;
     border-top: 1px outset;
@@ -596,7 +617,8 @@ height: 610px;
 
 .lecturepage1
 {
-    border-radius: 15px;
+    font-size:18px !important;  
+    border-radius: 9px;
     position:relative; 
     border-style:outset;
     border-top: 1px outset;
@@ -604,7 +626,7 @@ height: 610px;
     border-left: 1px outset;
     border-right: 1px outset;
     border-color: #dfdfdf;
-    background: rgba(255, 255, 255,0.6);
+    background-image: -webkit-linear-gradient(top, #eefee5, #d5f3c4); 
     width: 830px;
     height:auto;       
     padding-left: 45px;

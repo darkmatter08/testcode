@@ -90,7 +90,7 @@
               
                <ul class="nav nav-tabs">
                 {% for problem in problems %}
-                     <li class="problemlinks">
+                     <li class="problemlinks" id="{{problem.problem_id}}">
                       <a href="#">{{problem.name}}</a>
                     </li>
                 {% endfor %}
@@ -111,12 +111,11 @@
                     <div id="containertop">
                         
                         
-                        <div id="path">
+                        <div class="classe1" id="path">
                             
-                            <ul class="breadcrumb">
-                                <li ><a href="#">{{course.short_name}}</a> <span class="divider">/</span></li>
-                                <li ><a href="#">{{lecture.description}}</a> <span class="divider">/</span></li>
-                                <li class="active">{{activeProblem.name}}</li>
+                            <ul class="breadcrumb" >
+                              <li ><a href="#">{{course.short_name}}</a> <span class="divider">/</span></li>
+                              <li class="active"><a href="#">{{lecture.description}}</a>                             
                             </ul>
                             
                         </div>
@@ -124,8 +123,8 @@
                     
                         <div id="yourcode">
                            
-                            <ul class="breadcrumb">
-                                <li>Your code</li>
+                            <div class="classe">
+                             <div class="margins">    Your code </div>
                                 <div id="subms">
                                    {% if hasPrev %}
 
@@ -133,10 +132,10 @@
                                    {% else %}
                                    <div class="btn-group in"> <button class="btn changecode  disabled " type="button" id="previous"> <i class="icon-ok icon-chevron-left"></i> Previous</button> </div>
                                    {% endif %}
-                                     Submissions
+                                   <span style="font-size:16px">  Submissions </span>
                                      <div class="btn-group in"><button class="btn changecode disabled" type="button" id="next" >Next <i class="icon-ok icon-chevron-right"></i></button> </div>
                                 </div>
-                            </ul>
+                            </div>
                             
                         </div>
                         
@@ -148,18 +147,17 @@
                         
                         
                         <div id="container2"> 
-                           <div class="well well-small" id="description">   <br/> <p id="descriptionplace"> {{activeproblem.description}}
+                           <div class="well well-small " id="description">   <br/> <p id="descriptionplace"> {{activeproblem.description}}
                                            </p>   <br/></div>
                             
-                            <div id="feed">
-                                <ul class="breadcrumb">
-                                <li>Feedback</li>                               
-                            </ul>                                
+                            <div class="classe" id="feed">
+                                <div class="margins"> Feedback</div>                               
+                                                            
                             </div>
                             
                             <div class="well well-small" id="feedback">
                                 <br/>
-                                <pre><code>Press "Save & Run" to see your results.</code></pre>
+                                Press "Save & Run" to see your results.
                                 <br/>   
                             </div>
                         </div>
