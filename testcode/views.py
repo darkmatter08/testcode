@@ -397,7 +397,7 @@ def edit(request, mylecture_id):
 	enrollment = Enrollment.objects.get(user=currentUser, course=course)
 	problems = Problem.objects.filter(lecture=lecture)
 	activeProblem = problems[0] #will choose first problem 
-	# Get most recent submission
+	# Get most recent submission. Check if it has a submission, if not, create a blank submission.
 	submissions = Submission.objects.filter(enrollment=enrollment, problem=activeProblem).order_by('-date')
 	submission = submissions[0] #requires blank submission to be created when a problem is created
 	hasPrev = False
@@ -506,7 +506,7 @@ def submissionHistory(request):
 			prevSubmissionIndex = -1
 			for i in range(len(allSubmissions)):
 				if allSubmissions[i].submission_id == currentSubmission.submission_id:
-					prevSubmissionIndex = i-1
+					prevSubmissionIndex = i - 1
 			if prevSubmissionIndex < 0:
 				isOkay = False
 				error = "No more submissions!"

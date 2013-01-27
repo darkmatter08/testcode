@@ -35,8 +35,8 @@
 
     <script>  $(document).ready(function(){
             $("#description").slimScroll({
-                height: '247px'
-                })
+                height: '258px'
+                })             
             $("#feedback").slimScroll({
                 height: '300px'
                 })
@@ -111,7 +111,7 @@
                     <div id="containertop">
                         
                         
-                        <div class="classe1" id="path">
+                        <div class="classe1" id="path" >
                             
                             <ul class="breadcrumb" >
                               <li ><a href="#">{{course.short_name}}</a> <span class="divider">/</span></li>
@@ -124,7 +124,7 @@
                         <div id="yourcode">
                            
                             <div class="classe">
-                             <div class="margins">    Your code </div>
+                             <div class="margins">    Your code</div>
                                 <div id="subms">
                                    {% if hasPrev %}
 
@@ -132,9 +132,10 @@
                                    {% else %}
                                    <div class="btn-group in"> <button class="btn changecode  disabled " type="button" id="previous"> <i class="icon-ok icon-chevron-left"></i> Previous</button> </div>
                                    {% endif %}
-                                   <span style="font-size:16px">  Submissions </span>
-                                     <div class="btn-group in"><button class="btn changecode disabled" type="button" id="next" >Next <i class="icon-ok icon-chevron-right"></i></button> </div>
+                                   <span style="font-size:15px; margin-top:-2px;">  Submissions </span>
+                                     <div class="btn-group in"><button class="btn changecode disabled" type="button" id="next" >Next <i class="icon-ok icon-chevron-right"></i></button> </div> 
                                 </div>
+                             
                             </div>
                             
                         </div>
@@ -147,8 +148,8 @@
                         
                         
                         <div id="container2"> 
-                           <div class="well well-small " id="description">   <br/> <p id="descriptionplace"> {{activeproblem.description}}
-                                           </p>   <br/></div>
+                           <div class="well well-small " id="description">    <p id="descriptionplace"> {{activeproblem.description}}
+                                           </p>  </div>
                             
                             <div class="classe" id="feed">
                                 <div class="margins"> Feedback</div>                               

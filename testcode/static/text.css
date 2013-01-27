@@ -191,10 +191,9 @@ height: 25px;
 #prob_tabs
  {
     width:880px;
+    margin-left:auto; 
+     margin-right:auto; 
     height: 27px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 2px;
     margin-top:5px;
  }
  
@@ -296,8 +295,7 @@ table#table2
 }
 
 #path
-{
-    width: 350px;    
+{     
     text-align: left;
     float: left;
     font-weight: 400;
@@ -325,12 +323,12 @@ table#table2
 #feed
 {
     position: relative;
-    margin-top: 15px;    
+    margin-top: 7px;    
    
     text-align: left;
     font-weight: 900;
     margin-right:0px !important;  
-    margin-bottom:25px;  
+    margin-bottom:7px;  
     
 }
 
@@ -406,7 +404,7 @@ width:270px;
 
 .margins
 {
-  margin-top: 7px;
+  margin-top: 4px;
   margin-left: 8px;
   float:left;
 }
@@ -430,26 +428,24 @@ width:270px;
     font-family: "Strait", sans-serif;
     font-size: 19px;
     color: white;
+    border: 1px outset  #338e00;
 }
 
 .classe1
 {
     border-radius:6px; 
-    padding: 5px;
+    padding: 7px;
+    padding-top: 8px;
     position: relative;
-    width: 265x;
-    height: 30px;
+    width: 336px;
+    height: 26px;
     text-align: left;
     font-weight: 900;  
     background-image: -webkit-linear-gradient(top, #eefee5, #d5f3c4); 
     font-family: "Strait", sans-serif;
     font-size: 19px;
     color: white;
-    border-top: 1px outset;
-    border-bottom: 1px outset;
-    border-left: 1px outset;
-    border-right: 1px outset;
-    border-color: #dfdfdf;
+     border: 1px outset  #c9e3c6;
 }
 
 
@@ -457,7 +453,7 @@ width:270px;
 #subms
 {
     float:right;
-    
+    margin-top: 4px;
     
 }
 
@@ -482,6 +478,12 @@ width:270px;
   margin-top: -5px;
 }
 
+#descriptionplace
+{
+  font-size: 15px;
+  line-height: 14px;
+  margin-top: 8px;
+}
 .add-classteacher
 {
   margin-left:325px; 

@@ -170,7 +170,7 @@ var courseid;
 
                    for (var i = 0; i < number; i++) 
                     {
-                      $("#lecturelist").append("<li id="+lecture_id[i]+" class='lectures'><a href='#''>"+lecture_name[i]+"</a></li>");
+                      $("#lecturelist").append("<li class='lectures'><a href='edit/"+lecture_id[i]+"'>"+lecture_name[i]+"</a></li>");
                     }
                   }
                    $("#latest").show("slide", { direction: "up" }, 500)},500);

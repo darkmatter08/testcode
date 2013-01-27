@@ -102,7 +102,7 @@ class Submission(models.Model):
 	solution = models.TextField(max_length=100)
 	enrollment = models.ForeignKey(Enrollment)
 	problem = models.ForeignKey(Problem)
-	grade = models.DecimalField(max_digits=3, decimal_places=2)
+	grade = models.IntegerField(blank=True)
 	date = models.DateTimeField(auto_now_add=True, auto_now=True)
 
 	# Describes the object when it is called from the DB
