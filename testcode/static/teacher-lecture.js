@@ -1,11 +1,16 @@
  $(document).ready(function(){
 
+$(".viewsubmissions").live('click', function(){ 
+                var id=$(this).attr('id')
+                 $(location).attr('href','/teacher/edit/performance/'+id);
+                 })
+
  $(function() {
     var name;
     
     lectureid=$(".lectureelement").attr('id');  
         
-        allFields = $( [] ).add( problemname )
+     
 
  $( "#dialog-formproblem" ).dialog({
       autoOpen: false,
@@ -41,7 +46,7 @@
                           $("#dialog-formproblem").dialog( "close" )
                           $("#shit").remove();
                           $("#problemlist").prepend("<li id="+id+" class='problemlinks'><a href='#''>"+name+"</a></li>");
-                          $("#problemstable").prepend(' <tr>'+                                 
+                          $("#problemstable1").prepend(' <tr>'+                                 
                                  '<td>0 submissions</td> <td> <div class="btn-group in rightm">'+       
                             '<button class="btn viewsubmissions " type="button higher" id="'+id+'"> <i class="icon-signal"></i> View students\' performance</button> </div></td></tr>')
                         },600);

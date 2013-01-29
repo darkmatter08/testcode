@@ -1,3 +1,4 @@
+ 
  $(document).ready(function(){
  var color=['#041a6d', '#1a269f', '#05519e', '#059e99','#059e51',  '#059e09' , '#036205', '#498700', '#2d5003', '#847f00']
  var chart1= new Array(), 
@@ -34,9 +35,9 @@
                     n=name.length
                     for (var i=0; i<n;i++)
                         {array[i]=jQuery.parseJSON(grade[i]) }
-                    grade=array                              
+                    grade=array                             
                      if (n==0)
-                      {}
+                      {$("#shit").html("This problem has no submissions")}
                      else
                       { $("#insert").html(n+' students submitted a solution')  
                         var    scored= new Array()
@@ -70,7 +71,7 @@
                                   chart1[i]=new Array("Passed "+i+" testcases", scored[i])
                               }                           
                             var plot1 = jQuery.jqplot ('chart_div', [chart1], 
-                                    {  title:'Students\' score',
+                                    {  title:'Students\' score chart',
                                       seriesDefaults: {
                                         renderer: jQuery.jqplot.PieRenderer, 
                                         rendererOptions: 
@@ -91,8 +92,8 @@
                               } 
                             chart2=new Array(chart20, chart21)                            
                             var plot2 = $.jqplot('chart_div2', [chart20, chart21], {
-                                        seriesDefaults: {
-                                            title:'Students\' score',
+                                        title:'Performance per test case',
+                                        seriesDefaults: {                                            
                                             renderer:$.jqplot.BarRenderer,                                           
                                             pointLabels: { show: true, location: 'e', edgeTolerance: -15 },
                                             shadowAngle: 135,
@@ -124,11 +125,12 @@
 
 getInfo()
 var checked= new Array()
-var j
+
 
 var icon
 var row
 $("input:radio").change(function(){   
+  var j=0;
   var string=""
  for (var i=1; i<ntest+1; i++)
    {
@@ -139,10 +141,10 @@ $("input:radio").change(function(){
    {
     string=string+'<td> TC #'+i+' </td>'
   }
-   string='<table class="table table-hover" id="filter"><thead><tr > <td > # </td> <td> Student\'s name </td><td> Date sent </td>'+string+' </tr></thead>'
+   string='<table class="table table-hover" id="filter"><thead><tr > <span style="font-weight:900"><td > # </td> <td> Student\'s name </td><td> Date sent </td>'+string+' </span></tr></thead>'
    for (var i=0; i<n; i++)
       {
-        j=i+1
+        
         tohide=false
         row=""        
         for (var k=1; k<ntest+1; k++)
@@ -152,10 +154,51 @@ $("input:radio").change(function(){
                 if (checked[k]=='pass' && grade[i][k-1]=="False") {tohide=true} else{ if (checked[k]=='fail' && grade[i][k-1]=="True") {tohide=true}}
                 
               }
-        if (!(tohide)) {string=string+'<tr id="'+submission_id[i]+'"> <td>'+j+'</td><td>'+name[i]+'</td> <td>'+date[i]+'</td>'+row+'</tr>'}
+        if (!(tohide)) {j=j+1; string=string+'<tr id="'+submission_id[i]+'" class="submissionlinks"> <td>'+j+'</td><td>'+name[i]+'</td> <td>'+date[i]+'</td>'+row+'</tr>'}
       }
     string=string+' </tr></table>'
     $("#latest").append(string)  
       })
-                              
+
+ $(".submissionlinks").live('click', function() {
+                  
+                    var id=$(this).attr('id');
+                    alert(id);
+                    $.post(
+                        '/api/getsubmissionteacher',
+                        {
+                          submission_id:id
+                        },
+                        function(data)
+                        {
+                         var result = jQuery.parseJSON(JSON.stringify(data))
+                         var text=result.solution;
+                         $(".language-py").html(text)
+                         $( "#viewsubmission" ).dialog( "open" )
+                        })
+                  })                              
+ 
+  $( "#viewsubmission" ).dialog({
+      autoOpen: false,
+      height: 700,
+      show: 'fade',
+      hide: 'fade',
+      width: 900,
+      modal: true,
+      // buttons: {
+        
+      //   Cancel: function() {
+      //     $( this ).dialog( "close" );
+      //                      }
+      //   },
+      close: function() {
+        allFields.val( "" ).removeClass( "ui-state-error" );
+      }
+    });
+
+  
+        
+
+
+
        }) ;                

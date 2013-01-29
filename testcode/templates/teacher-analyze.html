@@ -16,7 +16,6 @@
       <script src="/static/code/lib/matchbrackets.js"></script>
       <script src="/static/code/python.js"></script>
       <script type="text/javascript" src="/static/java.js"></script>
-      <script type="text/javascript" src="/static/teacher-lecture.js"></script>
     <link rel="stylesheet" href="/static/j-query.css" />
       <script type="text/javascript" src="/static/scroll/jquery.slimscroll.min.js"></script>
       <style type="text/css">.CodeMirror {border: 1px solid #dfdfdf; border-bottom: 1px solid #dfdfdf;}</style>              
@@ -29,7 +28,8 @@
       <script type="text/javascript" src="/static/plot/jqplot.pieRenderer.min.js"></script>
       <script type="text/javascript" src="/static/plot/jqplot.canvasTextRenderer.min.js"></script>
       <script type="text/javascript" src="/static/plot/jqplot.canvasAxisLabelRenderer.min.js"></script>
-      
+      <link href="/static/code/prettify.css" type="text/css" rel="stylesheet" />
+     <script type="text/javascript" src="/static/code/prettify.js"></script>
        
       <link rel="stylesheet" type="text/css" href="/static/plot/jquery.jqplot.css" />
       <style>
@@ -44,21 +44,15 @@
     
   
   </head>
-  <body>
+  <body  onload="prettyPrint()">
     
-<!-- <div id="dialog-formproblem"  title="Create a problem">
-     <p class="validateTips" id="problem_message_box"></p>
-             <form>
-                <fieldset>
-                    <label for="name">Problem name </label>
-                    <input type="text" name="name" id="problemname" class="text ui-widget-content ui-corner-all" />                  
-                               
-                </fieldset>
-            </form>
+ <div id="viewsubmission"  title="View sumbission's code">   
+             
+            <pre class="prettyprint"><code class="language-py"></code></pre>
              
              
              
-  </div> -->
+  </div>
 
   
         
@@ -180,7 +174,7 @@
                                      <input type="radio" name="{{forloop.counter}}" value="skip"> Skip </br>
                          </div>   
                  {% endfor %}
-                         
+                         <table class="table table-hover" id="filter" class="submissionlinks"> </table>
                      <!--  <div class="classe">                      
                           <div class="margins"> Problem 4 </div> 
                        </div>

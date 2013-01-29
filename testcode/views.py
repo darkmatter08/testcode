@@ -434,14 +434,6 @@ def edit(request, mylecture_id):
 	enrollment = Enrollment.objects.get(user=currentUser, course=course)
 	problems = Problem.objects.filter(lecture=lecture)
 	activeProblem = problems[0] #will choose first problem 
-	## This is outdated. The page now loads its resources from an initial POST request to getProblem. 
-	# Get most recent submission. Check if it has a submission, if not, create a blank submission.
-	##submissions = Submission.objects.filter(enrollment=enrollment, problem=activeProblem).order_by('-date')
-	##submission = submissions[0] #requires blank submission to be created when a problem is created
-	#hasPrev = False
-	##print "Has prev? = " + str(hasPrev)
-	##if len(submissions) > 1:
-	##	hasPrev = True
 	context = Context({"activeProblem": activeProblem, "problems": problems, "lecture": lecture, "course": course, "user": currentUser})
 	t = get_template("Student.html")
 	html = t.render(context)#RequestContext(request, {}))
@@ -452,7 +444,6 @@ def edit(request, mylecture_id):
 # If the client only sends a problem_name and lecture_id (blank description) in the POST, then create a problem and 
 # return JSON with problem_id. If client POSTs problem_id, description, initial_code, and timeout (ms) in the POST, then update the problem. 
 def createproblem(request):
-	print request.POST
 	user_id = 0
 	try:
 		user_id = request.session["user_id"]
@@ -498,7 +489,7 @@ def createproblem(request):
 		timeout = 0
 		try:
 			timeout = int(timeoutRaw)
-			if len(description) > 0 and len(initial_code) > 0:
+			if len(description) > 0:
 				problem = Problem.objects.get(problem_id=problem_id)
 				problem.description = description
 				problem.initial_code = initial_code
@@ -656,9 +647,8 @@ def getproblem(request):
 			testcases.append((testcase.input_value, testcase.expected_output))
 		allSubmissions = Submission.objects.filter(problem=problem, enrollment=currentEnrollment).order_by('-date')
 		# Check if there are any matching submissions. If not, create a submission.
-		print "current user = " + str(currentUser)
 		if len(allSubmissions) == 0: #No submission yet. Send blank solution and don't send submission_id
-			JsonDict["solution"] = ""
+			JsonDict["solution"] = problem.initial_code
 		else:
 			latestSubmission = allSubmissions[0]
 			JsonDict["solution"] = latestSubmission.solution
@@ -778,17 +768,32 @@ def saveandrun(request):
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
 		return HttpResponseRedirect('/')
-	if ("problem_id" in request.POST) and ("solution" in request.POST) and ("grade" in request.POST):
+	if ("problem_id" in request.POST) and ("solution" in request.POST):	
 		problem_id = request.POST["problem_id"]
 		solution = request.POST["solution"]
-		grade = request.POST["grade"]
 		problem = Problem.objects.get(problem_id=problem_id)
 		if len(solution) > 0:
 			enrollment = Enrollment.objects.get(course=problem.lecture.course, user=currentUser)
 			newSubmission = Submission(solution=solution, enrollment=enrollment, problem=problem, grade="[]")
+			#newSubmission.save()
+			testcases = Testcase.objects.filter(problem=problem).order_by('testcase_number')
+			results = []
+			inputs = []
+			expected_outputs = []
+			outputs = []
+			for testcase in testcases:
+				result = test(testcase, newSubmission)
+				results.append(result[1])
+				outputs.append(result[0])
+				inputs.append(testcase.input_value)
+				expected_outputs.append(testcase.expected_output)
+				print results
+			newSubmission.grade=str(results) #returns JSON with results of all testcases
 			newSubmission.save()
-			# testcases = Testcase.objects.filter(problem=problem)
-			# newSubmission.grade = run(newSubmission, testcases) #returns JSON with results of all testcases
+			JsonDict["results"] = results
+			JsonDict["inputs"] = inputs
+			JsonDict["expected_output"] = expected_output
+			JsonDict["outputs"] = outputs
 		else:
 			isOkay = False
 			error = "Please fill in all fields!"
@@ -798,6 +803,7 @@ def saveandrun(request):
 	JsonDict["isOkay"] = isOkay
 	JsonDict["error"] = error
 	Json = simplejson.dumps(JsonDict)
+	print Json
 	return HttpResponse(Json, content_type="application/json")
 
 # An API function that redirects the user based on user.isAdmin. Implemented for the "home" button
@@ -820,7 +826,6 @@ def home(request):
 # API function that returns all testcase results by student for the latest submission. 
 # Requires problem_id
 def viewperformance(request):
-	print request.POST
 	user_id = 0
 	try:
 		user_id = request.session["user_id"]
@@ -834,9 +839,7 @@ def viewperformance(request):
 	JsonDict = {}
 	if ("problem_id" in request.POST):
 		problem_id = request.POST["problem_id"]
-		print "getting problem"
 		problem = Problem.objects.get(problem_id=problem_id)
-		print "getting problem"
 		course = problem.lecture.course
 		# find all enrollments
 		enrollments = Enrollment.objects.filter(course=course)
@@ -847,44 +850,27 @@ def viewperformance(request):
 		grade = []
 		unsubmitted = []
 		for enrollment in enrollments:
-			print "filtering"
-			submissions = Submission.objects.filter(enrollment=enrollment).order_by('-date')
-			print "filtering"
-			print len(submissions)
+			submissions = Submission.objects.filter(enrollment=enrollment, problem=problem).order_by('-date')
 			if len(submissions) > 0:
 				submission = submissions[0]
-				print "getting submissionInfo"
-				print submission.grade
-				print submission.date
 				#submissionInfo = (submission.submission_id, enrollment.user.name, unicode(submission.date)[:-19], submission.grade)
 				submissionidarray.append(submission.submission_id)
-				print "id"
 				name.append(enrollment.user.name)
-				print "name"
 				date.append(unicode(submission.date)[:-22])
-				print "date"
 				grade.append(submission.grade)
-				print "grade"
 				#print submissionInfo
 				#results.append(submissionInfo)
 				#print "results appended!"
 				#print results
 			else: # no submission for this problem. 
-				print "in the else"
 				if not enrollment.user.isAdmin:
 					unsubmitted.append(enrollment.user.name)
 		JsonDict["submission_id"] = submissionidarray
 		JsonDict["name"] = name
 		JsonDict["date"] = date
 		JsonDict["grade"] = grade
-		print JsonDict
 		JsonDict["unsubmitted"] = unsubmitted
-		print "unsubmitted added: " + str(unsubmitted)
-	print "end of if preJson"
-	print simplejson.dumps(JsonDict)
 	Json = simplejson.dumps(JsonDict)
-	print "Printing Json"
-	print Json 
 	return HttpResponse(Json, content_type="application/json")
 
 # Internal function that runs a submssion against a test case. Returns True if the test was passed or False if the test failed
@@ -893,29 +879,20 @@ def test(testcase, submission):
 	expected_output = testcase.expected_output
 	solution = submission.solution
 	timeout = submission.problem.timeout
-	# Create the test file by adding (1)submission.solution (2)input_value (3)if (4)expected_output (5): (6) return True (6) return False 
-	inputFile = solution + "\n" + input_value + "\n" + "if " + expected_output + ":" + "\n" + "\t" + "print True" + "\n" + "print False"
-	fin = open('newfile', 'w')
-	fin.write(inputFile)
-	fin.close()
-	# Once the file is created, start the timer
-	command = "python ~/Dropbox/django/inputFile > ~/Dropbox/django/outputFile"
+	inputFile = solution
 
-	def runTimeout(command, timeout):
-		import os, signal, time, commands
-		cpid = os.fork()
-		if cpid == 0:
-			while True:
-				print commands.getstatusoutput(command)[1].split('\n')
-		else:
-			time.sleep(timeout)
-			os.kill(cpid, signal.SIGKILL)
+	from ideone.ideone import *
+	ideone = IdeOne()
+	python = 4
+	link = ideone.createSubmission(inputFile, python, input=input_value)
 
-	runTimeout(command, timeout)
-	fout = open('outputFile', 'r')
-	output = fout.read().split('\n')[0]
-	#output = commands.getstatusoutput("python testfile")[0].split('\n')[0]
-	return output
+	# wait for it to finish 
+	while ideone.getSubmissionStatus(link)[0] != Status.Done:
+	    print "sending to external server..."
+	    pass
+
+	output =  ideone.getSubmissionDetails(link)['output']
+	return (output, (output == (expected_output + "\n")))
 
 # Return # students with submissions, testcases
 
@@ -943,6 +920,86 @@ def studentperformance(request, problem_id):
 	rc = Context({"user": currentUser, "course": course, "lecture": lecture, "problem": problem, "testcases": testcases, "submissions": submissions})
 	html = t.render(rc)#RequestContext(request, {}))
 	return HttpResponse(html)
+
+def getSubmission(request):
+	user_id = 0
+	try:
+		user_id = request.session["user_id"]
+	except KeyError:
+		return HttpResponseRedirect('/')
+	currentUser = ""
+	try:
+		currentUser = User.objects.get(user_id=user_id)
+	except User.DoesNotExist:
+		return HttpResponseRedirect('/')
+	JsonDict = {}
+	if ("submission_id" in request.POST):
+		submission_id = request.POST["submission_id"]
+		submssion = ""
+		submissions = Submission.objects.filter(submission_id=submission_id)
+		if len(submissions) > 0:
+			submission = submissions[0]
+			JsonDict["solution"] = submission.solution
+	Json = simplejson.dumps(JsonDict)
+	return HttpResponse(Json, content_type="application/json")
+
+# API function that checks for password, returns True if matching. 
+# Recieves name, password, email, and updates them
+def account(request):
+	user_id = 0
+	try:
+		user_id = request.session["user_id"]
+	except KeyError:
+		return HttpResponseRedirect('/')
+	currentUser = ""
+	try:
+		currentUser = User.objects.get(user_id=user_id)
+	except User.DoesNotExist:
+		return HttpResponseRedirect('/')
+	JsonDict = {}
+	if ("password" in request.POST):
+		password = request.POST["password"]
+		if password == currentUser.password:
+			JsonDict["isOkay"] = True
+		else:
+			JsonDict["isOkay"] = False
+	elif ("name" in request.POST) and ("password" in request.POST) and ("email" in request.POST):
+		name = request.POST["name"]
+		password = request.POST["password"]
+		email = request.POST["email"]
+		currentUser.name = name
+		currentUser.password = password
+		currentUser.email = email
+		currentUser.save()
+		JsonDict["isOkay"] = False
+	Json = simplejson.dumps(JsonDict)
+	return HttpResponse(Json, content_type="application/json")
+
+# def fixthis(request):
+# 	#testcase = Testcase(input_value="x = addTwo(1,2)\n", expected_output="x == 3", testcase_number=99,)
+# 	#output = test(testcase, newSubmission)
+
+# 	input_value = "x = addTwo(1,2)\n"
+# 	expected_output = "x == 3"
+# 	solution = "def addTwo(a, b):\n\treturn a+b"
+# 	timeout = 5
+# 	# Create the test file by adding (1)submission.solution (2)input_value (3)if (4)expected_output (5): (6) return True (6) return False 
+# 	inputFile = solution + "\n" + input_value + "\n" + "if " + expected_output + ":" + "\n" + "\t" + "print True" + "\n" + "else:" + "\n" + "\t" + "print False"
+
+# 	from ideone.ideone import *
+# 	ideone = IdeOne()
+# 	# run a python program
+# 	python = 4
+
+# 	link = ideone.createSubmission(inputFile, python, input=input_value)
+
+# 	# wait for it to finish 
+# 	while ideone.getSubmissionStatus(link)[0] != Status.Done:
+# 	    pass
+
+# 	output =  ideone.getSubmissionDetails(link)['output']
+
+# 	return HttpResponse("<p>" + inputFile + "</p>" + output)
 
 ###
 # END OF FILE 
