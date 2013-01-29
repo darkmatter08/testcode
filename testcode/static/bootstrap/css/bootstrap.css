@@ -1075,7 +1075,7 @@ input[type="color"],
   display: inline-block;
   height: 20px;
   padding: 4px 6px;
-  margin-bottom: 0px;
+  margin-bottom: 3px;
   font-size: 14px;
   line-height: 20px;
   color: #555555;
@@ -1385,7 +1385,7 @@ textarea.span3,
 input.span2,
 textarea.span2,
 .uneditable-input.span2 {
-  width: 126px;
+  width: 129px;
 }
 
 input.span1,
@@ -1648,6 +1648,7 @@ select:focus:invalid:focus {
 
 .input-append,
 .input-prepend {
+  margin-top:4px; 
   margin-bottom: 5px;
   font-size: 0;
   white-space: nowrap;
@@ -1973,14 +1974,14 @@ legend + .control-group {
 }
 
 table {
-  max-width: 100%;
+ 
   background-color: transparent;
   border-collapse: collapse;
   border-spacing: 0;
 }
 
 .table {
-  width: 100%;
+  width:auto;
   margin-bottom: 20px;
 }
 
@@ -2117,7 +2118,7 @@ table {
 
 .table-hover tbody tr:hover td,
 .table-hover tbody tr:hover th {
-  background-color: #f5f5f5;
+  background-color: rgb(219, 255, 142);
 }
 
 table td[class*="span"],
@@ -5523,9 +5524,9 @@ a.thumbnail:hover {
 .label,
 .badge {
   display: inline-block;
-  padding: 2px 4px;
-  font-size: 11.844px;
-  font-weight: bold;
+  padding: 8px ;
+  font-size: 15px;
+  
   line-height: 14px;
   color: #ffffff;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -5535,9 +5536,9 @@ a.thumbnail:hover {
 }
 
 .label {
-  -webkit-border-radius: 3px;
-     -moz-border-radius: 3px;
-          border-radius: 3px;
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
 }
 
 .badge {
@@ -5592,12 +5593,12 @@ a.badge:hover {
 
 .label-info,
 .badge-info {
-  background-color: #3a87ad;
+  background-color: #a6a000;
 }
 
 .label-info[href],
 .badge-info[href] {
-  background-color: #2d6987;
+  background-color: #276c00;
 }
 
 .label-inverse,

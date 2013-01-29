@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <title> Prob</title>
+      <link href='http://fonts.googleapis.com/css?family=Strait' rel='stylesheet' type='text/css'>
+      <link rel="stylesheet" type="text/css" href="/static/text.css" />
+      <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+      <script src="http://code.jquery.com/jquery-latest.js"></script>
+      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.js"></script>
+      <script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
+      <script src="http://jqueryui.com/resources/demos/external/jquery.bgiframe-2.1.2.js"></script>
+       <script src="/static/bootstrap/js/bootstrap.js"></script>
+      <link rel="stylesheet" href="/static/code/lib/codemirror.css">
+      <script src="/static/code/lib/codemirror.js"></script>
+      <script src="/static/code/lib/matchbrackets.js"></script>
+      <script src="/static/code/python.js"></script>
+      <script type="text/javascript" src="/static/java.js"></script>
+          
+    <link rel="stylesheet" href="/static/j-query.css" />
+      <script type="text/javascript" src="/static/scroll/jquery.slimscroll.min.js"></script>
+      
+      <style type="text/css">.CodeMirror {border: 1px solid #dfdfdf; border-bottom: 1px solid #dfdfdf;}</style>              
+     
+      
+     
+      <style>
+         input.text { margin-bottom:5px; width:95%; padding: .4em; }
+         fieldset { padding:0; border:0; margin-top:5px; }
+         h1 { font-size: 1.2em; margin: .6em 0; }
+         .ui-dialog .ui-state-error { padding: .3em; }
+         .validateTips { border: 1px solid transparent; padding: 0.3em; }   
+    </style>
+      
+
+    <script>  $(document).ready(function(){
+            $("#description").slimScroll({
+                height: '258px'
+                })             
+            $("#feedback").slimScroll({
+                height: '300px'
+                })
+      });
+            </script> 
+    <script type="text/javascript" src="/static/student.js"></script>
+
+  </head>
+  <body>
+    
+       
+    
+    
+    
+         <div id="heading">
+           
+            <div id="headt">
+              
+               <div id="logo">
+                  <a href="#home"> <img src="/static/logo1.png"> </a>
+                  
+                </div>
+               <div id="topright">
+                  
+                    <div class="navbar smalle">
+                        <div class="navbar-inner">
+                               <a class="brand" href="#">Hi, {{ user.name }}</a>
+                         </div>
+                        </div>
+                               <ul class="nav">
+                                     <div class="btn-group in"><button class="btn" type="button" id="homelink"><i class="icon-home"></i> Home</button></div>
+                                     <div class="btn-group in"><button class="btn" type="button" id="account"><i class="icon-user"></i>  Account</button></div>
+                                    <div class="btn-group in"> <button class="btn" type="button" id="logout"><i class="icon-off"></i> Logout</button></div>
+                                   
+                               </ul>
+                 
+                   
+             
+               </div>
+              
+         </div>   
+        </div>
+        
+        <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
+        <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
+         <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
+        <div id="cont1">
+             
+      
+            <div id="prob_tabs">
+              
+               <ul class="nav nav-tabs">
+                {% for problem in problems %}
+                     <li class="problemlinks" id="{{problem.problem_id}}">
+                      <a href="#">{{problem.name}}</a>
+                    </li>
+                {% endfor %}
+               </ul>      
+                
+            </div>
+            
+            
+        </div>        
+      
+        
+       <!-- <div id="sep"> </div> -->
+        
+        <div id="container">
+               
+                <div id="main" >
+                    
+                    <div id="containertop">
+                        
+                        
+                        <div class="classe1" id="path" >
+                            
+                            <ul class="breadcrumb" >
+                              <li ><a href="#"><span style="font-size:18px; font-weight:800">{{course.short_name}}</a> </span><span class="divider">/</span></li>
+                              <li class="active"> <span style="font-size:18px; font-weight:800"> {{lecture.description}}</span> </li>                          
+                            </ul>
+                            
+                        </div>
+                    
+                    
+                        <div id="yourcode">
+                           
+                            <div class="classe">
+                             <div class="margins">    Your code</div>
+                                <div id="subms">
+                                   {% if hasPrev %}
+
+                                    <div class="btn-group in"> <button class="btn changecode" type="button" id="previous"> <i class="icon-ok icon-chevron-left"></i> Previous</button> </div>
+                                   {% else %}
+                                   <div class="btn-group in"> <button class="btn changecode  disabled " type="button" id="previous"> <i class="icon-ok icon-chevron-left"></i> Previous</button> </div>
+                                   {% endif %}
+                                   <span style="font-size:15px; margin-top:-2px;">  Submissions </span>
+                                     <div class="btn-group in"><button class="btn changecode disabled" type="button" id="next" >Next <i class="icon-ok icon-chevron-right"></i></button> </div> 
+                                </div>
+                             
+                            </div>
+                            
+                        </div>
+                        
+                        
+                    </div>
+                    
+                    
+                    <div id="containermain">
+                        
+                        
+                        <div id="container2"> 
+                           <div class="well well-small " id="description">    <p id="descriptionplace"> {{activeProblem.description}}
+                                           </p>  </div>
+                            
+                            <div class="classe" id="feed">
+                                <div class="margins"> Feedback</div>                               
+                                                            
+                            </div>
+                            
+                            <div class="well well-small" id="feedback">
+                               <br/>Press "Save & Run" to see your results.<br/>
+                            </div>
+                        </div>
+                    
+                        <div id="container3">
+                        
+                         <div id="textcode" class="submissionid"><form id="{{submission.submission_id}}"><textarea id="code" name="code" cols="120" rows="400" style="background-color: #FFF"></textarea> </form> </div>
+                                  <script>
+                                      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+                                      mode: {name: "python",
+                                      version: 2,
+                                      singleLineStringErrors: false},
+                                      lineNumbers: true,
+                                      indentUnit: 4,
+                                      tabMode: "shift",
+                                      matchBrackets: true
+                                     });
+                                     
+
+  
+                                      
+                                  </script>                                              
+                        </div>
+                        
+                        
+                    </div>
+                    <div id="containerbottom">                         
+                              <div id="save"> 
+                                 <div class="btn-group in"> <button class="btn btn-success" type="button"> <i class="icon-ok icon-white"></i> Save & Run</button> </div>                                
+                                 <div class="btn-group in"> <button class="btn btn-danger" type="button" id="reset1"><i class="icon-refresh icon-white"></i> Reset</button> </div>
+                              </div>
+                        
+                    </div>
+                    
+                    
+                    
+                </div>
+              
+        </div>
+        
+        
+        
+        <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
+        <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
+         <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
+        
+        
+        
+        <div id="footer">
+            
+            
+      
+            
+            
+         
+         
+        
+    
+  </body>
+  
+</html>
+    

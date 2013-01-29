@@ -19,12 +19,19 @@
       <script type="text/javascript" src="/static/teacher-lecture.js"></script>
     <link rel="stylesheet" href="/static/j-query.css" />
       <script type="text/javascript" src="/static/scroll/jquery.slimscroll.min.js"></script>
-      
       <style type="text/css">.CodeMirror {border: 1px solid #dfdfdf; border-bottom: 1px solid #dfdfdf;}</style>              
-               
-     
+       <script type="text/javascript" src="/static/teacher-analyze.js"></script>  
+          <script language="javascript" type="text/javascript" src="/static/plot/jquery.jqplot.min.js"></script>
+       <script type="text/javascript" src="/static/plot/jqplot.barRenderer.js"></script>
+      <script type="text/javascript" src="/static/plot/jqplot.categoryAxisRenderer.min.js"></script>
+      <script type="text/javascript" src="/static/plot/jqplot.pointLabels.min.js"></script>  
+    
+      <script type="text/javascript" src="/static/plot/jqplot.pieRenderer.min.js"></script>
+      <script type="text/javascript" src="/static/plot/jqplot.canvasTextRenderer.min.js"></script>
+      <script type="text/javascript" src="/static/plot/jqplot.canvasAxisLabelRenderer.min.js"></script>
       
-     
+       
+      <link rel="stylesheet" type="text/css" href="/static/plot/jquery.jqplot.css" />
       <style>
          input.text { margin-bottom:5px; width:95%; padding: .4em; }
          fieldset { padding:0; border:0; margin-top:5px; }
@@ -34,20 +41,12 @@
     </style>
       
 
-      <script>  $(document).ready(function(){
-            $("#description").slimScroll({
-                height: '247px'
-                })
-            $("#feedback").slimScroll({
-                height: '300px'
-                })
-      });
-            </script>
+    
   
   </head>
   <body>
     
-<div id="dialog-formproblem"  title="Create a problem">
+<!-- <div id="dialog-formproblem"  title="Create a problem">
      <p class="validateTips" id="problem_message_box"></p>
              <form>
                 <fieldset>
@@ -59,7 +58,7 @@
              
              
              
-  </div>
+  </div> -->
 
   
         
@@ -127,7 +126,8 @@
                   
                   <span style="font-size:16px; font-weight:900"> <ul class="breadcrumb">
                                 <li><a href="#">{{course.name}}</a> <span class="divider">/</span></li>
-                                <li class="active lectureelement" id="{{lecture.lecture_id}}">{{lecture.description}} </li>                              
+                                <li class="lectureelement" id="{{lecture.lecture_id}}"><a href="#">{{lecture.description}} </a> <span class="divider">/</span></li>      
+                                <li class="active" id="{{problem.problem_id}}" >{{problem.name}} </li>                           
                             </ul></span>
                    
                  </div>     
@@ -135,67 +135,52 @@
        <div class="lecturepage" >
               <div class="classe">
                       
-                      <div class="margins"> Problems  <div class="btn-group in rightm">              
-                            <button class="btn " type="button" id="create-problem"> <i class="icon-pencil"></i> Create a problem</button> 
-                       </div> </div>    
-
+                      <div class="margins"> Statistics </div>                          
+                        
+                    </div>
+                        {% ifequal submissions 0 %}
+                             <div style="text-align:center">   <div id="shit"> <p class="empty">  </p> </div> </div>
+                            <div id="chart_div" style="width: 400px; float:left; margin-left:-20px"></div> 
+                            <div id="chart_div2" style="width: 380px; float:right; margin-right:40px"></div>
+                        {% else %}
+                             <div style="text-align:center">   <span class="label label-info" id="insert"> {{submissions}} students submitted a solution </span> </span></div>   
+                             <div id="chart_div" style="width: 400px; float:left; margin-left:-20px"></div> 
+                             <div id="chart_div2" style="width: 380px; float:right; margin-right:40px"></div>
                       
-                        
-                    </div>
-                    
-                    <div id="listclass">
-                        
-                        {% ifequal problems|length 0 %}
-                             <div id="shit"> <p class="empty"> This class has no problems. Use "Create a problem" button </p> </div> 
-                             <ul class="nav nav-tabs nav-stacked" id="problemlist">                           
-                            
-                            </ul>
-                        {% else %}
-                        
-                        <ul class="nav nav-tabs nav-stacked" id="problemlist">
-                            
-                            {% for problem in problems %}                                 
-
-                                <li id="{{problem.0.problem_id}}" class="problemlinks"><a href="#">{{ problem.0.name }}</a></li>
-                                 
-                            {% endfor %}
-                            
-                        </ul>
-                            
-                         {% endifequal %}
+                         {% endifequal %}   
                          
-                    </div>
-                    
-                    
-                     <div id="rightclass">
-                        
-                        {% ifequal problems|length 0 %}
-                             <table border="0" id="problemstable1">
-                                                        
-                            </table>
-                        {% else %}
-                         <table border="0" id="problemstable1">
-                            {% for problem in problems %}  
-                             <tr>                                 
-                                 <td> {{problem.1}} submissions</td>
-
-                                 <td> <div class="btn-group in rightm">              
-                            <button class="btn viewsubmissions " type="button higher" id="{{problem.0.problem_id}}"> <i class="icon-signal"></i> View students' performance</button> 
-                       </div></td>
-                                
-                            </tr>
-                             {% endfor %}
-                            
-                         </table>
                          
-                         {% endifequal %}    
-                     </div>
+                         
+                   
+                    
+                                         
                    
                  </div>     
                                 
-                 <div id="latest" >   
+                 <div id="latest" >    
 
-                 <p class="empty"> Click on the problem to start editing. </p>                 
+                 <div class="classe">
+                      
+                      <div class="margins"> Submission filer </div>   
+
+
+                        
+
+
+                    </div>    
+                  <p class="empty">You can filter submissions using radio buttons below. Any test case without a choice will be skipped. </p>
+                  
+                  {% for testcase in testcases %}
+                   <div style="-webkit-column-count:2; line-height:32px">
+                            <span class="label label-info">Test case {{forloop.counter}}</span> 
+                                  <span style="font-weight:600">
+                                     <input type="radio" name="{{forloop.counter}}" value="pass"> Passed 
+                                     <input type="radio" name="{{forloop.counter}}" value="fail"> Failed  
+                            </span> 
+                                     <input type="radio" name="{{forloop.counter}}" value="skip"> Skip </br>
+                         </div>   
+                 {% endfor %}
+                         
                      <!--  <div class="classe">                      
                           <div class="margins"> Problem 4 </div> 
                        </div>

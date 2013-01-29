@@ -46,13 +46,6 @@ $.ajaxSetup({
    });
 
 
-      
-$("#homelink" )
-      .button()
-      .click(function() {
-        $.post('/api/userhome'
-               );
-      });
 
 
 
@@ -82,6 +75,9 @@ $("#homelink" )
       height: 400,
       width: 450,
       modal: true,
+
+      show: 'fade',
+      hide: 'fade',
       buttons: {
           "Create a class": function() {         
           allFields.removeClass( "ui-state-error" );        
@@ -204,6 +200,9 @@ var courseid;
       height: 220,
       width: 450,
       modal: true,
+      
+      show: 'fade',
+      hide: 'fade',
       buttons: {
           "Create a lecture": function() {         
           allFields.removeClass( "ui-state-error" );                       

@@ -142,15 +142,8 @@ $.ajaxSetup({
     /* /////////////////// */
     /* /////////////////// */
     /* /////////////////// */
-   $(function ()
-     {
-      $( "#logout" )
-      .button()
-      .click(function() {
-        $.post ("/api/logout",
-          function(data) {$location.attr('href', "/")})
-      })
-     });
+   
+  
   
    $(function() { 
 

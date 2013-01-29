@@ -116,7 +116,12 @@ a
 .casebigbox
   {
     position: relative;
-    height: 280px;
+    height: 100px;
+  }
+  .casebigbox1
+  {
+    position: relative;
+    height: 215px;
   }
 
 .inputtest
@@ -143,8 +148,20 @@ a
 }
 #problemdescription
 {
- 
+ width:500px;
 
+}
+/*#chart_div
+{
+  overflow: hidden;
+  width:350px;
+  height:300px;
+ 
+}*/
+#initialcode
+{
+ width:300px;
+  margin-right: 15px;
 }
 .errormessage
 {
@@ -152,10 +169,19 @@ a
 }
 .marginbottom
 {
- 
+ width:100%;
  margin-bottom: 3px;
 position: relative;
 height: 25px;
+
+}
+
+.marginbottom1
+{
+ width:100%;
+ margin-bottom: 9px;
+position: relative;
+height: 28px;
 
 }
 
@@ -332,6 +358,10 @@ table#table2
     
 }
 
+#incode
+{
+  width:100%;
+}
 
 #problemstable  td
 {
@@ -344,13 +374,23 @@ padding-left: 20px;
 padding-right: 20px;
 }
 
+#problemstable1  td
+{
+height:37px;
+width:230px;
+border-bottom: 1px solid transparent;
+border-top: 1px solid transparent;
+padding: 0px;
+padding-left: 10px;
+padding-right: 10px;
+}
 
-#latesttable  th, td
+/*#latesttable  th, td
 {
 
 width:270px;
 
-}
+}*/
 
 .inlatest
 {
@@ -358,7 +398,7 @@ width:270px;
      margin:0px;
 }
 
-#latesttable tr:first-child td
+#latesttable.tr:first-child td
 {
       height:16px;    
       border-top:1px solid #ddd;
@@ -366,6 +406,18 @@ width:270px;
       font-weight: 800;
 }
 
+#filter.tr:nth-child(4) td
+{
+      width:30px;    
+      
+}
+
+table.jqplot-table-legend {
+  width: auto !important;
+}
+table.jqplot-legend {
+  width: auto !important;
+}
 #latesttable td
 {
       height:36px;     
@@ -404,9 +456,12 @@ width:270px;
 
 .margins
 {
+  position:relative; 
+  width:100%;
   margin-top: 4px;
   margin-left: 8px;
-  float:left;
+  height:30px;
+ 
 }
 
 .higher
@@ -466,6 +521,7 @@ width:270px;
 {
  float:right; 
   margin-right:15px; 
+  margin-top:-4px;
 }
 
 #leftm
@@ -564,7 +620,7 @@ width:270px;
 .indents
 {
   font-weight: 600;
-  margin: 7px;
+  margin: 4px;
   margin-left: 12px;
 }
 

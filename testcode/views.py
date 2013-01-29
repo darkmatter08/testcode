@@ -16,6 +16,9 @@ from django.template import RequestContext
 from django import forms
 # import for json 
 from django.utils import simplejson
+# Import for testing function
+import commands
+import time
 # Import models 
 from testcode.models import *
 
@@ -449,6 +452,7 @@ def edit(request, mylecture_id):
 # If the client only sends a problem_name and lecture_id (blank description) in the POST, then create a problem and 
 # return JSON with problem_id. If client POSTs problem_id, description, initial_code, and timeout (ms) in the POST, then update the problem. 
 def createproblem(request):
+	print request.POST
 	user_id = 0
 	try:
 		user_id = request.session["user_id"]
@@ -474,7 +478,7 @@ def createproblem(request):
 				newProblemNumber = 1
 			else:
 				newProblemNumber = allProblems[0].problem_number + 1
-			newProblem = Problem(name=problem_name, lecture=lecture, problem_number=newProblemNumber, description="", timeout=0, initial_code="")
+			newProblem = Problem(name=problem_name, lecture=lecture, problem_number=newProblemNumber, description="", timeout=100, initial_code="")
 			newProblem.save()
 			# Create blank testcase, testcause_number = 1
 			firstTestcase = Testcase(testcase_number=1, problem=newProblem, input_value="", expected_output="")
@@ -490,16 +494,22 @@ def createproblem(request):
 		problem_id = request.POST["problem_id"]
 		description = request.POST["description"]
 		initial_code = request.POST["initial_code"]
-		timeout = request.POST["timeout"]
-		if len(description) > 0 and len(initial_code) > 0:
-			problem = Problem.objects.get(problem_id=problem_id)
-			problem.description = description
-			problem.initial_code = initial_code
-			problem.timeout = timeout
-			problem.save()
-		else:
+		timeoutRaw = request.POST["timeout"]
+		timeout = 0
+		try:
+			timeout = int(timeoutRaw)
+			if len(description) > 0 and len(initial_code) > 0:
+				problem = Problem.objects.get(problem_id=problem_id)
+				problem.description = description
+				problem.initial_code = initial_code
+				problem.timeout = timeout
+				problem.save()
+			else:
+				isOkay = False
+				error = "Nothing in the description!"
+		except ValueError:
 			isOkay = False
-			error = "Nothing in the description!"
+			error = "Fix time limit! Integer values only."
 	else:
 		isOkay = False
 		error = post_request_err
@@ -641,12 +651,13 @@ def getproblem(request):
 		problem = Problem.objects.get(problem_id=problem_id)
 		testcases = []
 		allTestcases = Testcase.objects.filter(problem=problem)
+		currentEnrollment =  Enrollment.objects.get(user=currentUser, course=problem.lecture.course)
 		for testcase in allTestcases:
 			testcases.append((testcase.input_value, testcase.expected_output))
-		allSubmissions = Submission.objects.filter(problem=problem).order_by('-date')
+		allSubmissions = Submission.objects.filter(problem=problem, enrollment=currentEnrollment).order_by('-date')
 		# Check if there are any matching submissions. If not, create a submission.
+		print "current user = " + str(currentUser)
 		if len(allSubmissions) == 0: #No submission yet. Send blank solution and don't send submission_id
-			currentEnrollment =  Enrollment.objects.get(user=currentUser, course=problem.lecture.course)
 			JsonDict["solution"] = ""
 		else:
 			latestSubmission = allSubmissions[0]
@@ -676,7 +687,7 @@ def getproblem(request):
 	Json = simplejson.dumps(JsonDict)
 	return HttpResponse(Json, content_type="application/json")
 
-# Renders the teacher-lecture page with the context vars. 
+# Renders the teacher-lecture page with the context vars. Includes # of users who have a submission for a particular problem
 def teacherlecture(request, lecture_id):
 	user_id = 0
 	try:
@@ -693,7 +704,18 @@ def teacherlecture(request, lecture_id):
 		return HttpResponseRedirect('/teacher')
 	lecture = lectures[0]
 	course = lecture.course
-	problems = Problem.objects.filter(lecture=lecture_id)
+	#problems = Problem.objects.filter(lecture=lecture_id)
+	allProblems = Problem.objects.filter(lecture=lecture_id)
+	problems = []
+	for problem in allProblems:
+		# Get all enrollments. Check if they have any submissions, if so, increment numSubmissions by 1 for this problem.
+		enrollments = Enrollment.objects.filter(problem=problem)
+		numSubmissions = 0
+		for enrollment in enrollments:
+			# Get submissions for this problem. If more than 1, increment counter.
+			if len(Submission.objects.filter(enrollment=enrollment)) > 0:
+				numSubmissions += 1
+		problems.append((problem, numSubmissions))
 	t = get_template("teacher-lecture.html")
 	rc = Context({"user": currentUser, "course": course, "lecture": lecture, "problems": problems})
 	html = t.render(rc)#RequestContext(request, {}))
@@ -730,6 +752,8 @@ def getproblemteacher(request):
 		JsonDict["name"] = problem.name
 		JsonDict["testcase_input"] = testcase_input
 		JsonDict["testcase_output"] = testcase_output
+		JsonDict["initial_code"] = problem.initial_code
+		JsonDict["timeout"] = problem.timeout
 	else:
 		isOkay = False
 		error = post_request_err
@@ -761,7 +785,7 @@ def saveandrun(request):
 		problem = Problem.objects.get(problem_id=problem_id)
 		if len(solution) > 0:
 			enrollment = Enrollment.objects.get(course=problem.lecture.course, user=currentUser)
-			newSubmission = Submission(solution=solution, enrollment=enrollment, problem=problem, grade="{}")
+			newSubmission = Submission(solution=solution, enrollment=enrollment, problem=problem, grade="[]")
 			newSubmission.save()
 			# testcases = Testcase.objects.filter(problem=problem)
 			# newSubmission.grade = run(newSubmission, testcases) #returns JSON with results of all testcases
@@ -796,7 +820,129 @@ def home(request):
 # API function that returns all testcase results by student for the latest submission. 
 # Requires problem_id
 def viewperformance(request):
-	return HttpResponse("")
+	print request.POST
+	user_id = 0
+	try:
+		user_id = request.session["user_id"]
+	except KeyError:
+		return HttpResponseRedirect('/')
+	currentUser = ""
+	try:
+		currentUser = User.objects.get(user_id=user_id)
+	except User.DoesNotExist:
+		return HttpResponseRedirect('/')
+	JsonDict = {}
+	if ("problem_id" in request.POST):
+		problem_id = request.POST["problem_id"]
+		print "getting problem"
+		problem = Problem.objects.get(problem_id=problem_id)
+		print "getting problem"
+		course = problem.lecture.course
+		# find all enrollments
+		enrollments = Enrollment.objects.filter(course=course)
+		# find submissions by enrollment. Take most recent append it. 
+		submissionidarray = []
+		name = []
+		date = []
+		grade = []
+		unsubmitted = []
+		for enrollment in enrollments:
+			print "filtering"
+			submissions = Submission.objects.filter(enrollment=enrollment).order_by('-date')
+			print "filtering"
+			print len(submissions)
+			if len(submissions) > 0:
+				submission = submissions[0]
+				print "getting submissionInfo"
+				print submission.grade
+				print submission.date
+				#submissionInfo = (submission.submission_id, enrollment.user.name, unicode(submission.date)[:-19], submission.grade)
+				submissionidarray.append(submission.submission_id)
+				print "id"
+				name.append(enrollment.user.name)
+				print "name"
+				date.append(unicode(submission.date)[:-22])
+				print "date"
+				grade.append(submission.grade)
+				print "grade"
+				#print submissionInfo
+				#results.append(submissionInfo)
+				#print "results appended!"
+				#print results
+			else: # no submission for this problem. 
+				print "in the else"
+				if not enrollment.user.isAdmin:
+					unsubmitted.append(enrollment.user.name)
+		JsonDict["submission_id"] = submissionidarray
+		JsonDict["name"] = name
+		JsonDict["date"] = date
+		JsonDict["grade"] = grade
+		print JsonDict
+		JsonDict["unsubmitted"] = unsubmitted
+		print "unsubmitted added: " + str(unsubmitted)
+	print "end of if preJson"
+	print simplejson.dumps(JsonDict)
+	Json = simplejson.dumps(JsonDict)
+	print "Printing Json"
+	print Json 
+	return HttpResponse(Json, content_type="application/json")
+
+# Internal function that runs a submssion against a test case. Returns True if the test was passed or False if the test failed
+def test(testcase, submission):
+	input_value = testcase.input_value
+	expected_output = testcase.expected_output
+	solution = submission.solution
+	timeout = submission.problem.timeout
+	# Create the test file by adding (1)submission.solution (2)input_value (3)if (4)expected_output (5): (6) return True (6) return False 
+	inputFile = solution + "\n" + input_value + "\n" + "if " + expected_output + ":" + "\n" + "\t" + "print True" + "\n" + "print False"
+	fin = open('newfile', 'w')
+	fin.write(inputFile)
+	fin.close()
+	# Once the file is created, start the timer
+	command = "python ~/Dropbox/django/inputFile > ~/Dropbox/django/outputFile"
+
+	def runTimeout(command, timeout):
+		import os, signal, time, commands
+		cpid = os.fork()
+		if cpid == 0:
+			while True:
+				print commands.getstatusoutput(command)[1].split('\n')
+		else:
+			time.sleep(timeout)
+			os.kill(cpid, signal.SIGKILL)
+
+	runTimeout(command, timeout)
+	fout = open('outputFile', 'r')
+	output = fout.read().split('\n')[0]
+	#output = commands.getstatusoutput("python testfile")[0].split('\n')[0]
+	return output
+
+# Return # students with submissions, testcases
+
+def studentperformance(request, problem_id):
+	user_id = 0
+	try:
+		user_id = request.session["user_id"]
+	except KeyError:
+		return HttpResponseRedirect('/')
+	currentUser = ""
+	try:
+		currentUser = User.objects.get(user_id=user_id)
+	except User.DoesNotExist:
+		return HttpResponseRedirect('/')
+	problem = Problem.objects.get(problem_id=problem_id)
+	lecture = problem.lecture
+	course = lecture.course
+	testcases = Testcase.objects.filter(problem=problem)
+	enrollments = Enrollment.objects.filter(course=course)
+	submissions = 0
+	for enrollment in enrollments:
+		if len(Submission.objects.filter(problem=problem)) > 0:
+			submissions += 1
+	t = get_template("teacher-analyze.html")
+	rc = Context({"user": currentUser, "course": course, "lecture": lecture, "problem": problem, "testcases": testcases, "submissions": submissions})
+	html = t.render(rc)#RequestContext(request, {}))
+	return HttpResponse(html)
 
 ###
 # END OF FILE 

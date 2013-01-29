@@ -51,6 +51,8 @@ urlpatterns = patterns('',
     url(r'^api/getsubmission$', views.submissionHistory),
     url(r'^api/getproblem$', views.getproblem),
     url(r'^api/userhome$', views.home),
+    url(r'^api/viewperformance$', views.viewperformance),
     url(r'^teacher/edit/(\d{1,5})/$', views.teacherlecture),
     url(r'^student/edit/(\d{1,5})/$', views.edit),
+    url(r'^teacher/edit/performance/(\d{1,5})/$', views.studentperformance),
 )
