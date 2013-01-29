@@ -57,9 +57,7 @@
                     <input type="text" name="email" id="shortclassname" class="text ui-widget-content ui-corner-all" />
                     <label for="password">Student password</label>
                     <input type="password" name="password" id="studentpassword" value="" class="text ui-widget-content ui-corner-all" />
-                     <label for="password">Teacher password</label>
-                    <input type="password" name="password" id="teacherpassword" value="" class="text ui-widget-content ui-corner-all" />
-                               
+                            
                 </fieldset>
             </form>
              
@@ -135,7 +133,9 @@
              
         
        <!-- <div id="sep"> </div> -->        
-                                 
+     
+
+                       
              
         <div id="container1">
             <div id="leftclasses" >
@@ -160,7 +160,7 @@
                             
                             {% for course in courses %}                                 
 
-                                <li id="{{course.course_id}}" class="classlinks"><a href="#">{{ course.name }}</a></li>
+                                <li id="{{course.course_id}}" class="classlinks"><a href="#">{{ course.name }}</a></li> 
                                                        
                             {% endfor %}
                             

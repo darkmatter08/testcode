@@ -19,7 +19,7 @@
        <script type="text/javascript" src="/static/student-home.js"></script>
     <link rel="stylesheet" href="/static/j-query.css" />
       <script type="text/javascript" src="/static/scroll/jquery.slimscroll.min.js"></script>
-      
+        <script type="text/javascript" src="/static/account.js"></script>
       <style type="text/css">.CodeMirror {border: 1px solid #dfdfdf; border-bottom: 1px solid #dfdfdf;}</style>              
                
      
@@ -46,7 +46,25 @@
   
   </head>
   <body>
-                
+         
+         <div id="account1" title="Manage your account">
+  <p class="validateTips" id="account_message_box"> </p>
+ 
+  <form> 
+  <fieldset>
+    <label for="name">Name</label>
+    <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" />
+    <label for="email">Email</label>
+    <input type="text" name="email" id="email" value="" class="text ui-widget-content ui-corner-all" />
+    <label for="password">New password</label>
+    <input type="password" name="password" id="passwordn" value="" class="text ui-widget-content ui-corner-all" />
+    <label for="password">Current password</label>
+    <input type="password" name="password" id="password" value="" class="text ui-widget-content ui-corner-all" />
+  </fieldset>
+  </form>
+</div>       
+
+
         <div id="dialog-formaddclass" title="Add class">
         <p id="addclass_message_box"></p>
              <form>

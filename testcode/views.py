@@ -259,13 +259,15 @@ def createcourse(request):
 	error = ""
 	name = ""
 	course_id = -1
-	if ("name" in request.POST) and ("short_name" in request.POST) and ("admin_password" in request.POST) and ("student_password" in request.POST):
+	if ("name" in request.POST) and ("short_name" in request.POST) and ("student_password" in request.POST):
 		name = request.POST["name"]
 		short_name = request.POST["short_name"]
-		admin_password = request.POST["admin_password"]
 		student_password = request.POST["student_password"]
-		if (len(name)>0) and (len(short_name)>0) and (len(admin_password)>min_pwd_len) and (len(student_password)>min_pwd_len):
-			newCourse = Course(name=name, short_name=short_name, admin_password=admin_password, student_password=student_password)
+		# name = "weird class"
+		# short_name = "Weird"
+		# student_password = "asdf"
+		if (len(name)>0) and (len(short_name)>0) and (len(student_password)>min_pwd_len):
+			newCourse = Course(name=name, short_name=short_name, student_password=student_password)
 			newCourse.save()
 			course_id = newCourse.course_id
 			error = "Class created successfully!"
@@ -295,7 +297,8 @@ def getlectures(request):
 	JsonDict = {}
 	if ("course_id" in request.POST):
 		course_id = request.POST["course_id"]
-		lectures = Lecture.objects.filter(course=Course.objects.get(course_id=course_id))
+		course = Course.objects.get(course_id=course_id)
+		lectures = Lecture.objects.filter(course=course)
 		lecture_name = []
 		lecture_id = []
 		for count in range(len(lectures)):
@@ -306,6 +309,7 @@ def getlectures(request):
 			#JsonDict["problem"][str(count)] = len(problems)  
 		JsonDict["lecture_name"] = lecture_name
 		JsonDict["lecture_id"] = lecture_id
+		JsonDict["password"] = course.student_password
 	else:
 		isOkay = False
 		error = post_request_err
@@ -444,6 +448,7 @@ def edit(request, mylecture_id):
 # If the client only sends a problem_name and lecture_id (blank description) in the POST, then create a problem and 
 # return JSON with problem_id. If client POSTs problem_id, description, initial_code, and timeout (ms) in the POST, then update the problem. 
 def createproblem(request):
+	print request.POST
 	user_id = 0
 	try:
 		user_id = request.session["user_id"]
@@ -461,6 +466,8 @@ def createproblem(request):
 	if ("lecture_id" in request.POST) and ("problem_name" in request.POST):
 		lecture_id = request.POST["lecture_id"]
 		problem_name = request.POST["problem_name"]
+		# lecture_id = 2
+		# problem_name = "fix this bug!"
 		if len(problem_name) > 0:
 			lecture = Lecture.objects.get(lecture_id=lecture_id)
 			newProblemNumber = 0
@@ -469,7 +476,7 @@ def createproblem(request):
 				newProblemNumber = 1
 			else:
 				newProblemNumber = allProblems[0].problem_number + 1
-			newProblem = Problem(name=problem_name, lecture=lecture, problem_number=newProblemNumber, description="", timeout=100, initial_code="")
+			newProblem = Problem(name=problem_name, lecture=lecture, problem_number=newProblemNumber, description="", initial_code="")
 			newProblem.save()
 			# Create blank testcase, testcause_number = 1
 			firstTestcase = Testcase(testcase_number=1, problem=newProblem, input_value="", expected_output="")
@@ -481,26 +488,21 @@ def createproblem(request):
 			isOkay = False
 			error = "Fill in all fields!"
 	# Case 2 - problem_id, description, initial_code, timeout
-	elif ("problem_id" in request.POST) and ("description" in request.POST) and ("initial_code" in request.POST) and ("timeout" in request.POST):
+	elif ("problem_id" in request.POST) and ("description" in request.POST) and ("initial_code" in request.POST):
+		print request.POST
 		problem_id = request.POST["problem_id"]
 		description = request.POST["description"]
 		initial_code = request.POST["initial_code"]
-		timeoutRaw = request.POST["timeout"]
-		timeout = 0
-		try:
-			timeout = int(timeoutRaw)
-			if len(description) > 0:
-				problem = Problem.objects.get(problem_id=problem_id)
-				problem.description = description
-				problem.initial_code = initial_code
-				problem.timeout = timeout
-				problem.save()
-			else:
-				isOkay = False
-				error = "Nothing in the description!"
-		except ValueError:
+		if len(description) > 0:
+			print "getting problem"
+			problem = Problem.objects.get(problem_id=problem_id)
+			print "got problem"
+			problem.description = description
+			problem.initial_code = initial_code
+			problem.save()
+		else:
 			isOkay = False
-			error = "Fix time limit! Integer values only."
+			error = "Nothing in the description!"
 	else:
 		isOkay = False
 		error = post_request_err
@@ -598,7 +600,7 @@ def createtestcase(request):
 		problem = Problem.objects.get(problem_id=problem_id)
 		if len(input_value) > 0 and len(expected_output) > 0 and testcase_number > 0:
 			# Split into new vs. exisiting testcase based on testcase_number
-			testcaseQuerySet = Testcase.objects.filter(testcase_number=testcase_number)
+			testcaseQuerySet = Testcase.objects.filter(testcase_number=testcase_number, problem=problem)
 			if len(testcaseQuerySet) == 0:
 				newTestcase = Testcase(problem=problem, expected_output=expected_output, input_value=input_value, testcase_number=testcase_number)
 				newTestcase.save()
@@ -743,7 +745,6 @@ def getproblemteacher(request):
 		JsonDict["testcase_input"] = testcase_input
 		JsonDict["testcase_output"] = testcase_output
 		JsonDict["initial_code"] = problem.initial_code
-		JsonDict["timeout"] = problem.timeout
 	else:
 		isOkay = False
 		error = post_request_err
@@ -753,7 +754,7 @@ def getproblemteacher(request):
 	return HttpResponse(Json, content_type="application/json")
 
 # Recieves problem_id, solution, creates submission, runs the student's code.
-# Returns submission_id, feedback. 
+# Returns submission_id, feedback. If submission is identical to the previous
 def saveandrun(request):
 	user_id = 0
 	try:
@@ -775,25 +776,34 @@ def saveandrun(request):
 		if len(solution) > 0:
 			enrollment = Enrollment.objects.get(course=problem.lecture.course, user=currentUser)
 			newSubmission = Submission(solution=solution, enrollment=enrollment, problem=problem, grade="[]")
+			submissions = Submission.objects.filter(problem=problem, enrollment=enrollment).order_by('-date')
+			if len(submissions) > 0:
+				if submissions[0].solution == solution:
+					newSubmission = submissions[0]
 			#newSubmission.save()
 			testcases = Testcase.objects.filter(problem=problem).order_by('testcase_number')
 			results = []
 			inputs = []
 			expected_outputs = []
 			outputs = []
+			errors = []
 			for testcase in testcases:
 				result = test(testcase, newSubmission)
 				results.append(result[1])
 				outputs.append(result[0])
 				inputs.append(testcase.input_value)
 				expected_outputs.append(testcase.expected_output)
+				errors.append(result[2])
 				print results
 			newSubmission.grade=str(results) #returns JSON with results of all testcases
+			print "Saving..."
 			newSubmission.save()
-			JsonDict["results"] = results
+			print "making json dicts"
+			JsonDict["grade"] = results
 			JsonDict["inputs"] = inputs
-			JsonDict["expected_output"] = expected_output
+			JsonDict["expected_outputs"] = expected_outputs
 			JsonDict["outputs"] = outputs
+			JsonDict["errors"] = errors
 		else:
 			isOkay = False
 			error = "Please fill in all fields!"
@@ -870,6 +880,9 @@ def viewperformance(request):
 		JsonDict["date"] = date
 		JsonDict["grade"] = grade
 		JsonDict["unsubmitted"] = unsubmitted
+	else:
+		isOkay = False
+		error = post_request_err
 	Json = simplejson.dumps(JsonDict)
 	return HttpResponse(Json, content_type="application/json")
 
@@ -878,7 +891,6 @@ def test(testcase, submission):
 	input_value = testcase.input_value
 	expected_output = testcase.expected_output
 	solution = submission.solution
-	timeout = submission.problem.timeout
 	inputFile = solution
 
 	from ideone.ideone import *
@@ -892,7 +904,8 @@ def test(testcase, submission):
 	    pass
 
 	output =  ideone.getSubmissionDetails(link)['output']
-	return (output, (output == (expected_output + "\n")))
+	error = ideone.getSubmissionDetails(link)['stderr']
+	return (output, (output == (expected_output + "\n")), error)
 
 # Return # students with submissions, testcases
 
@@ -957,24 +970,64 @@ def account(request):
 	except User.DoesNotExist:
 		return HttpResponseRedirect('/')
 	JsonDict = {}
-	if ("password" in request.POST):
-		password = request.POST["password"]
-		if password == currentUser.password:
+	if ("name" in request.POST) and ("new_password" in request.POST) and ("old_password" in request.POST)and ("email" in request.POST):
+		name = request.POST["name"]
+		new_password = request.POST["new_password"]
+		old_password = request.POST["old_password"]
+		email = request.POST["email"]
+		if old_password == currentUser.password:
+			currentUser.name = name
+			currentUser.password = new_password
+			currentUser.email = email
+			currentUser.save()
+			error = "Save successful."
 			JsonDict["isOkay"] = True
+			JsonDict["error"] = error
 		else:
 			JsonDict["isOkay"] = False
-	elif ("name" in request.POST) and ("password" in request.POST) and ("email" in request.POST):
-		name = request.POST["name"]
-		password = request.POST["password"]
-		email = request.POST["email"]
-		currentUser.name = name
-		currentUser.password = password
-		currentUser.email = email
-		currentUser.save()
-		JsonDict["isOkay"] = False
+			JsonDict["error"] = "Wrong login information."
+	elif: #return values case
+		JsonDict["name"] = currentUser.name
+		JsonDict["email"] = currentUser.email
+		JsonDict["isOkay"] = True
+		JsonDict["error"] = ""
+	else:
+		isOkay = False
+		error = post_request_err
 	Json = simplejson.dumps(JsonDict)
 	return HttpResponse(Json, content_type="application/json")
 
+def getlogin(request):
+	user_id = 0
+	try:
+		user_id = request.session["user_id"]
+	except KeyError:
+		return HttpResponseRedirect('/')
+	currentUser = ""
+	try:
+		currentUser = User.objects.get(user_id=user_id)
+	except User.DoesNotExist:
+		return HttpResponseRedirect('/')
+	JsonDict = {}
+	isOkay = True
+	error  = ""
+	if ("course_id" in request.POST):
+		password = ""
+		course_id = request.POST["course_id"]
+		courses = Course.objects.filter(course_id=course_id)
+		if len(courses) > 0:
+			password = courses[0].student_password
+			JsonDict["password"] = password
+		else:
+			isOkay = False
+			error = "Invalid course id"
+	else:
+		isOkay = False
+		error = post_request_err
+	JsonDict["isOkay"] = isOkay
+	JsonDict["error"] = error
+	Json = simplejson.dumps(JsonDict)
+	return HttpResponse(Json, content_type="application/json")
 # def fixthis(request):
 # 	#testcase = Testcase(input_value="x = addTwo(1,2)\n", expected_output="x == 3", testcase_number=99,)
 # 	#output = test(testcase, newSubmission)

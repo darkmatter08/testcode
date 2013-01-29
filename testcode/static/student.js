@@ -7,7 +7,7 @@ $(function(){
        $.post(
                 '/api/getproblem',
                  {
-                 	problem_id:problem_id,
+                  problem_id:problem_id,
                  },
                   function(data)
                     {
@@ -18,27 +18,27 @@ $(function(){
                          editor.setValue(""+text); 
                          var hasNext=result.hasNext;
                          var hasPrev=result.hasPrev;
-						 if (hasPrev) {$("#previous").removeClass("disabled")}  else {$("#previous").addClass("disabled")}                    	 	
+             if (hasPrev) {$("#previous").removeClass("disabled")}  else {$("#previous").addClass("disabled")}                        
                           if (hasNext) {$("#next").removeClass("disabled")}   else {$("#next").addClass("disabled")}                   
                      }
-	           )
+             )
 
 
  });
 
 
  $( "#reset1" ).click(function() {                                                                               
-                                   editor.setValue("");
+                                   editor.setValue(""+initialcode);
                                  });
  var problem_id=$(".active").attr("id");
  $( ".changecode" ).click(
                           function() 
- 		      { if (! ($(this).is('.disabled')) ) 
+          { if (! ($(this).is('.disabled')) ) 
                 {var type=$(this).attr("id");   
- 			    isNextSubmission=1;
- 			    submission_id=$('form').attr('id');
- 			   
- 			    if (type=="previous") {isNextSubmission=0}      			                                                                    
+          isNextSubmission=1;
+          submission_id=$('form').attr('id');
+         
+          if (type=="previous") {isNextSubmission=0}                                                                                
                             $.post(
                                     '/api/getsubmission',
                                     {  
@@ -55,7 +55,7 @@ $(function(){
                                             editor.setValue( ""+text);                                           
                                             var id=result.submission_id;
                                             $('form').attr('id', id);
-                                            if (hasPrev) {$("#previous").removeClass("disabled")}  else {$("#previous").addClass("disabled")}                    	 	
+                                            if (hasPrev) {$("#previous").removeClass("disabled")}  else {$("#previous").addClass("disabled")}                       
                                             if (hasNext) {$("#next").removeClass("disabled")}   else {$("#next").addClass("disabled")}
                                         },
                                     "json"
@@ -63,15 +63,15 @@ $(function(){
                             }
                       }
                             );
-
+ var initialcode;
  $(".problemlinks").click(function(){
        problem_id=$(this).attr("id");
        $(".active").eq(0).removeClass("active");
-       $(this).addClass("active");
+       $(this).addClass("active");      
         $.post(
                 '/api/getproblem',
                  {
-                 	problem_id:problem_id,
+                  problem_id:problem_id,
                  },
                   function(data)
                     {
@@ -83,25 +83,26 @@ $(function(){
                         var id=result.submission_id;                        
                         var name=result.name;                        
                         $("#descriptionplace").html(description);
-                        $("#feedback").html('<br/>Press "Save & Run" to see your results.<br/>') 
+                        $("#insidefeedback").html('Press "Save & Run" to see your results.<br/>') 
                         $('form').attr('id', id);                       
-                        if (hasPrev) {$("#previous").removeClass("disabled")}  else {$("#previous").addClass("disabled")}                    	 	
-                        $("next").addClass("disabled");
-                        var testinput=result.testcase_input;
-                        var testoutput=result.testcase_output; 
-                        var num_testcases=testinput.length;
-                        var initialcode=result.initial_code;
-                        var timelimit=result.timelimit;
-                        localStorage['inputs']=JSON.stringify(testinput);
-                        localStorage['outputs']=JSON.stringify(testoutput);
+                        if (hasPrev) {$("#previous").removeClass("disabled")}  else {$("#previous").addClass("disabled")}                       
+                        $("next").addClass("disabled");                       
+                        initialcode=result.initial_code;                        
                     }
-	           )
+             )
  })
-
+var input;
+var output;
+var youroutput; 
+var ifpassed
+var error
  $("#run").click(function()
     {
        problem_id=$(".active").eq(0).attr("id");
        var solution=editor.getValue();       
+        $("#run").button('loading');
+        $("#insidefeedback").fadeOut(1000);
+
       $.post('/api/submit',
          {
              problem_id:problem_id,
@@ -109,18 +110,52 @@ $(function(){
          },
          function(data)
          {
-         	 var result = jQuery.parseJSON(JSON.stringify(data));
-         	 var ifpassed=result.grade;
-         	 var n=ifpassed.length   
-         	 
-         	   
+           $("#run").button('reset');
+           var result = jQuery.parseJSON(JSON.stringify(data));
+           ifpassed=result.grade;
+           input=result.inputs;
+           output=result.expected_outputs;
+           youroutput=result.outputs;
+           error=result.error;
+           var score=0;
+           var n=ifpassed.length   
+           for (var i=1; i<n+1;i++) {if (ifpassed[i-1]) score++}
+           if (score==n) { $("#insidefeedback").html('<p style="font-weight:900; color:#008A05; font-size:16px"> Correct:'+n+'/'+n+'</p>')} else
+                         { $("#insidefeedback").html('<p style="font-weight:900; color:#FA2100; font-size:16px"> Correct:'+score+'/'+n+'</p>')}
+           $("#insidefeedback").append('<div style="-webkit-column-count:3">')
+           for (var i=1; i<n+1;i++) {
+            if (ifpassed[i-1]) 
+                 $("#insidefeedback").append('<button type="button" class="btn btn-success test" id="'+i+'">Testcase '+i+'</button>');
+            else
+                 $("#insidefeedback").append('<button type="button" class="btn btn-danger test" id="'+i+'">Testcase '+i+'</button>');
+              }
+            $("#insidefeedback").append('</div>')
+            $("#insidefeedback").fadeIn(800);
           }
        )
     }
 )
 
+$( "#viewtest" ).dialog({
+      autoOpen: false,
+      height: 'auto',
+      show: 'fade',
+      hide: 'fade',
+      width: 'auto',
+      modal: true,
+     close: function() {
+        allFields.val( "" ).removeClass( "ui-state-error" );
+      }
+    });
 
-
-
-
+$(".test").live('click', function()
+            {
+              var id=$(this).attr('id')
+              if (ifpassed[id-1]) { $("#forcorr").html(error[id-1])} else { $("#forwrong").html(error[id-1])}
+              $("#in").html(input[id-1])
+              $("#yourout").html(youroutput[id-1])
+              $("#corrout").html(output[id-1])
+              $("#viewtest").dialog("open")
+            }
+               )
 });

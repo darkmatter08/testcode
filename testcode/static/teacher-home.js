@@ -61,18 +61,12 @@ $.ajaxSetup({
   $(function() {
     var name = $( "#classname" ),
         shortname = $( "#shortclassname" ),
-        studentpassword = $( "#studentpassword" ),
-        teacherpassword = $( "#teacherpassword" ),
-        
-        allFields = $( [] ).add( name ).add( shortname ).add( studentpassword ).add( teacherpassword ),
-        tips = $( ".validateTips" );
- 
-    
-    
- 
-    $( "#dialog-formclass" ).dialog({
+        studentpassword = $( "#studentpassword" )      
+         $("#create_message_box").html(" ")
+        allFields = $( [] ).add( name ).add( shortname ).add( studentpassword )  
+      $( "#dialog-formclass" ).dialog({
       autoOpen: false,
-      height: 400,
+      height: 330,
       width: 450,
       modal: true,
 
@@ -86,8 +80,7 @@ $.ajaxSetup({
           $.post('/api/createcourse',
                       {
                       name:name.val(),
-                      short_name:shortname.val(),
-                      admin_password:teacherpassword.val(),
+                      short_name:shortname.val(),                     
                       student_password:studentpassword.val()
                       },
            function(data){                    
@@ -99,28 +92,22 @@ $.ajaxSetup({
                      var id= result.course_id
                      if (isOkay==false)
                         {
-                        color = "red";
-                                 
+                        color = "red";                                 
                         }
                     else
-                       { color = "green"
-                        
+                       { color = "green"                        
                         setTimeout(function(){$("#dialog-formclass").dialog( "close" )
                         $("#shit").remove();
                         $("#classlist").prepend("<li id="+id+" class='classlinks'><a href='#''>"+name+"</a></li>");
-                        $("#problemstable").prepend("<tr><td> 0 lectures</td><td >0 problems</td><td >0 students</td></tr>")}, 600);
-                            
+                        $("#problemstable").prepend("<tr><td> 0 lectures</td><td >0 problems</td><td >0 students</td></tr>")}, 600);                            
                         }
                    $("#create_message_box").html("<span style='color:"+color+"'>"+error+"</span>")
            },
-           "json"
-           
-          )
-                 
+           "json"           
+          )                 
         },
         Cancel: function() {
-          $( this ).dialog( "close" );
-                           }
+          $( this ).dialog( "close" ); }
         },
       close: function() {
         allFields.val( "" ).removeClass( "ui-state-error" );
@@ -156,11 +143,13 @@ var courseid;
                    var result = jQuery.parseJSON(JSON.stringify(data))
                    var number= result.num_lectures;
                    var lecture_name= result.lecture_name;
-                   var lecture_id=result.lecture_id;    
+                   var lecture_id=result.lecture_id;  
+                   var pass=result.password;  
                    $("#latest").hide("slide", { direction: "up" }, 500);
                     setTimeout(
                       function(){
-                        $("#latest").html(' <div class="classe"><div class="margins"> Lectures  <div class="btn-group in rightm"> <button class="btn " type="button" id="create-lecture"> <i class="icon-pencil"></i> Create a lecture</button> </div> </div></div> <div id="forerror"> </div> </ul><span style="-webkit-column-count:3"><ul class="nav nav-tabs nav-stacked" id="lecturelist"></ul></span>')
+                        $("#latest").html('<div class="accordion" id="accordion2"><div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">View Student Login Information</a></div><div id="collapseOne" class="accordion-body collapse"><div class="accordion-inner">Class ID: '+courseid+' &nbsp &nbsp &nbsp &nbsp  Student password: '+pass+'</div></div> </div>'+
+                       ' <div class="classe"><div class="margins"> Lectures  <div class="btn-group in rightm"> <button class="btn " type="button" id="create-lecture"> <i class="icon-pencil"></i> Create a lecture</button> </div> </div></div> <div id="forerror"> </div> </ul><span style="-webkit-column-count:3"><ul class="nav nav-tabs nav-stacked" id="lecturelist"></ul></span>')
                           if (number==0) 
                             {
                                   $("#forerror").html("<p class='empty'> This class has no lectures. You can create one</p>");
@@ -174,7 +163,7 @@ var courseid;
                       $("#lecturelist").append("<li ><a href='edit/"+lecture_id[i]+"'>"+lecture_name[i]+"</a></li>");
                     }
                   }
-                   $("#latest").show("slide", { direction: "up" }, 500)},500);
+                   $("#latest").show("slide", { direction: "up" }, 500)},600);
                  }
 
               )
@@ -205,7 +194,8 @@ var courseid;
       hide: 'fade',
       buttons: {
           "Create a lecture": function() {         
-          allFields.removeClass( "ui-state-error" );                       
+          allFields.removeClass( "ui-state-error" )
+          $("#createlecture_message_box").html(" ")
           $.post('/api/createlecture',
                       {
                       name:name.val(), 
@@ -258,88 +248,3 @@ var courseid;
 
 
 });
-/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
-/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
-/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
-/* $$$$$$$$$$$$$$$$$$ ADD CLASS $$$$$$$$$$$$$$$$$$$$ */
-/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
-/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
-/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
-/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
-   /*
-  $(function() {
-    var ID = $( "#idclass" ),
-        password = $( "#passwordclass" ),
-        
-        allFields = $( [] ).add(idclass ).add( passwordclass ),
-        tips = $( ".validateTips" );
- 
-    
- 
- 
-    $( "#dialog-formaddclass" ).dialog({
-      autoOpen: false,
-      height: 300,
-      width: 450,
-      modal: true,
-      buttons: {
-          "Add a class": function() {         
-          allFields.removeClass( "ui-state-error" );        
-           
-                 
-          $.post('/api/addcourse',
-                      {
-                      course_id:ID.val(),
-                      password:password.val(),
-                      },
-           function(data){                    
-                     var result = jQuery.parseJSON(JSON.stringify(data))
-                     var isOkay = result.isOkay
-                     var error = result.error
-                     var name= result.name
-                     var nlectures = 
-                     if (isOkay==false)
-                        {
-                        color = "red";
-                                 
-                        }
-                    else
-                       { color = "green"
-                        setTimeout(function(){$("#dialog-formclass").dialog( "close" )},400);
-                        if ($(".newuser")[0]) 
-                             {
-                                  $("#listclass").html("<ul class='nav nav-tabs nav-stacked' id='classlist'><li id="+course_id+">"+name+"</li></ul>")
-                                  $("#rightclass").html('<table border="0" id="problemstable"><tr><td> 0 lectures</td><td >0 problems</td><td >0 students</td></tr></table>')
-                             }
-                        else
-                            {
-                                 $("#classlist").prepend("<li id="+course_id+">"+name+"</li>");
-                                 $("#problemstable").prepend("<tr><td> 0 lectures</td><td >0 problems</td><td >0 students</td></tr>");
-                            }
-                        }
-                   $("#create_message_box").html("<span style='color:"+color+"'>"+error+"</span>")
-           },
-           "json"
-           
-          )
-                 
-        },
-        Cancel: function() {
-          $( this ).dialog( "close" );
-                           }
-        },
-      close: function() {
-        allFields.val( "" ).removeClass( "ui-state-error" );
-      }
-    });
- 
-    $( "#add-class" )
-      .button()
-      .click(function() {
-        $( "#dialog-formclass" ).dialog( "open" );
-      });
-
-  
-    });
-
-    */

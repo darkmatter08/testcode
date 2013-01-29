@@ -67,11 +67,10 @@ $.ajaxSetup({
   $(function() {
     var name = $( "#name" )
     var  email = $( "#email" )
-    var  password = $( "#password" )      
-   
-        
-        allFields = $( [] ).add( name ).add( email ).add( password ),
-        tips = $( ".validateTips" );    
+    var  password = $( "#password" )
+          allFields = $( [] ).add( name ).add( email ).add( password )
+
+    $("#signup_message_box").html(" ")  
     
  
     $( "#dialog-form" ).dialog({
@@ -149,8 +148,9 @@ $.ajaxSetup({
 
   var email = $( "#emaillogin" ),
       password = $( "#passwordlogin" ),
-      allFields = $( [] ).add( email ).add( password ),
-      tips = $( ".validateTips" );
+      allFields = $( [] ).add( email ).add( password )
+
+     $("#login_message_box").html(" ")
  
  
     $( "#dialog-form1" ).dialog({

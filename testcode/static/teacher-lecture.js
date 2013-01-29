@@ -6,10 +6,10 @@ $(".viewsubmissions").live('click', function(){
                  })
 
  $(function() {
-    var name;
+  
     
     lectureid=$(".lectureelement").attr('id');  
-        
+      var  pname=$( "#problemname" );
      
 
  $( "#dialog-formproblem" ).dialog({
@@ -18,13 +18,13 @@ $(".viewsubmissions").live('click', function(){
       width: 450,
       modal: true,
       buttons: {
-          "Create and start editing": function() {         
-          allFields.removeClass( "ui-state-error" );      
-           name=$( "#problemname" ).val();
+          "Create a problem": function() {               
+            var name=pname.val()
+            allFields = $( [] ).add( pname )
           
           $.post('/api/createproblem',
                       {
-                      problem_name:name,
+                      problem_name:pname.val(),
                       lecture_id:lectureid
                       },
            function(data){                    
@@ -77,11 +77,11 @@ $(".viewsubmissions").live('click', function(){
   
     });
 
-
+var problem_id;
  $(function() 
 {
 var i;
-var problem_id;
+
 $(document).on("click",".problemlinks",function(){
               
               $(".active").eq(1).removeClass("active");
@@ -120,11 +120,9 @@ $(document).on("click",".problemlinks",function(){
                           ' </div> '+ 
                             ' <div class="fields1"> Description  <div class="pull-right" style="width:320px">Initial code <span class="errormesage" id="desc" style="font-size:13px"> </span></div></div>     '+                
                           ' <div class="casebigbox1"><div id="problemdescription" class="pull-left"> <form><textarea id="description1" name="description" rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> </div>'+
-                          ' <div id="initialcode" class="pull-right"> <form><textarea id="incode" name="code" rows="8" placeholder="Use this for initial code" style="background-color: #FFF; font-size:14px"></textarea> </form> '+ 
+                          ' <div id="initialcode" class="pull-right"> <form><textarea id="incode" name="code" rows="10" placeholder="Use this for initial code" style="background-color: #FFF; font-size:14px"></textarea> </form> '+ 
                         '  '+
-                        ' <div class="input-append pull-left " style="margin-left:6px"><span class="add-on"><span style="font-weight:900">Time limit</span></span>'+
-                        '<input class="span2" id="appendedInput" type="text">'+
-                        '<span class="add-on">milliseconds</span></div> </div> </div><div class=" marginbottom1"><div class="btn-group in forsave"><button class="btn" type="button" id="savedescription"><i class="icon-ok-circle"></i> Save</button></div> </div></div>'+
+                        '</div> </div><div class=" marginbottom1"><div class="btn-group in forsave"><button class="btn" type="button" id="savedescription"><i class="icon-ok-circle"></i> Save</button></div> </div></div>'+
                       '<div class="fields "> Test cases </div>')
                      $("#description1").val(description);
                      $("#appendedInput").val(timelimit);

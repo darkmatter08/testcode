@@ -3240,11 +3240,12 @@ button.close {
 }
 
 .btn-large {
-  padding: 11px 19px;
-  font-size: 17.5px;
+  padding: 25px;
+  font-size: 23px;
+
   -webkit-border-radius: 6px;
      -moz-border-radius: 6px;
-          border-radius: 6px;
+          border-radius: 25px;
 }
 
 .btn-large [class^="icon-"],
@@ -3998,7 +3999,7 @@ input[type="submit"].btn.btn-mini {
   padding-top: 8px;
   padding-bottom: 8px;
   line-height: 20px;
-  background-color:#effeef;
+  background:rgba(232, 251, 167, 0.7);
   border: 1px outset #d8e5d8;
   -webkit-border-radius: 4px 4px 0 0;
      -moz-border-radius: 4px 4px 0 0;

@@ -20,7 +20,6 @@ class Course(models.Model):
 	# corresponds to MIT course number
 	short_name = models.CharField(max_length=50)
 	name = models.CharField(max_length=50)
-	admin_password = models.CharField(max_length=30) 
 	student_password = models.CharField(max_length=30)
 	
 	# Describes the object when it is called from the DB
@@ -59,7 +58,6 @@ class Problem(models.Model):
 	description = models.TextField(max_length=100)
 	name = models.TextField(max_length=50)
 	problem_number = models.IntegerField()
-	timeout = models.IntegerField() # Max time a problem can take to run before it is killed and failed, in millisecond
 	initial_code = models.TextField(max_length=200) #Initial function to be included
 	# Many to one relationships with Lecture - one Lecture has many Problems
 	lecture = models.ForeignKey(Lecture)
