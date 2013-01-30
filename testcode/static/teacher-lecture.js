@@ -2,7 +2,7 @@
 
 $(".viewsubmissions").live('click', function(){ 
                 var id=$(this).attr('id')
-                 $(location).attr('href','/teacher/edit/performance/'+id);
+                 $(location).attr('href','/testcode/teacher/edit/performance/'+id);
                  })
 
  $(function() {
@@ -22,7 +22,7 @@ $(".viewsubmissions").live('click', function(){
             var name=pname.val()
             allFields = $( [] ).add( pname )
           
-          $.post('/api/createproblem',
+          $.post('/testcode/api/createproblem',
                       {
                       problem_name:pname.val(),
                       lecture_id:lectureid
@@ -94,7 +94,7 @@ $(document).on("click",".problemlinks",function(){
               var num_testcases
               var code
               var timelimit
-            $.post( '/api/getproblemteacher',
+            $.post( '/testcode/api/getproblemteacher',
                       {
                         problem_id:problem_id                        
                       },
@@ -119,8 +119,8 @@ $(document).on("click",".problemlinks",function(){
                            '<div class="margins">'+name+' </div> '+ 
                           ' </div> '+ 
                             ' <div class="fields1"> Description  <div class="pull-right" style="width:320px">Initial code <span class="errormesage" id="desc" style="font-size:13px"> </span></div></div>     '+                
-                          ' <div class="casebigbox1"><div id="problemdescription" class="pull-left"> <form><textarea id="description1" name="description" rows="10" style="background-color: #FFF; font-size:14px"></textarea> </form> </div>'+
-                          ' <div id="initialcode" class="pull-right"> <form><textarea id="incode" name="code" rows="10" placeholder="Use this for initial code" style="background-color: #FFF; font-size:14px"></textarea> </form> '+ 
+                          ' <div class="casebigbox1"><div id="problemdescription" class="pull-left"> <form><textarea id="description1" name="description" rows="10" placeholder="Enter your problem description here. Make sure to include all information a student requires to solve the problem" Print the result." style="background-color: #FFF; font-size:14px"></textarea> </form> </div>'+
+                          ' <div id="initialcode" class="pull-right"> <form><textarea id="incode" name="code" rows="10" placeholder="Any code you want provided to the student automatically. Ex: import statements, Input values to the problem: a=int(raw_input()) \n b=str(raw_input())" style="background-color: #FFF; font-size:14px"></textarea> </form> '+ 
                         '  '+
                         '</div> </div><div class=" marginbottom1"><div class="btn-group in forsave"><button class="btn" type="button" id="savedescription"><i class="icon-ok-circle"></i> Save</button></div> </div></div>'+
                       '<div class="fields "> Test cases </div>')
@@ -132,11 +132,11 @@ $(document).on("click",".problemlinks",function(){
                         $("#latest").append( '   <div class="casebigbox"> '+ 
                         '       <div class="inputtest"> '+                           
                          '        <p class="indents"> Input '+j+' </p>  '+ 
-                           '       <form><textarea class="inputtext" name="inputtext"  rows="3" style="background-color: #FFF; font-size:14px"></textarea> </form> '+ 
+                           '       <form><textarea class="inputtext" name="inputtext"   placeholder="Assign values to each raw_input(), enter values separated by new line" rows="3" style="background-color: #FFF; font-size:14px"></textarea> </form> '+ 
                            '     </div> '+ 
                            '     <div class="outputtest"> '+ 
                            '    <p class="indents">  Output '+j+' <span class="terrormessage" style="font-size:13px"> </span></p>'+ 
-                            '    <form><textarea class="outputtext" name="outputtext"  rows="3" style="background-color: #FFF; font-size:14px"></textarea> </form></div> </div> <div class="margins"> <div class="btn-group in forsave"><button class="btn savetestcase" type="button" id="1"><i class="icon-ok-circle"></i> Save</button></div>'+ 
+                            '    <form><textarea class="outputtext" name="outputtext"  placeholder="Enter correct output values for the input data. Be careful with new lines" rows="3" style="background-color: #FFF; font-size:14px"></textarea> </form></div> </div> <div class="margins"> <div class="btn-group in forsave"><button class="btn savetestcase" type="button" id="1"><i class="icon-ok-circle"></i> Save</button></div>'+ 
                            ' </div>  ')  
                         $(".inputtext").eq(j-1).val(testinput[j-1]);
                         $(".outputtext").eq(j-1).val(testoutput[j-1]);
@@ -157,7 +157,7 @@ $(document).on("click",".problemlinks",function(){
   $("#latest").append( '   <div class="casebigbox"> '+ 
                         '       <div class="inputtest"> '+                           
                          '        <p class="indents"> Input  '+i+'  </p>'+ 
-                           '       <form><textarea class="inputtext" name="inputtext" cols="45" rows="3" style="background-color: #FFF; font-size:14px"></textarea> </form> '+ 
+                           '       <form><textarea class="inputtext" name="inputtext" placeholder="To assign values to each raw_input(), enter values separated by new line" cols="45" rows="3" style="background-color: #FFF; font-size:14px"></textarea> </form> '+ 
                            '     </div> '+ 
                            '     <div class="outputtest"> '+ 
                            '    <p class="indents">  Output '+i+' <span class="terrormessage" style="font-size:13px"> </span> </p>'+ 
@@ -170,7 +170,7 @@ $(document).on("click","#savedescription",function(){
   var descr=$("#description1").val();
   var initialcode=$("#incode").val();
   var timelimit=$("#appendedInput").val();
-  $.post('/api/createproblem',
+  $.post('/testcode/api/createproblem',
   {
     problem_id:problem_id,
     description:descr,
@@ -201,7 +201,7 @@ $(document).on("click",".savetestcase",function(){
   var k = $(".savetestcase").index(this);
   tinput=$(".inputtext").eq(k).val();
   toutput=$(".outputtext").eq(k).val();
-  $.post('/api/createtestcase',
+  $.post('/testcode/api/createtestcase',
   {
     problem_id:problem_id,
     testcase_number:(k+1),

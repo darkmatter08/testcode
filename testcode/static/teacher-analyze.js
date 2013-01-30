@@ -20,7 +20,7 @@
    var problem_id=$(".active").attr('id');
    
 
-    $.post( '/api/viewperformance',
+    $.post( '/testcode/api/viewperformance',
              {
               problem_id:problem_id
              },
@@ -31,11 +31,17 @@
                     submission_id=result.submission_id, 
                     name=result.name, 
                     date=result.date, 
-                    grade=result.grade                    
+                    array=result.grade                    
                     n=name.length
+                    ntest=array[0].length 
                     for (var i=0; i<n;i++)
-                        {array[i]=jQuery.parseJSON(grade[i]) }
-                    grade=array                             
+                        {
+                          grade[i]=new Array()
+                          for (var j=0; j<ntest;j++)
+                          {
+                            if (array[i].charAt(j)==1) {grade[i][j]=true} else grade[i][j]=false;
+                          }
+                        }                                                
                      if (n==0)
                       {$("#shit").html("This problem has no submissions")}
                      else
@@ -44,7 +50,7 @@
                          var       score= new Array()
                           var      passed= new Array()
                           var      failed= new Array()                           
-                          ntest=grade[0].length                           
+                                                    
                             for (var j=0; j<ntest+1; j++)
                             {
                               score[j]=0; scored[j]=0; failed[j]=0; passed[j]=0; 
@@ -54,7 +60,7 @@
                               { 
                                 for (var j=0; j<ntest; j++)
                                     {                                       
-                                      if (grade[i][j]=="True") 
+                                      if (grade[i][j]==true) 
                                           {
                                             passed[j]++
                                             score[i]++
@@ -149,9 +155,9 @@ $("input:radio").change(function(){
         row=""        
         for (var k=1; k<ntest+1; k++)
               {                
-                if (grade[i][k-1]=="True") icon="ok"; else icon="remove"
+                if (grade[i][k-1]==true) icon="ok"; else icon="remove"
                 row=row+'<td> <i class="icon-'+icon+'"></i></td>'
-                if (checked[k]=='pass' && grade[i][k-1]=="False") {tohide=true} else{ if (checked[k]=='fail' && grade[i][k-1]=="True") {tohide=true}}
+                if (checked[k]=='pass' && grade[i][k-1]==false) {tohide=true} else{ if (checked[k]=='fail' && grade[i][k-1]==true) {tohide=true}}
                 
               }
         if (!(tohide)) {j=j+1; string=string+'<tr id="'+submission_id[i]+'" class="submissionlinks"> <td>'+j+'</td><td>'+name[i]+'</td> <td>'+date[i]+'</td>'+row+'</tr>'}
@@ -162,10 +168,9 @@ $("input:radio").change(function(){
 
  $(".submissionlinks").live('click', function() {
                   
-                    var id=$(this).attr('id');
-                    alert(id);
+                    var id=$(this).attr('id');                   
                     $.post(
-                        '/api/getsubmissionteacher',
+                        '/testcode/api/getsubmissionteacher',
                         {
                           submission_id:id
                         },

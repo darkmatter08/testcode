@@ -47,12 +47,6 @@ $.ajaxSetup({
 
 
       
-$("#homelink" )
-      .button()
-      .click(function() {
-        $.post('/api/userhome'
-               );
-      });
 
 $(function() {
     var id = $( "#idclass" ),
@@ -70,12 +64,15 @@ $(function() {
       height: 260,
       width: 450,
       modal: true,
+      
+      show: 'fade',
+      hide: 'fade',
       buttons: {
           "Add a class": function() {         
           allFields.removeClass( "ui-state-error" );        
            
                  
-          $.post('/api/addcourse',
+          $.post('/testcode/api/addcourse',
                       {
                       course_id:id.val(),
                       password:password.val(),
@@ -148,7 +145,7 @@ var courseid;
             $(".active").removeClass("active");
             $(this).addClass("active");
             courseid=$(this).attr('id');         
-            $.post('/api/getlectures',
+            $.post('/testcode/api/getlecturesstudent',
                  {
                   course_id:courseid
                  },
@@ -156,7 +153,8 @@ var courseid;
                    var result = jQuery.parseJSON(JSON.stringify(data))
                    var number= result.num_lectures;
                    var lecture_name= result.lecture_name;
-                   var lecture_id=result.lecture_id;    
+                   var lecture_id=result.lecture_id; 
+                   var numproblem=result.problems   
                    $("#latest").hide("slide", { direction: "up" }, 500);
                     setTimeout(
                       function(){
@@ -170,7 +168,8 @@ var courseid;
 
                    for (var i = 0; i < number; i++) 
                     {
-                      $("#lecturelist").append("<li class='lectures'><a href='edit/"+lecture_id[i]+"'>"+lecture_name[i]+"</a></li>");
+                      if (numproblem[i]==0) {$("#lecturelist").append("<li class='lectures'><a href='#'>"+lecture_name[i]+"</a></li>")} else
+                        {$("#lecturelist").append("<li class='lectures'><a href='edit/"+lecture_id[i]+"'>"+lecture_name[i]+"</a></li>")}
                     }
                   }
                    $("#latest").show("slide", { direction: "up" }, 500)},500);

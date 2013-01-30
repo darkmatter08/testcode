@@ -45,7 +45,7 @@ def student(request):
 	try:
 		user_id = request.session["user_id"]
 	except KeyError:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	currentUser = ""
 	isNewUser = False
 	courses = []
@@ -53,9 +53,9 @@ def student(request):
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	if currentUser.isAdmin:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	t = get_template("student-home-new.html")
 	# Find all courses the student is enrolled in via Enrollment query. This is a queryset
 	enrollments = Enrollment.objects.filter(user=currentUser.user_id)
@@ -89,7 +89,7 @@ def teacher(request):
 	try:
 		user_id = request.session["user_id"]
 	except KeyError:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	currentUser = ""
 	isNewUser = False
 	courses = []
@@ -97,9 +97,9 @@ def teacher(request):
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	if not currentUser.isAdmin:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	# Set context based on user - find all associated classes through enrollments 
 	enrollments = Enrollment.objects.filter(user=currentUser.user_id)
 	if len(enrollments) == 0:
@@ -132,11 +132,11 @@ def submitsolution(request):
 	try:
 		user_id = request.session["user_id"]
 	except KeyError:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	results = "Failure."
 	if request.method == 'POST':
 		if "solution" in request.POST:
@@ -152,7 +152,7 @@ def submitsolution(request):
 			html = t.render(rc)
 			return HttpResponse(html)
 	else:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 
 # This is an API function that verifies the user and sends them to the student page. 
 # It forwards to the student or teacher homepage depending on the type of user.
@@ -170,9 +170,9 @@ def login(request):
 				request.session["user_id"] = match.user_id
 				# check if user.isAdmin, if so, set url to teacher page
 				if match.isAdmin:
-					url = "/teacher/"
+					url = "teacher/"
 				else:
-					url = "/student/"
+					url = "student/"
 			# otherwise passwords don't match
 			else:
 				isOkay = False
@@ -244,7 +244,7 @@ def logout(request):
 		del request.session["user_id"]
 	except KeyError:
 		pass
-	return HttpResponseRedirect('/')
+	return HttpResponseRedirect('/testcode')
 
 # This is an API function that takes POST data from the teacher to create a class
 # The creator is automatically enrolled as the administrator
@@ -254,7 +254,7 @@ def createcourse(request):
 	try:
 		user_id = request.session["user_id"]
 	except KeyError:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	isOkay = True
 	error = ""
 	name = ""
@@ -319,6 +319,39 @@ def getlectures(request):
 	Json = simplejson.dumps(JsonDict)
 	return HttpResponse(Json, content_type="application/json")
 
+# This is an API function that reads in the POST request which provides a course_id
+# and returns lectures for that course. -Number of lectures -Number of problems for each lecture
+# -Lecture description for each
+def getlecturestudent(request):
+	isOkay = True
+	error = ""
+	JsonDict = {}
+	if ("course_id" in request.POST):
+		course_id = request.POST["course_id"]
+		course = Course.objects.get(course_id=course_id)
+		lectures = Lecture.objects.filter(course=course)
+		lecture_name = []
+		lecture_id = []
+		myproblems = []
+		for count in range(len(lectures)):
+			thisLecture = lectures[count]
+			problems = Problem.objects.filter(lecture=thisLecture.lecture_id) # problems associated with thisLecture
+			lecture_name.append(thisLecture.description)
+			lecture_id.append(thisLecture.lecture_id)
+			myproblems.append(len(problems)) 
+		JsonDict["lecture_name"] = lecture_name
+		JsonDict["lecture_id"] = lecture_id
+		JsonDict["password"] = course.student_password
+		JsonDict["problems"] = myproblems
+	else:
+		isOkay = False
+		error = post_request_err
+	JsonDict["isOkay"] = isOkay
+	JsonDict["error"] = error
+	JsonDict["num_lectures"] = len(lectures)
+	Json = simplejson.dumps(JsonDict)
+	return HttpResponse(Json, content_type="application/json")
+
 # This is an API function that allows a user to add an existing course. Read
 # in the POST request's course_id and password and get the user_id from the session. 
 # Create an enrollment associating the user and the class, disallowing double enrollments
@@ -328,12 +361,12 @@ def addcourse(request):
 	try:
 		user_id = request.session["user_id"]
 	except KeyError:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	currentUser = ""
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	isOkay = True
 	error = ""
 	JsonDict = {}
@@ -388,7 +421,7 @@ def createlecture(request):
 	try:
 		user_id = request.session["user_id"]
 	except KeyError:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	isOkay = True
 	error = ""
 	name = ""
@@ -422,14 +455,14 @@ def edit(request, mylecture_id):
 	try:
 		user_id = request.session["user_id"]
 	except KeyError:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	currentUser = ""
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	if currentUser.isAdmin:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	lectures = Lecture.objects.filter(lecture_id=mylecture_id)
 	if len(lectures) == 0:
 		return HttpResponseRedirect('/student')
@@ -453,7 +486,7 @@ def createproblem(request):
 	try:
 		user_id = request.session["user_id"]
 	except KeyError:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	currentUser = ""
 	isOkay = True
 	error = ""
@@ -461,7 +494,7 @@ def createproblem(request):
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	# Case 1 - only problem_name and lecture_id, return problem_id
 	if ("lecture_id" in request.POST) and ("problem_name" in request.POST):
 		lecture_id = request.POST["lecture_id"]
@@ -519,7 +552,7 @@ def submissionHistory(request):
 	try:
 		user_id = request.session["user_id"]
 	except KeyError:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	currentUser = ""
 	isOkay = True
 	error = ""
@@ -529,7 +562,7 @@ def submissionHistory(request):
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	if ("isNextSubmission" in request.POST) and ("submission_id" in request.POST):
 		isNextSubmission = request.POST["isNextSubmission"]
 		submission_id = request.POST["submission_id"]
@@ -583,7 +616,7 @@ def createtestcase(request):
 	try:
 		user_id = request.session["user_id"]
 	except KeyError:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	currentUser = ""
 	isOkay = True
 	error = ""
@@ -591,7 +624,7 @@ def createtestcase(request):
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	if ("problem_id" in request.POST) and ("input_value" in request.POST) and ("expected_output" in request.POST) and ("testcase_number" in request.POST):
 		problem_id = request.POST["problem_id"]
 		input_value = request.POST["input_value"]
@@ -630,7 +663,7 @@ def getproblem(request):
 	try:
 		user_id = request.session["user_id"]
 	except KeyError:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	currentUser = ""
 	isOkay = True
 	error = ""
@@ -638,7 +671,7 @@ def getproblem(request):
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	if ("problem_id" in request.POST):
 		problem_id = request.POST["problem_id"]
 		problem = Problem.objects.get(problem_id=problem_id)
@@ -659,6 +692,7 @@ def getproblem(request):
 		JsonDict["problem_id"] = problem_id
 		JsonDict["description"] = problem.description
 		JsonDict["name"] = problem.name
+		JsonDict["initial_code"] = problem.initial_code
 		#JsonDict["lecture_id"] = problem.lecture.lecture_id
 		#HasPrev code#####
 		allSubmissionsReordered = allSubmissions.order_by('date')
@@ -685,12 +719,12 @@ def teacherlecture(request, lecture_id):
 	try:
 		user_id = request.session["user_id"]
 	except KeyError:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	currentUser = ""
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	lectures = Lecture.objects.filter(lecture_id=lecture_id)
 	if len(lectures) == 0:
 		return HttpResponseRedirect('/teacher')
@@ -719,7 +753,7 @@ def getproblemteacher(request):
 	try:
 		user_id = request.session["user_id"]
 	except KeyError:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	currentUser = ""
 	isOkay = True
 	error = ""
@@ -727,7 +761,7 @@ def getproblemteacher(request):
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	if ("problem_id" in request.POST):
 		problem_id = request.POST["problem_id"]
 		problem = Problem.objects.get(problem_id=problem_id)
@@ -760,7 +794,7 @@ def saveandrun(request):
 	try:
 		user_id = request.session["user_id"]
 	except KeyError:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	currentUser = ""
 	isOkay = True
 	error = ""
@@ -768,7 +802,7 @@ def saveandrun(request):
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	if ("problem_id" in request.POST) and ("solution" in request.POST):	
 		problem_id = request.POST["problem_id"]
 		solution = request.POST["solution"]
@@ -782,20 +816,24 @@ def saveandrun(request):
 					newSubmission = submissions[0]
 			#newSubmission.save()
 			testcases = Testcase.objects.filter(problem=problem).order_by('testcase_number')
-			results = []
+			results = ""
 			inputs = []
 			expected_outputs = []
 			outputs = []
 			errors = []
 			for testcase in testcases:
 				result = test(testcase, newSubmission)
-				results.append(result[1])
+				if result[1]:
+					results +="1"
+				else:
+					results += "0"
+				#results.append(result[1])
 				outputs.append(result[0])
 				inputs.append(testcase.input_value)
 				expected_outputs.append(testcase.expected_output)
 				errors.append(result[2])
 				print results
-			newSubmission.grade=str(results) #returns JSON with results of all testcases
+			newSubmission.grade=results #returns JSON with results of all testcases
 			print "Saving..."
 			newSubmission.save()
 			print "making json dicts"
@@ -822,16 +860,16 @@ def home(request):
 	try:
 		user_id = request.session["user_id"]
 	except KeyError:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	currentUser = ""
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	if currentUser.isAdmin:
-		return HttpResponseRedirect('/teacher')
+		return HttpResponseRedirect('/testcode/teacher')
 	else:
-		return HttpResponseRedirect('/student')
+		return HttpResponseRedirect('/testcode/student')
 
 # API function that returns all testcase results by student for the latest submission. 
 # Requires problem_id
@@ -840,12 +878,12 @@ def viewperformance(request):
 	try:
 		user_id = request.session["user_id"]
 	except KeyError:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	currentUser = ""
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	JsonDict = {}
 	if ("problem_id" in request.POST):
 		problem_id = request.POST["problem_id"]
@@ -867,7 +905,15 @@ def viewperformance(request):
 				submissionidarray.append(submission.submission_id)
 				name.append(enrollment.user.name)
 				date.append(unicode(submission.date)[:-22])
+				# subgrade = []
+				# for thing in submission.grade:
+				# 	subgrade.append(thing)
+				# grade.append(subgrade)
 				grade.append(submission.grade)
+				# if submission.grade:
+				# 	grade.append("true")
+				# else:
+				# 	grade.append("false")
 				#print submissionInfo
 				#results.append(submissionInfo)
 				#print "results appended!"
@@ -914,12 +960,12 @@ def studentperformance(request, problem_id):
 	try:
 		user_id = request.session["user_id"]
 	except KeyError:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	currentUser = ""
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	problem = Problem.objects.get(problem_id=problem_id)
 	lecture = problem.lecture
 	course = lecture.course
@@ -927,7 +973,7 @@ def studentperformance(request, problem_id):
 	enrollments = Enrollment.objects.filter(course=course)
 	submissions = 0
 	for enrollment in enrollments:
-		if len(Submission.objects.filter(problem=problem)) > 0:
+		if len(Submission.objects.filter(problem=problem, enrollment=enrollment)) > 0:
 			submissions += 1
 	t = get_template("teacher-analyze.html")
 	rc = Context({"user": currentUser, "course": course, "lecture": lecture, "problem": problem, "testcases": testcases, "submissions": submissions})
@@ -939,12 +985,12 @@ def getSubmission(request):
 	try:
 		user_id = request.session["user_id"]
 	except KeyError:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	currentUser = ""
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	JsonDict = {}
 	if ("submission_id" in request.POST):
 		submission_id = request.POST["submission_id"]
@@ -963,14 +1009,14 @@ def account(request):
 	try:
 		user_id = request.session["user_id"]
 	except KeyError:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	currentUser = ""
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	JsonDict = {}
-	if ("name" in request.POST) and ("new_password" in request.POST) and ("old_password" in request.POST)and ("email" in request.POST):
+	if ("name" in request.POST) and ("new_password" in request.POST) and ("old_password" in request.POST) and ("email" in request.POST):
 		name = request.POST["name"]
 		new_password = request.POST["new_password"]
 		old_password = request.POST["old_password"]
@@ -986,15 +1032,13 @@ def account(request):
 		else:
 			JsonDict["isOkay"] = False
 			JsonDict["error"] = "Wrong login information."
-	elif: #return values case
+	else: #return values case
 		JsonDict["name"] = currentUser.name
 		JsonDict["email"] = currentUser.email
 		JsonDict["isOkay"] = True
 		JsonDict["error"] = ""
-	else:
-		isOkay = False
-		error = post_request_err
 	Json = simplejson.dumps(JsonDict)
+	print Json
 	return HttpResponse(Json, content_type="application/json")
 
 def getlogin(request):
@@ -1002,12 +1046,12 @@ def getlogin(request):
 	try:
 		user_id = request.session["user_id"]
 	except KeyError:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	currentUser = ""
 	try:
 		currentUser = User.objects.get(user_id=user_id)
 	except User.DoesNotExist:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/testcode')
 	JsonDict = {}
 	isOkay = True
 	error  = ""

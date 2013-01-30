@@ -66,7 +66,7 @@ $.ajaxSetup({
         allFields = $( [] ).add( name ).add( shortname ).add( studentpassword )  
       $( "#dialog-formclass" ).dialog({
       autoOpen: false,
-      height: 330,
+      height: 350,
       width: 450,
       modal: true,
 
@@ -77,7 +77,7 @@ $.ajaxSetup({
           allFields.removeClass( "ui-state-error" );        
            
                  
-          $.post('/api/createcourse',
+          $.post('/testcode/api/createcourse',
                       {
                       name:name.val(),
                       short_name:shortname.val(),                     
@@ -135,7 +135,7 @@ var courseid;
             courseid=$(this).attr('id');  
             $(".active").removeClass("active");
             $(this).addClass("active");       
-            $.post('/api/getlectures',
+            $.post('/testcode/api/getlectures',
                  {
                   course_id:courseid
                  },
@@ -186,7 +186,7 @@ var courseid;
  
     $( "#dialog-formlecture" ).dialog({
       autoOpen: false,
-      height: 220,
+      height: 240,
       width: 450,
       modal: true,
       
@@ -196,7 +196,7 @@ var courseid;
           "Create a lecture": function() {         
           allFields.removeClass( "ui-state-error" )
           $("#createlecture_message_box").html(" ")
-          $.post('/api/createlecture',
+          $.post('/testcode/api/createlecture',
                       {
                       name:name.val(), 
                       course_id:courseid                   

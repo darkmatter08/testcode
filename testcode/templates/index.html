@@ -26,12 +26,39 @@
     .validateTips { border: 1px solid transparent; padding: 0.3em; }   
     </style>
   </head>
-  <body>
+  <body style=" background-image: url('/static/backhome.png'); background-position: center; ">
     <div class="alert" style="display: none"> Signup ok. Now you can login.</div>
     
     
+
+ 
+<!-- Modal -->
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+    <h3 id="myModalLabel">Getting started</h3>
+  </div>
+  <div class="modal-body">
+    <h1>What is it all about?</h1>
+    <p>Testcode allows teachers to post coding problems for students to solve in class. 
+Teachers are able to view results from the class instantly, and students code is run against teacher-specified test cases, allowing for immediate feedback.
+</p>
+   <h1>Who is this site for?</h1>
+<p>For teachers of programming courses who want to improve their class experience, tailor their lectures to their students' strengths and weaknesses, and identify and help struggling students.  
+For students who want to enhance their learning in a programming course. 
+</p>
+ <h1>How does it work?</h1>
+<p>Teachers create courses, lectures, problems, and test cases. Students register for their courses with the course id and course password distributed by the teacher. As the teacher adds lectures and problems, they appear on the student's screen. Students enter their solutions, and click "Save & Run" and their code is tested against the test cases made by the teacher. Teachers can view their students' performance using interactive filtering, 
+</p>
+<h2>Ready? <a href='#'> Sign up now! </a></h2>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>    
+  </div>
+</div>
     
-    
+
+
 <div id="dialog-form" title="Create new user">
   <p class="validateTips" id="signup_message_box">All form fields are required.</p>
  
@@ -62,7 +89,9 @@
   </fieldset>
   </form>
 </div>
-           
+           <script>
+           $("#start").click(function(){$("#dialog-form").dialog('open'); $('#myModal').modal('hide')})
+           </script>
            
            
            
@@ -73,7 +102,7 @@
             <div id="headt">
               
                <div id="logo">
-                  <a href="#home"> <img src="/static/logo1.png"> </a>
+                  <a href="#home" id="start"> <img src="/static/logo1.png"> </a>
                </div>
                 
                <div id="toprighthome">
@@ -96,18 +125,15 @@
         <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
         <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
          <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
-
+    
         
         
         
        <!-- <div id="sep"> </div> -->
         
         <div id="container">
-               
-                <div id="main" >                                   
-                    
-                    
-                </div>
+            <div id="fortext">  <button href="#myModal" role="button" class="btn btn-large btn-success" data-toggle="modal"><span style=" font-family: 'Trebuchet MS', sans-serif">Getting started</span></a> </div>   
+              
               
         </div>
         
@@ -118,10 +144,10 @@
          <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   -->
         
         
-        
+     <!--    
         <div id="footer">
         </div>  
-         
+          -->
         
     
   </body>

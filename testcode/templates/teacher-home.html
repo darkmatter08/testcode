@@ -16,6 +16,7 @@
       <script src="/static/code/lib/matchbrackets.js"></script>
       <script src="/static/code/python.js"></script>
       <script type="text/javascript" src="/static/java.js"></script>
+       <script type="text/javascript" src="/static/account.js"></script>
       <script type="text/javascript" src="/static/teacher-home.js"></script>
     <link rel="stylesheet" href="/static/j-query.css" />
       <script type="text/javascript" src="/static/scroll/jquery.slimscroll.min.js"></script>
@@ -46,9 +47,26 @@
   
   </head>
   <body>
+
+    <div id="account1" title="Manage your account">
+  <p class="validateTips" id="account_message_box"> </p>
+ 
+  <form> 
+  <fieldset>
+    <label for="name">Name</label>
+    <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" />
+    <label for="email">Email</label>
+    <input type="text" name="email" id="email" value="" class="text ui-widget-content ui-corner-all" />
+    <label for="password">New password</label>
+    <input type="password" name="password" id="passwordnew" value="" class="text ui-widget-content ui-corner-all" />
+    <label for="password">Current password</label>
+    <input type="password" name="password" id="password" value="" class="text ui-widget-content ui-corner-all" />
+  </fieldset>
+  </form>
+</div>
     
 <div id="dialog-formclass" title="Create a class">
-     <p class="validateTips" id="create_message_box"></p>
+     <p class="validateTips" id="create_message_box"> </p>
              <form>
                 <fieldset>
                     <label for="name">Class name <span style="font-size: 14px">(e.g. "6.01 Introduction to EECS"  )</span></label>
@@ -66,7 +84,7 @@
   </div>
 
   <div id="dialog-formlecture" title="Create a lecture">
-     <p class="validateTips" id="createlecture_message_box"></p>
+     <p class="validateTips" id="createlecture_message_box"> </p>
              <form>
                 <fieldset>
                     <label for="name">Lecture name </label>

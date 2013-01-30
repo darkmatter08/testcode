@@ -1,3 +1,10 @@
+var input;
+var output;
+var youroutput; 
+var ifpassed=new Array()
+var error
+var pass
+ var initialcode
 $(document).ready(function(){
 
 $(".problemlinks").eq(0).addClass("active")
@@ -5,7 +12,7 @@ $(".problemlinks").eq(0).addClass("active")
 $(function(){
        problem_id=$(".problemlinks").eq(0).attr("id");       
        $.post(
-                '/api/getproblem',
+                '/testcode/api/getproblem',
                  {
                   problem_id:problem_id,
                  },
@@ -40,7 +47,7 @@ $(function(){
          
           if (type=="previous") {isNextSubmission=0}                                                                                
                             $.post(
-                                    '/api/getsubmission',
+                                    '/testcode/api/getsubmission',
                                     {  
 
                                       submission_id:submission_id,
@@ -63,13 +70,13 @@ $(function(){
                             }
                       }
                             );
- var initialcode;
+
  $(".problemlinks").click(function(){
        problem_id=$(this).attr("id");
        $(".active").eq(0).removeClass("active");
        $(this).addClass("active");      
         $.post(
-                '/api/getproblem',
+                '/testcode/api/getproblem',
                  {
                   problem_id:problem_id,
                  },
@@ -81,7 +88,8 @@ $(function(){
                         editor.setValue(""+text);
                         var description=result.description;
                         var id=result.submission_id;                        
-                        var name=result.name;                        
+                        var name=result.name; 
+                        initialcode=result.initial_code                       
                         $("#descriptionplace").html(description);
                         $("#insidefeedback").html('Press "Save & Run" to see your results.<br/>') 
                         $('form').attr('id', id);                       
@@ -91,11 +99,7 @@ $(function(){
                     }
              )
  })
-var input;
-var output;
-var youroutput; 
-var ifpassed
-var error
+
  $("#run").click(function()
     {
        problem_id=$(".active").eq(0).attr("id");
@@ -103,7 +107,7 @@ var error
         $("#run").button('loading');
         $("#insidefeedback").fadeOut(1000);
 
-      $.post('/api/submit',
+      $.post('/testcode/api/submit',
          {
              problem_id:problem_id,
              solution:solution        
@@ -112,13 +116,15 @@ var error
          {
            $("#run").button('reset');
            var result = jQuery.parseJSON(JSON.stringify(data));
-           ifpassed=result.grade;
+           pas=result.grade;
            input=result.inputs;
            output=result.expected_outputs;
            youroutput=result.outputs;
-           error=result.error;
+           error=result.errors;
            var score=0;
-           var n=ifpassed.length   
+           var n=pas.length 
+           for (var i=0;i<n;i++) {if (pas.charAt(i)==1) {ifpassed[i]=true} else ifpassed[i]=false}
+           $("#previous").removeClass("disabled") 
            for (var i=1; i<n+1;i++) {if (ifpassed[i-1]) score++}
            if (score==n) { $("#insidefeedback").html('<p style="font-weight:900; color:#008A05; font-size:16px"> Correct:'+n+'/'+n+'</p>')} else
                          { $("#insidefeedback").html('<p style="font-weight:900; color:#FA2100; font-size:16px"> Correct:'+score+'/'+n+'</p>')}
@@ -151,6 +157,8 @@ $( "#viewtest" ).dialog({
 $(".test").live('click', function()
             {
               var id=$(this).attr('id')
+              $("#forcorr").html("")
+              $("#forwrong").html("")
               if (ifpassed[id-1]) { $("#forcorr").html(error[id-1])} else { $("#forwrong").html(error[id-1])}
               $("#in").html(input[id-1])
               $("#yourout").html(youroutput[id-1])

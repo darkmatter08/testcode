@@ -24,7 +24,7 @@
        <script type="text/javascript" src="/static/plot/jqplot.barRenderer.js"></script>
       <script type="text/javascript" src="/static/plot/jqplot.categoryAxisRenderer.min.js"></script>
       <script type="text/javascript" src="/static/plot/jqplot.pointLabels.min.js"></script>  
-    
+      <script type="text/javascript" src="/static/account.js"></script>
       <script type="text/javascript" src="/static/plot/jqplot.pieRenderer.min.js"></script>
       <script type="text/javascript" src="/static/plot/jqplot.canvasTextRenderer.min.js"></script>
       <script type="text/javascript" src="/static/plot/jqplot.canvasAxisLabelRenderer.min.js"></script>
@@ -46,6 +46,25 @@
   </head>
   <body  onload="prettyPrint()">
     
+
+<div id="account1" title="Manage your account">
+  <p class="validateTips" id="account_message_box"> </p>
+ 
+  <form> 
+  <fieldset>
+    <label for="name">Name</label>
+    <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" />
+    <label for="email">Email</label>
+    <input type="text" name="email" id="email" value="" class="text ui-widget-content ui-corner-all" />
+    <label for="password">New password</label>
+    <input type="password" name="password" id="passwordnew" value="" class="text ui-widget-content ui-corner-all" />
+    <label for="password">Current password</label>
+    <input type="password" name="password" id="password" value="" class="text ui-widget-content ui-corner-all" />
+  </fieldset>
+  </form>
+</div>
+
+
  <div id="viewsubmission"  title="View sumbission's code">   
              
             <pre class="prettyprint"><code class="language-py"></code></pre>
@@ -119,8 +138,8 @@
        <div class="lecturepage1" style="background-color:#f5f5f5" >
                   
                   <span style="font-size:16px; font-weight:900"> <ul class="breadcrumb">
-                                <li><a href="#">{{course.name}}</a> <span class="divider">/</span></li>
-                                <li class="lectureelement" id="{{lecture.lecture_id}}"><a href="#">{{lecture.description}} </a> <span class="divider">/</span></li>      
+                                <li><a href="/testcode/api/userhome">{{course.name}}</a> <span class="divider">/</span></li>
+                                <li class="lectureelement" id="{{lecture.lecture_id}}"><a href="/testcode/teacher/edit/{{lecture.lecture_id}}">{{lecture.description}} </a> <span class="divider">/</span></li>      
                                 <li class="active" id="{{problem.problem_id}}" >{{problem.name}} </li>                           
                             </ul></span>
                    
